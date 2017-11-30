@@ -62,6 +62,9 @@ func isScriptStartTag(text []rune, pos int, endOfFilePos int) bool {
 	if text[pos] != chCode_lessThan {
 		return false
 	}
+	if pos+5 > endOfFilePos {
+		return false
+	}
 
 	start := strings.ToLower(string(text[pos : 5+pos]))
 	end := text[pos+5]
@@ -318,6 +321,13 @@ func scanName(text []rune, pos *int, endOfFilePos int) {
 	}
 
 }
+
+func saveMemToken(kind TokenKind, pos int) {
+	tokenMem = append(tokenMem, Token{kind, fullStart, start, pos - fullStart})
+	fullStart = pos
+	start = pos
+}
+
 func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRescan bool) {
 	*pos++
 	for {
@@ -329,7 +339,7 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start + 1, *pos - fullStart})
 				return
 			} else {
-				tokenMem = append(tokenMem, Token{UnterminatedTemplateStringEnd, fullStart, start, *pos - fullStart})
+				saveMemToken(UnterminatedTemplateStringEnd, *pos)
 				return
 			}
 		}
@@ -340,15 +350,15 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 
 			if len(tokenMem) == 0 {
 				*pos++
-				tokenMem = append(tokenMem, Token{StringLiteralToken, fullStart, start, *pos - fullStart})
+				saveMemToken(StringLiteralToken, *pos)
 				return
 				//return NoSubstitutionTemplateLiteral
 			} else {
 				if *pos-fullStart > 1 {
-					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start, *pos - fullStart})
+					saveMemToken(EncapsedAndWhitespace, *pos)
 				}
-				tokenMem = append(tokenMem, Token{DoubleQuoteToken, *pos, *pos, 1})
 				*pos++
+				saveMemToken(DoubleQuoteToken, *pos)
 				return
 			}
 		}
@@ -356,44 +366,31 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 		if char == '$' {
 			if isNameStart(fileContent, *pos+1, endOfFilePos) {
 				if len(tokenMem) == 0 {
-					tokenMem = append(tokenMem, Token{DoubleQuoteToken, fullStart, start, 1})
+					saveMemToken(DoubleQuoteToken, *pos)
 				}
-
 				if *pos-start > 2 {
-					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start, *pos - fullStart - 1})
+					saveMemToken(EncapsedAndWhitespace, *pos)
 				}
-				fullStart = *pos
-				start = *pos
 				*pos++
 				scanName(fileContent, pos, endOfFilePos)
-				tokenMem = append(tokenMem, Token{VariableName, fullStart, start, *pos - fullStart})
-				fullStart = *pos
-				start = *pos
+				saveMemToken(VariableName, *pos)
 
 				if *pos < endOfFilePos && fileContent[*pos] == '[' {
 					*pos++
-					tokenMem = append(tokenMem, Token{OpenBracketToken, fullStart, start, 1})
+					saveMemToken(OpenBracketToken, *pos)
 					if isDigitChar(fileContent[*pos]) {
-						fullStart = *pos
-						start = *pos
 						*pos++
 						scanName(fileContent, pos, endOfFilePos)
-						tokenMem = append(tokenMem, Token{IntegerLiteralToken, fullStart, start, *pos - fullStart})
-						fullStart = *pos
-						start = *pos
+						saveMemToken(IntegerLiteralToken, *pos)
 					} else if isNameStart(fileContent, *pos, endOfFilePos) {
 						// var name index
-						fullStart = *pos
-						start = *pos
 						*pos++
 						scanName(fileContent, pos, endOfFilePos)
-						tokenMem = append(tokenMem, Token{Name, fullStart, start, *pos - fullStart})
-						fullStart = *pos
-						start = *pos
+						saveMemToken(Name, *pos)
 					}
 					if fileContent[*pos] == ']' {
 						*pos++
-						tokenMem = append(tokenMem, Token{CloseBracketToken, fullStart, start, 1})
+						saveMemToken(CloseBracketToken, *pos)
 					} else {
 						// todo error!
 					}
@@ -402,20 +399,18 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 				continue
 			} else if *pos+1 < endOfFilePos && fileContent[*pos+1] == '{' {
 				// curly
-				*pos++
 				if len(tokenMem) == 0 {
-					tokenMem = append(tokenMem, Token{DoubleQuoteToken, fullStart, start, 1})
+					saveMemToken(DoubleQuoteToken, *pos)
+					*pos++
 				}
 				if *pos-start > 2 {
-					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start, *pos - fullStart - 1})
+					saveMemToken(EncapsedAndWhitespace, *pos)
 				}
-
-				tokenMem = append(tokenMem, Token{DollarOpenBraceToken, fullStart, start, 2})
-
+				*pos++
+				saveMemToken(DollarOpenBraceToken, *pos)
+				t := scan()
 				fullStart = *pos
 				start = *pos
-				*pos++
-				t := scan()
 				if t.Kind == Name {
 					t.Kind = StringVarname
 				}
@@ -424,9 +419,7 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 					return
 				}
 				if *pos < endOfFilePos && fileContent[*pos] == '}' {
-					tokenMem = append(tokenMem, Token{CloseBraceToken, *pos, *pos, 1})
-					fullStart = *pos
-					start = *pos
+					saveMemToken(CloseBraceToken, *pos+1)
 				}
 			}
 		}

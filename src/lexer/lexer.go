@@ -7,25 +7,41 @@ import (
 	"os"
 )
 
+type LexerState int
+
+const (
+	LexStateHtmlSection LexerState = iota
+	LexStateScriptSection
+	LexStateScriptSectionParsed
+)
+
 var pos int = 0
 var endOfFilePos = 0
 var fullStart = 0
 var start = 0
-var inScriptSection bool
-
+var lexState LexerState
 var fileContent []rune
+var tokenMem []Token
 
 func GetTokens(text string) []Token {
 	var tokens []Token
+	tokenMem = nil
 	fileContent = []rune(text)
 	endOfFilePos = len(fileContent)
 	pos = 0
 	start = 0
-	inScriptSection = false
+	lexState = LexStateHtmlSection
 	token := scan()
 	for token.Kind != EndOfFileToken {
-		tokens = append(tokens, token)
-		pos = token.fullStart + token.length
+		if token.Kind == -1 {
+			for i := 0; i < len(tokenMem); i++ {
+				tokens = append(tokens, tokenMem[i])
+			}
+			tokenMem = nil
+		} else {
+			tokens = append(tokens, token)
+			pos = token.fullStart + token.length
+		}
 		token = scan()
 	}
 	tokens = append(tokens, token)
@@ -35,7 +51,7 @@ func GetTokens(text string) []Token {
 func DebugTokens(text string) {
 	tokens := GetTokens(text)
 	for _, token := range tokens {
-		b, _ := json.MarshalIndent(token.getShortForm(), "", "    ")
+		b, _ := json.MarshalIndent(token.getShortForm([]rune(text)), "", "    ")
 		os.Stdout.Write(b)
 		println("")
 	}
@@ -64,25 +80,25 @@ func scan() Token {
 		start = pos
 		// handling end of file
 		if pos >= endOfFilePos {
-			if inScriptSection {
+			if lexState != LexStateHtmlSection {
 				current = Token{EndOfFileToken, fullStart, start, pos - fullStart}
 			} else {
 				current = Token{InlineHtml, fullStart, fullStart, pos - fullStart}
 			}
-			inScriptSection = true
+			lexState = LexStateScriptSection
 			if current.Kind == InlineHtml && pos-fullStart == 0 {
 				continue
 			}
 			return current
 		}
 
-		if !inScriptSection {
+		if lexState == LexStateHtmlSection {
 			// Keep scanning until we hit a script section start tag
 			if !isScriptStartTag(fileContent, pos, endOfFilePos) {
 				pos++
 				continue
 			}
-			inScriptSection = true
+			lexState = LexStateScriptSection
 
 			if pos-fullStart == 0 {
 				continue
@@ -148,11 +164,16 @@ func scan() Token {
 				// TODO get rid of strtolower for perf reasons
 				textSubstring := strings.ToLower(string(fileContent[pos : pos+tokenEnd+1]))
 				if isOperatorOrPunctuator(textSubstring) {
-
 					tokenKind = OPERATORS_AND_PUNCTUATORS[textSubstring]
+					if tokenKind == ScriptSectionStartTag {
+						if lexState == LexStateScriptSectionParsed {
+							continue
+						}
+						lexState = LexStateScriptSectionParsed
+					}
 					pos += tokenEnd + 1
 					if tokenKind == ScriptSectionEndTag {
-						inScriptSection = false
+						lexState = LexStateHtmlSection
 					}
 
 					return Token{tokenKind, fullStart, start, pos - fullStart}
@@ -191,18 +212,17 @@ func scan() Token {
 
 				if fileContent[pos] == chCode_singleQuote || fileContent[pos] == chCode_doubleQuote || (pos+1 < endOfFilePos && (fileContent[pos+1] == chCode_singleQuote || fileContent[pos+1] == chCode_doubleQuote)) {
 					if quoteStart == false {
-						pos += 1
+						pos++
 					}
 					if fileContent[pos] == chCode_doubleQuote {
-						kind := scanTemplateAndSetTokenValue(fileContent, &pos, endOfFilePos, false)
-
-						return Token{kind, fullStart, start, pos - fullStart}
+						scanTemplateAndSetTokenValue(fileContent, &pos, endOfFilePos, false)
+						return Token{-1, fullStart, start, pos - fullStart}
 					}
 					pos++
 					if scanStringLiteral(fileContent, &pos, endOfFilePos) {
 						return Token{StringLiteralToken, fullStart, start, pos - fullStart}
 					}
-					return Token{UnterminatedStringLiteralToken, fullStart, start, pos - fullStart}
+					return Token{EncapsedAndWhitespace, fullStart, start, pos - fullStart}
 				}
 			}
 
@@ -298,53 +318,121 @@ func scanName(text []rune, pos *int, endOfFilePos int) {
 	}
 
 }
-func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRescan bool) TokenKind {
-	startedWithDoubleQuote := text[*pos] == chCode_doubleQuote && !isRescan
-	//isTerminated = false;
-
-	if startedWithDoubleQuote {
-		*pos++
-	}
-
+func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRescan bool) {
+	*pos++
 	for {
 		if *pos >= endOfFilePos {
 			// UNTERMINATED, report error
-			if startedWithDoubleQuote {
-				return UnterminatedNoSubstitutionTemplateLiteral
+			if len(tokenMem) == 0 {
+				tokenMem = append(tokenMem, Token{DoubleQuoteToken, fullStart, start, start - fullStart + 1})
+				fullStart = start
+				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start + 1, *pos - fullStart})
+				return
 			} else {
-				return UnterminatedTemplateStringEnd
+				tokenMem = append(tokenMem, Token{UnterminatedTemplateStringEnd, fullStart, start, *pos - fullStart})
+				return
 			}
 		}
 
 		char := text[*pos]
 
-		// '"'
 		if char == chCode_doubleQuote {
-			*pos++
-			if startedWithDoubleQuote {
-				return StringLiteralToken
+
+			if len(tokenMem) == 0 {
+				*pos++
+				tokenMem = append(tokenMem, Token{StringLiteralToken, fullStart, start, *pos - fullStart})
+				return
 				//return NoSubstitutionTemplateLiteral
 			} else {
-				return TemplateStringEnd
+				if *pos-fullStart > 1 {
+					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start, *pos - fullStart})
+				}
+				tokenMem = append(tokenMem, Token{DoubleQuoteToken, *pos, *pos, 1})
+				*pos++
+				return
 			}
 		}
 
 		if char == '$' {
-			*pos++
-			if isNameStart(fileContent, *pos, endOfFilePos) {
-				return TemplateStringStart
+			if isNameStart(fileContent, *pos+1, endOfFilePos) {
+				if len(tokenMem) == 0 {
+					tokenMem = append(tokenMem, Token{DoubleQuoteToken, fullStart, start, 1})
+				}
+
+				if *pos-start > 2 {
+					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start, *pos - fullStart - 1})
+				}
+				fullStart = *pos
+				start = *pos
+				*pos++
+				scanName(fileContent, pos, endOfFilePos)
+				tokenMem = append(tokenMem, Token{VariableName, fullStart, start, *pos - fullStart})
+				fullStart = *pos
+				start = *pos
+
+				if *pos < endOfFilePos && fileContent[*pos] == '[' {
+					*pos++
+					tokenMem = append(tokenMem, Token{OpenBracketToken, fullStart, start, 1})
+					if isDigitChar(fileContent[*pos]) {
+						fullStart = *pos
+						start = *pos
+						*pos++
+						scanName(fileContent, pos, endOfFilePos)
+						tokenMem = append(tokenMem, Token{IntegerLiteralToken, fullStart, start, *pos - fullStart})
+						fullStart = *pos
+						start = *pos
+					} else if isNameStart(fileContent, *pos, endOfFilePos) {
+						// var name index
+						fullStart = *pos
+						start = *pos
+						*pos++
+						scanName(fileContent, pos, endOfFilePos)
+						tokenMem = append(tokenMem, Token{Name, fullStart, start, *pos - fullStart})
+						fullStart = *pos
+						start = *pos
+					}
+					if fileContent[*pos] == ']' {
+						*pos++
+						tokenMem = append(tokenMem, Token{CloseBracketToken, fullStart, start, 1})
+					} else {
+						// todo error!
+					}
+				}
+
+				continue
+			} else if *pos+1 < endOfFilePos && fileContent[*pos+1] == '{' {
+				// curly
+				*pos++
+				if len(tokenMem) == 0 {
+					tokenMem = append(tokenMem, Token{DoubleQuoteToken, fullStart, start, 1})
+				}
+				if *pos-start > 2 {
+					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, fullStart, start, *pos - fullStart - 1})
+				}
+
+				tokenMem = append(tokenMem, Token{DollarOpenBraceToken, fullStart, start, 2})
+
+				fullStart = *pos
+				start = *pos
+				*pos++
+				t := scan()
+				if t.Kind == Name {
+					t.Kind = StringVarname
+				}
+				tokenMem = append(tokenMem, t)
+				if t.Kind == ScriptSectionEndTag {
+					return
+				}
+				if *pos < endOfFilePos && fileContent[*pos] == '}' {
+					tokenMem = append(tokenMem, Token{CloseBraceToken, *pos, *pos, 1})
+					fullStart = *pos
+					start = *pos
+				}
 			}
 		}
 
-		// TODO temporarily disabled template string matching - will re-enable when it's implemented properly
-		// '$' -> start of a variable
-		//            if ($char === chCode_dollar) {
-		//                return $startedWithDoubleQuote ? TokenKind::TemplateStringStart : TokenKind::TemplateStringMiddle;
-		//            }
-
 		// Escape character
 		if char == chCode_backslash {
-			// TODO scan escape sequence
 			*pos++
 			scanDqEscapeSequence(text, pos, endOfFilePos)
 			continue
@@ -354,7 +442,7 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 	}
 
 	// TODO throw error
-	return Unknown
+	return
 }
 
 func scanDqEscapeSequence(text []rune, pos *int, endOfFilePos int) {
@@ -461,7 +549,7 @@ func isSingleQuoteEscapeSequence(text []rune, pos int) bool {
 }
 
 func isScriptEndTag(text []rune, pos int) bool {
-	if inScriptSection && text[pos] == chCode_question && text[pos+1] == chCode_greaterThan {
+	if lexState != LexStateScriptSection && text[pos] == chCode_question && text[pos+1] == chCode_greaterThan {
 		return true
 	}
 	return false

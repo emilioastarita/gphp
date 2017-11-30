@@ -7,6 +7,16 @@ import (
 	"testing"
 )
 
+func TestDoubleQuote(t *testing.T) {
+	input := `<?php "$x"`
+	DebugTokens(input)
+}
+func TestDoubleQuote2(t *testing.T) {
+	input := ` <?php
+"${x}"
+`
+	DebugTokens(input)
+}
 func TestCases(t *testing.T) {
 	suffix := ".tokens"
 	tokensLen := len(suffix)
@@ -42,13 +52,14 @@ func TestCases(t *testing.T) {
 					return
 				}
 
-				actual := tokens[idx].getShortForm()
+				actual := tokens[idx].getShortForm([]rune(string(sourceCase)))
 
 				if expected.Kind != actual.Kind {
 					DebugTokens(string(sourceCase))
 					t.Fatalf("Failed %s | %s: Expected Kind %s - Given Kind: %s", resultFile, sourceFileName, expected.Kind, actual.Kind)
 					return
 				} else if expected.TextLength != actual.TextLength {
+					DebugTokens(string(sourceCase))
 					t.Fatalf("Failed %s: Expected Length Kind %s (len %d) - Given Length Kind: %s (len %d)", resultFile, expected.Kind, expected.TextLength, actual.Kind, actual.TextLength)
 					return
 				}

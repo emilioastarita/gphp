@@ -10,6 +10,7 @@ type Token struct {
 type TokenShortForm struct {
 	Kind       string `json:"kind"`
 	TextLength int    `json:"textLength"`
+	Text string `json:text`
 }
 
 func (r Token) getText(text []rune) string {
@@ -18,6 +19,6 @@ func (r Token) getText(text []rune) string {
 	return string(text[s:end])
 }
 
-func (r Token) getShortForm() TokenShortForm {
-	return TokenShortForm{r.Kind.String(), r.length - (r.start - r.fullStart)}
+func (r Token) getShortForm(text []rune) TokenShortForm {
+	return TokenShortForm{r.Kind.String(), r.length - (r.start - r.fullStart), r.getText(text)}
 }

@@ -1,11 +1,15 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 7
+        "textLength": 6
     },
     {
-        "kind": "UnterminatedNoSubstitutionTemplateLiteral",
-        "textLength": 9
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 8
     },
     {
         "kind": "EndOfFileToken",

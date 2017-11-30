@@ -173,7 +173,7 @@ const (
 	ReturnType
 	InlineHtml
 
-	DollarOpenCurly = 339
+	DollarOpenCurly
 	EncapsedAndWhitespace
 	SingleQuoteToken
 	DoubleQuoteToken

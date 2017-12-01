@@ -5,6 +5,7 @@ import (
 	//	"unicode"
 	"encoding/json"
 	"os"
+	"unicode"
 )
 
 type LexerState int
@@ -585,13 +586,7 @@ func isNonDigitChar(charCode rune) bool {
 }
 
 func isValidNameUnicodeChar(charCode rune) bool {
-	//return unicode.IsLetter(charCode)
-	return false
-	//if charCode == '\u0020' || charCode == '\u0009' || charCode == '\u000D' || charCode == '\u000A' {
-	//	return false
-	//}
-	//fmt.Printf("Char: %c (%#U) returns: %t\n", charCode, charCode, charCode >= '\u0080' || charCode <= '\u00ff')
-	//return charCode >= '\u0080' || charCode <= '\u00ff'
+	return unicode.IsLetter(charCode)
 }
 
 func scanHexadecimalLiteral(text []rune, pos *int, endOfFilePos int) bool {

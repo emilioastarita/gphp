@@ -1,10 +1,9 @@
 package lexer
 
 import (
-	"strings"
-	//	"unicode"
 	"encoding/json"
 	"os"
+	"strings"
 	"unicode"
 )
 
@@ -214,7 +213,9 @@ func scan() Token {
 					quoteStart = true
 				}
 
-				if fileContent[pos] == chCode_singleQuote || fileContent[pos] == chCode_doubleQuote || (pos+1 < endOfFilePos && (fileContent[pos+1] == chCode_singleQuote || fileContent[pos+1] == chCode_doubleQuote)) {
+				if fileContent[pos] == chCode_singleQuote ||
+					fileContent[pos] == chCode_doubleQuote ||
+					(pos+1 < endOfFilePos && (fileContent[pos+1] == chCode_singleQuote || fileContent[pos+1] == chCode_doubleQuote)) {
 					if quoteStart == false {
 						pos++
 					}

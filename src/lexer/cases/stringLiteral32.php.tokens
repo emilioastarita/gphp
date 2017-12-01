@@ -1,0 +1,858 @@
+[
+    {
+        "kind": "ScriptSectionStartTag",
+        "textLength": 6
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DollarOpenBraceToken",
+        "textLength": 2
+    },
+    {
+        "kind": "StringVarname",
+        "textLength": 2
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DollarOpenBraceToken",
+        "textLength": 2
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DollarOpenBraceToken",
+        "textLength": 2
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DollarOpenBraceToken",
+        "textLength": 2
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 4
+    },
+    {
+        "kind": "DollarOpenBraceToken",
+        "textLength": 2
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 4
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 4
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 4
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "ArrowToken",
+        "textLength": 2
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "ArrowToken",
+        "textLength": 2
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "ArrowToken",
+        "textLength": 2
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "ArrowToken",
+        "textLength": 2
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 4
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "ArrowToken",
+        "textLength": 2
+    },
+    {
+        "kind": "Name",
+        "textLength": 2
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 4
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EndOfFileToken",
+        "textLength": 0
+    }
+]

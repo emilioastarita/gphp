@@ -8,14 +8,15 @@ import (
 )
 
 func TestDoubleQuote(t *testing.T) {
-	input := `<?php "$x"`
+	input := `<?php
+"{$pi['a'.'{b}']";`
 	DebugTokens(input)
 }
 func TestDoubleQuote2(t *testing.T) {
-	input := ` <?php
-"${x}"
-`
-	DebugTokens(input)
+	//	input := ` <?php
+	//"${x}"
+	//`
+	//	DebugTokens(input)
 }
 func TestCases(t *testing.T) {
 	suffix := ".tokens"

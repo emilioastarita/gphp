@@ -1,0 +1,94 @@
+[
+    {
+        "kind": "ScriptSectionStartTag",
+        "textLength": 6
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "DotToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 5
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "CloseBraceToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "SemicolonToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "OpenBraceDollarToken",
+        "textLength": 1
+    },
+    {
+        "kind": "VariableName",
+        "textLength": 3
+    },
+    {
+        "kind": "OpenBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 3
+    },
+    {
+        "kind": "DotToken",
+        "textLength": 1
+    },
+    {
+        "kind": "StringLiteralToken",
+        "textLength": 5
+    },
+    {
+        "kind": "CloseBracketToken",
+        "textLength": 1
+    },
+    {
+        "kind": "DoubleQuoteToken",
+        "textLength": 1
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "textLength": 2
+    },
+    {
+        "kind": "EndOfFileToken",
+        "textLength": 0
+    }
+]

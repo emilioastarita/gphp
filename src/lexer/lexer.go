@@ -400,27 +400,16 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 				continue
 			} else if *pos+1 < endOfFilePos && fileContent[*pos+1] == '{' {
 				// curly
-				if len(tokenMem) == 0 {
-					saveMemToken(DoubleQuoteToken, *pos)
-					*pos++
-				}
-				if *pos-start > 2 {
-					saveMemToken(EncapsedAndWhitespace, *pos)
-				}
-				*pos++
-				saveMemToken(DollarOpenBraceToken, *pos)
-				t := scan()
-				fullStart = *pos
-				start = *pos
-				if t.Kind == Name {
-					t.Kind = StringVarname
-				}
-				tokenMem = append(tokenMem, t)
-				if t.Kind == ScriptSectionEndTag {
+				if saveCurlyExpression(DollarOpenBraceToken, pos) {
 					return
 				}
-				if *pos < endOfFilePos && fileContent[*pos] == '}' {
-					saveMemToken(CloseBraceToken, *pos+1)
+			}
+		}
+
+		if char == '{' {
+			if *pos+1 < endOfFilePos && fileContent[*pos+1] == '$' {
+				if saveCurlyExpression(OpenBraceDollarToken, pos) {
+					return
 				}
 			}
 		}
@@ -437,6 +426,34 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 
 	// TODO throw error
 	return
+}
+
+func saveCurlyExpression(openToken TokenKind, pos *int) bool {
+	if len(tokenMem) == 0 {
+		saveMemToken(DoubleQuoteToken, *pos)
+		*pos++
+	}
+	if *pos-start > 2 {
+		saveMemToken(EncapsedAndWhitespace, *pos)
+	}
+	if openToken == DollarOpenBraceToken {
+		*pos++
+	}
+	saveMemToken(openToken, *pos)
+	t := scan()
+	fullStart = *pos
+	start = *pos
+	if t.Kind == Name {
+		t.Kind = StringVarname
+	}
+	tokenMem = append(tokenMem, t)
+	if t.Kind == ScriptSectionEndTag {
+		return true
+	}
+	if *pos < endOfFilePos && fileContent[*pos] == '}' {
+		saveMemToken(CloseBraceToken, *pos+1)
+	}
+	return false
 }
 
 func scanDqEscapeSequence(text []rune, pos *int, endOfFilePos int) {

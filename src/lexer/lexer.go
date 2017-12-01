@@ -395,6 +395,16 @@ func scanTemplateAndSetTokenValue(text []rune, pos *int, endOfFilePos int, isRes
 					} else {
 						// todo error!
 					}
+				} else if *pos+1 < endOfFilePos && fileContent[*pos] == '-' && fileContent[*pos+1] == '>' {
+					*pos++
+					*pos++
+					saveMemToken(ArrowToken, *pos)
+					if isNameStart(fileContent, *pos, endOfFilePos) {
+						// var name index
+						*pos++
+						scanName(fileContent, pos, endOfFilePos)
+						saveMemToken(Name, *pos)
+					}
 				}
 
 				continue

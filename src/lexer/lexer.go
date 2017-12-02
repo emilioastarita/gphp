@@ -237,7 +237,7 @@ func isScriptStartTag(text []rune, pos int, eofPos int) bool {
 		return false
 	}
 
-	if pos+5 <= eofPos {
+	if pos+5 < eofPos {
 		start := strings.ToLower(string(text[pos : 5+pos]))
 		end := text[pos+5]
 		if start == "<?php" {
@@ -356,40 +356,40 @@ func scanName(text []rune, pos *int, eofPos int) {
 	}
 }
 
-func scanTemplateAndSetTokenValue(lexer *LexerScanner, tokenMem []Token) []Token {
-	startPosition := lexer.start
-	eofPos := lexer.eofPos
-	pos := &lexer.pos
-	fileContent := lexer.content
+func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
+	startPosition := l.start
+	eofPos := l.eofPos
+	pos := &l.pos
+	fileContent := l.content
 	*pos++
 	for {
 		if *pos >= eofPos {
 			// UNTERMINATED, report error
 			if len(tokenMem) == 0 {
-				tokenMem = append(tokenMem, Token{DoubleQuoteToken, lexer.fullStart, lexer.start, lexer.start - lexer.fullStart + 1})
-				lexer.fullStart = lexer.start
-				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, lexer.fullStart, lexer.start + 1, *pos - lexer.fullStart})
+				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1})
+				l.fullStart = l.start
+				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart})
 				return tokenMem
 			} else {
 				return tokenMem
 			}
 		}
 
-		char := lexer.content[*pos]
+		char := l.content[*pos]
 
 		if char == chCode_doubleQuote {
 
 			if len(tokenMem) == 0 {
 				*pos++
-				tokenMem = lexer.addToMem(StringLiteralToken, *pos, tokenMem)
+				tokenMem = l.addToMem(StringLiteralToken, *pos, tokenMem)
 				return tokenMem
 				//return NoSubstitutionTemplateLiteral
 			} else {
-				if *pos-lexer.fullStart > 1 {
-					tokenMem = lexer.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
+				if *pos-l.fullStart > 1 {
+					tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 				}
 				*pos++
-				tokenMem = lexer.addToMem(DoubleQuoteToken, *pos, tokenMem)
+				tokenMem = l.addToMem(DoubleQuoteToken, *pos, tokenMem)
 				return tokenMem
 			}
 		}
@@ -397,45 +397,45 @@ func scanTemplateAndSetTokenValue(lexer *LexerScanner, tokenMem []Token) []Token
 		if char == '$' {
 			if isNameStart(fileContent, *pos+1, eofPos) {
 				if len(tokenMem) == 0 {
-					tokenMem = lexer.addToMemInPlace(DoubleQuoteToken, startPosition, 1, tokenMem)
-					lexer.start++
-					lexer.fullStart++
+					tokenMem = l.addToMemInPlace(DoubleQuoteToken, startPosition, 1, tokenMem)
+					l.start++
+					l.fullStart++
 				}
 				if *pos-startPosition > 2 {
-					tokenMem = lexer.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
+					tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 				}
 				*pos++
 				scanName(fileContent, pos, eofPos)
-				tokenMem = lexer.addToMem(VariableName, *pos, tokenMem)
+				tokenMem = l.addToMem(VariableName, *pos, tokenMem)
 
 				if *pos < eofPos && fileContent[*pos] == '[' {
 					*pos++
-					tokenMem = lexer.addToMem(OpenBracketToken, *pos, tokenMem)
+					tokenMem = l.addToMem(OpenBracketToken, *pos, tokenMem)
 					if isDigitChar(fileContent[*pos]) {
 						*pos++
 						scanName(fileContent, pos, eofPos)
-						tokenMem = lexer.addToMem(IntegerLiteralToken, *pos, tokenMem)
+						tokenMem = l.addToMem(IntegerLiteralToken, *pos, tokenMem)
 					} else if isNameStart(fileContent, *pos, eofPos) {
 						// var name index
 						*pos++
 						scanName(fileContent, pos, eofPos)
-						tokenMem = lexer.addToMem(Name, *pos, tokenMem)
+						tokenMem = l.addToMem(Name, *pos, tokenMem)
 					}
 					if fileContent[*pos] == ']' {
 						*pos++
-						tokenMem = lexer.addToMem(CloseBracketToken, *pos, tokenMem)
+						tokenMem = l.addToMem(CloseBracketToken, *pos, tokenMem)
 					} else {
 						// todo error!
 					}
 				} else if *pos+1 < eofPos && fileContent[*pos] == '-' && fileContent[*pos+1] == '>' {
 					*pos++
 					*pos++
-					tokenMem = lexer.addToMem(ArrowToken, *pos, tokenMem)
+					tokenMem = l.addToMem(ArrowToken, *pos, tokenMem)
 					if isNameStart(fileContent, *pos, eofPos) {
 						// var name index
 						*pos++
 						scanName(fileContent, pos, eofPos)
-						tokenMem = lexer.addToMem(Name, *pos, tokenMem)
+						tokenMem = l.addToMem(Name, *pos, tokenMem)
 					}
 				}
 
@@ -443,7 +443,7 @@ func scanTemplateAndSetTokenValue(lexer *LexerScanner, tokenMem []Token) []Token
 			} else if *pos+1 < eofPos && fileContent[*pos+1] == '{' {
 				// curly
 				var exit bool
-				if exit, tokenMem = saveCurlyExpression(lexer, DollarOpenBraceToken, pos, startPosition, tokenMem); exit {
+				if exit, tokenMem = saveCurlyExpression(l, DollarOpenBraceToken, pos, startPosition, tokenMem); exit {
 					return tokenMem
 				}
 				continue
@@ -453,7 +453,7 @@ func scanTemplateAndSetTokenValue(lexer *LexerScanner, tokenMem []Token) []Token
 		if char == '{' {
 			if *pos+1 < eofPos && fileContent[*pos+1] == '$' {
 				var exit bool
-				if exit, tokenMem = saveCurlyExpression(lexer, OpenBraceDollarToken, pos, startPosition, tokenMem); exit {
+				if exit, tokenMem = saveCurlyExpression(l, OpenBraceDollarToken, pos, startPosition, tokenMem); exit {
 					return tokenMem
 				}
 				continue

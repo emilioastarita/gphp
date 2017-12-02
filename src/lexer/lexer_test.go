@@ -18,6 +18,13 @@ func TestDoubleQuote2(t *testing.T) {
 	//`
 	//	DebugTokens(input)
 }
+func BenchmarkComplex(b *testing.B) {
+	data, _ := ioutil.ReadFile("cases/complex.php")
+	for n := 0; n < b.N; n++ {
+		GetTokens(string(data))
+	}
+}
+
 func TestCases(t *testing.T) {
 	suffix := ".tokens"
 	tokensLen := len(suffix)

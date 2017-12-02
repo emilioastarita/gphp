@@ -24,37 +24,55 @@ type LexerScanner struct {
 	content   []rune
 }
 
-func GetTokens(text string) []Token {
-	var tokens []Token
-	var tokenMem []Token
+type TokensStream struct {
+	Tokens []Token
+	Pos    int
+	EofPos int
 
-	lexer := LexerScanner{
+	tokenMem []Token
+	lexer    LexerScanner
+}
+
+func (s *TokensStream) Source(content string) {
+	s.lexer = LexerScanner{
 		LexStateHtmlSection,
 		0,
 		0,
 		0,
 		0,
-		[]rune(text),
+		[]rune(content),
 	}
-	lexer.eofPos = len(lexer.content)
+	s.lexer.eofPos = len(s.lexer.content)
+}
 
+func (s *TokensStream) CreateTokens() {
+	lexer := s.lexer
 	var token Token
 	for token.Kind != EndOfFileToken {
-		token, tokenMem = lexer.scan(nil)
+		token, s.tokenMem = lexer.scan(nil)
 		if token.Kind == -1 {
-			tokens = append(tokens, tokenMem...)
+			s.Tokens = append(s.Tokens, s.tokenMem...)
 		} else {
-			tokens = append(tokens, token)
+			s.Tokens = append(s.Tokens, token)
 			lexer.pos = token.fullStart + token.length
 		}
 	}
-	return tokens
+	s.Pos = 0
+	s.EofPos = len(s.Tokens) - 1
 }
 
-func DebugTokens(text string) {
-	tokens := GetTokens(text)
-	for _, token := range tokens {
-		b, _ := json.MarshalIndent(token.getShortForm([]rune(text)), "", "    ")
+func (s *TokensStream) ScanNext() Token {
+	if s.Pos >= s.EofPos {
+		return s.Tokens[s.EofPos]
+	}
+	pos := s.Pos
+	s.Pos++
+	return s.Tokens[pos]
+}
+
+func (s *TokensStream) Debug() {
+	for _, token := range s.Tokens {
+		b, _ := json.MarshalIndent(token.getShortForm([]rune(s.lexer.content)), "", "    ")
 		os.Stdout.Write(b)
 		println("")
 	}

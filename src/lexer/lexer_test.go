@@ -20,8 +20,11 @@ func TestDoubleQuote2(t *testing.T) {
 }
 func BenchmarkComplex(b *testing.B) {
 	data, _ := ioutil.ReadFile("cases/complex.php")
+	stream := TokensStream{}
+
 	for n := 0; n < b.N; n++ {
-		GetTokens(string(data))
+		stream.Source(string(data))
+		stream.CreateTokens()
 	}
 }
 
@@ -47,8 +50,11 @@ func TestCases(t *testing.T) {
 			resultCase, _ := ioutil.ReadFile(resultFile)
 			sourceFileName := resultFile[:len(resultFile)-tokensLen]
 			sourceCase, _ := ioutil.ReadFile(sourceFileName)
+			stream := TokensStream{}
+			stream.Source(string(sourceCase))
+			stream.CreateTokens()
+			tokens := stream.Tokens
 
-			tokens := GetTokens(string(sourceCase))
 			tokensLen := len(tokens)
 			var expectedTokens []TokenShortForm
 			json.Unmarshal(resultCase, &expectedTokens)
@@ -63,11 +69,11 @@ func TestCases(t *testing.T) {
 				actual := tokens[idx].getShortForm([]rune(string(sourceCase)))
 
 				if expected.Kind != actual.Kind {
-					DebugTokens(string(sourceCase))
+					stream.Debug()
 					t.Fatalf("Failed %s | %s: Expected Kind %s - Given Kind: %s", resultFile, sourceFileName, expected.Kind, actual.Kind)
 					return
 				} else if expected.TextLength != actual.TextLength {
-					DebugTokens(string(sourceCase))
+					stream.Debug()
 					t.Fatalf("Failed %s: Expected Length Kind %s (len %d) - Given Length Kind: %s (len %d)", resultFile, expected.Kind, expected.TextLength, actual.Kind, actual.TextLength)
 					return
 				}

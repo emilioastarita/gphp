@@ -8,9 +8,9 @@ import (
 )
 
 func TestDoubleQuote(t *testing.T) {
-	input := `<?php
-"{$pi['a'.'{b}']";`
-	DebugTokens(input)
+	//	input := `<?php
+	//"{$pi['a'.'{b}']";`
+	//	DebugTokens(input)
 }
 func TestDoubleQuote2(t *testing.T) {
 	//	input := ` <?php

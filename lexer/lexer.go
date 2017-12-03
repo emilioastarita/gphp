@@ -134,67 +134,67 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 
 		switch charCode {
 
-		case chCode_hash:
+		case '#':
 			scanSingleLineComment(l.content, &l.pos, l.eofPos, l.state)
 			continue
 
-		case chCode_space, chCode_tab, chCode_return, chCode_newline:
+		case ' ', '\t', '\r', '\n':
 			l.pos++
 			continue
 
-		case chCode_lessThan, // <=>, <=, <<=, <<, < // TODO heredoc and nowdoc
-			chCode_dot,         // ..., .=, . // TODO also applies to floating point literals
-			chCode_equals,      // ===, ==, =
-			chCode_greaterThan, // >>=, >>, >=, >
-			chCode_asterisk,    // **=, **, *=, *
-			chCode_exclamation, // !==, !=, !
+		case '<', // <=>, <=, <<=, <<, < // TODO heredoc and nowdoc
+			'.', // ..., .=, . // TODO also applies to floating point literals
+			'=', // ===, ==, =
+			'>', // >>=, >>, >=, >
+			'*', // **=, **, *=, *
+			'!', // !==, !=, !
 
 			// Potential 2-char compound
-			chCode_plus,      // +=, ++, +
-			chCode_minus,     // -= , --, ->, -
-			chCode_percent,   // %=, %
-			chCode_caret,     // ^=, ^
-			chCode_bar,       // |=, ||, |
-			chCode_ampersand, // &=, &&, &
-			chCode_question,  // ??, ?, end-tag
+			'+', // +=, ++, +
+			'-', // -= , --, ->, -
+			'%', // %=, %
+			'^', // ^=, ^
+			'|', // |=, ||, |
+			'&', // &=, &&, &
+			'?', // ??, ?, end-tag
 
-			chCode_colon, // : (TODO should this actually be treated as compound?)
-			chCode_comma, // , (TODO should this actually be treated as compound?)
+			':', // : (TODO should this actually be treated as compound?)
+			',', // , (TODO should this actually be treated as compound?)
 
 			// Non-compound
-			chCode_at, // @
-			chCode_openBracket,
-			chCode_closeBracket,
-			chCode_openParen,
-			chCode_closeParen,
-			chCode_openBrace,
-			chCode_closeBrace,
-			chCode_semicolon,
-			chCode_tilde,
-			chCode_backslash:
+			'@', // @
+			'[',
+			']',
+			'(',
+			')',
+			'{',
+			'}',
+			';',
+			'~',
+			'\\':
 
-			if charCode == chCode_dot && isDigitChar(l.content[l.pos+1]) {
+			if charCode == '.' && isDigitChar(l.content[l.pos+1]) {
 				kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
 				return l.createToken(kind), tokenMem
 			}
 
 			return scanOperatorOrPunctuactorToken(l), tokenMem
 
-		case chCode_slash:
+		case '/':
 			if isSingleLineCommentStart(l.content, l.pos, l.eofPos) {
 				scanSingleLineComment(l.content, &l.pos, l.eofPos, l.state)
 				continue
 			} else if isDelimitedCommentStart(l.content, l.pos, l.eofPos) {
 				scanDelimitedComment(l.content, &l.pos, l.eofPos)
 				continue
-			} else if l.content[l.pos+1] == chCode_equals {
+			} else if l.content[l.pos+1] == '=' {
 				l.pos += 2
 				return l.createToken(SlashEqualsToken), tokenMem
 			}
 			l.pos++
 			return l.createToken(SlashToken), tokenMem
 
-		case chCode_dollar:
+		case '$':
 			l.pos++
 			if isNameStart(l.content, l.pos, l.eofPos) {
 				scanName(l.content, &l.pos, l.eofPos)
@@ -203,18 +203,18 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 			return l.createToken(DollarToken), tokenMem
 		default:
 
-			if charCode == chCode_doubleQuote || charCode == chCode_singleQuote || charCode == chCodeb || charCode == chCodeB {
-				if charCode == chCode_doubleQuote || charCode == chCode_singleQuote {
+			if charCode == '"' || charCode == '\'' || charCode == 'b' || charCode == 'B' {
+				if charCode == '"' || charCode == '\'' {
 					quoteStart = true
 				}
 
-				if l.content[l.pos] == chCode_singleQuote ||
-					l.content[l.pos] == chCode_doubleQuote ||
-					(l.pos+1 < l.eofPos && (l.content[l.pos+1] == chCode_singleQuote || l.content[l.pos+1] == chCode_doubleQuote)) {
+				if l.content[l.pos] == '\'' ||
+					l.content[l.pos] == '"' ||
+					(l.pos+1 < l.eofPos && (l.content[l.pos+1] == '\'' || l.content[l.pos+1] == '"')) {
 					if quoteStart == false {
 						l.pos++
 					}
-					if l.content[l.pos] == chCode_doubleQuote {
+					if l.content[l.pos] == '"' {
 						tokenMem = scanTemplateAndSetTokenValue(l, tokenMem)
 						return l.createToken(-1), tokenMem
 					}
@@ -247,7 +247,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 
 func isScriptStartTag(text []rune, pos int, eofPos int) bool {
 
-	if text[pos] != chCode_lessThan {
+	if text[pos] != '<' {
 		return false
 	}
 
@@ -323,8 +323,8 @@ func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart 
 }
 
 func isDigitChar(at rune) bool {
-	return at >= chCode_0 &&
-		at <= chCode_9
+	return at >= '0' &&
+		at <= '9'
 }
 
 func isKeywordOrReservedWordStart(text string) bool {
@@ -339,7 +339,7 @@ func scanStringLiteral(text []rune, pos *int, eofPos int) bool {
 		if isSingleQuoteEscapeSequence(text, *pos) {
 			*pos += 2
 			continue
-		} else if text[*pos] == chCode_singleQuote {
+		} else if text[*pos] == '\'' {
 			*pos++
 			isTerminated = true
 			break
@@ -354,7 +354,7 @@ func scanStringLiteral(text []rune, pos *int, eofPos int) bool {
 
 func scanDelimitedComment(text []rune, pos *int, eofPos int) {
 	for *pos < eofPos {
-		if *pos+1 < eofPos && text[*pos] == chCode_asterisk && text[*pos+1] == chCode_slash {
+		if *pos+1 < eofPos && text[*pos] == '*' && text[*pos+1] == '/' {
 			*pos += 2
 			return
 		}
@@ -395,7 +395,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 
 		char := l.content[*pos]
 
-		if char == chCode_doubleQuote {
+		if char == '"' {
 
 			if len(tokenMem) == 0 {
 				*pos++
@@ -479,7 +479,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		}
 
 		// Escape character
-		if char == chCode_backslash {
+		if char == '\\' {
 			*pos++
 			scanDqEscapeSequence(fileContent, pos, eofPos)
 			continue
@@ -542,20 +542,20 @@ func scanDqEscapeSequence(text []rune, pos *int, eofPos int) {
 	char := text[*pos]
 	switch char {
 	// dq-simple-escape-sequence
-	case chCode_doubleQuote,
-		chCode_backslash,
-		chCode_dollar,
-		chCodee,
-		chCodef,
-		chCoder,
-		chCodet,
-		chCodev:
+	case '"',
+		'\\',
+		'$',
+		'e',
+		'f',
+		'r',
+		't',
+		'v':
 		*pos++
 		return
 
 		// dq-hexadecimal-escape-sequence
-	case chCodex,
-		chCodeX:
+	case 'x',
+		'X':
 		*pos++
 		for i := 0; i < 2; i++ {
 			if isHexadecimalDigit(text[*pos]) {
@@ -565,11 +565,11 @@ func scanDqEscapeSequence(text []rune, pos *int, eofPos int) {
 		return
 
 		// dq-unicode-escape-sequence
-	case chCodeu:
+	case 'u':
 		*pos++
-		if text[*pos] == chCode_openBrace {
+		if text[*pos] == '{' {
 			scanHexadecimalLiteral(text, pos, eofPos)
-			if text[*pos] == chCode_closeBrace {
+			if text[*pos] == '}' {
 				*pos++
 				return
 			}
@@ -629,40 +629,40 @@ func scanSingleLineComment(text []rune, pos *int, eofPos int, state LexerState) 
 	}
 }
 func isSingleLineCommentStart(text []rune, pos int, eofPos int) bool {
-	return pos+1 < eofPos && text[pos] == chCode_slash && text[pos+1] == chCode_slash
+	return pos+1 < eofPos && text[pos] == '/' && text[pos+1] == '/'
 }
 
 func isSingleQuoteEscapeSequence(text []rune, pos int) bool {
-	return text[pos] == chCode_backslash &&
-		(chCode_singleQuote == text[pos+1] || chCode_backslash == text[pos+1])
+	return text[pos] == '\\' &&
+		('\'' == text[pos+1] || '\\' == text[pos+1])
 }
 
 func isScriptEndTag(text []rune, pos int, state LexerState) bool {
-	if state != LexStateScriptSection && text[pos] == chCode_question && text[pos+1] == chCode_greaterThan {
+	if state != LexStateScriptSection && text[pos] == '?' && text[pos+1] == '>' {
 		return true
 	}
 	return false
 }
 
 func isNewLineChar(charCode rune) bool {
-	return charCode == chCode_newline || charCode == chCode_return
+	return charCode == '\n' || charCode == '\r'
 }
 
 func isOctalDigitChar(charCode rune) bool {
-	return charCode >= chCode_0 &&
-		charCode <= chCode_7
+	return charCode >= '0' &&
+		charCode <= '7'
 }
 
 func isBinaryDigitChar(charCode rune) bool {
-	return charCode == chCode_0 ||
-		charCode == chCode_1
+	return charCode == '0' ||
+		charCode == '1'
 }
 
 func isHexadecimalDigit(charCode rune) bool {
 	// 0  1  2  3  4  5  6  7  8  9
 	// a  b  c  d  e  f
 	// A  B  C  D  E  F
-	return charCode >= chCode_0 && charCode <= chCode_9 || charCode >= chCodea && charCode <= chCodef || charCode >= chCodeA && charCode <= chCodeF
+	return charCode >= '0' && charCode <= '9' || charCode >= 'a' && charCode <= 'f' || charCode >= 'A' && charCode <= 'F'
 }
 
 func isNameNonDigitChar(charCode rune) bool {
@@ -670,9 +670,9 @@ func isNameNonDigitChar(charCode rune) bool {
 }
 
 func isNonDigitChar(charCode rune) bool {
-	return (charCode >= chCodea && charCode <= chCodez) ||
-		(charCode >= chCodeA && charCode <= chCodeZ) ||
-		charCode == chCode_underscore
+	return (charCode >= 'a' && charCode <= 'z') ||
+		(charCode >= 'A' && charCode <= 'Z') ||
+		charCode == '_'
 }
 
 func isValidNameUnicodeChar(charCode rune) bool {
@@ -706,7 +706,7 @@ func scanFloatingPointLiteral(text []rune, pos *int, eofPos int) bool {
 		if isDigitChar(char) {
 			*pos++
 			continue
-		} else if char == chCode_dot {
+		} else if char == '.' {
 			if hasDot || expStart != -1 {
 				// Dot not valid, done scanning
 				break
@@ -774,7 +774,7 @@ func isNameStart(text []rune, pos int, eofPos int) bool {
 }
 
 func isDelimitedCommentStart(text []rune, pos int, eofPos int) bool {
-	return pos+1 < eofPos && text[pos] == chCode_slash && text[pos+1] == chCode_asterisk
+	return pos+1 < eofPos && text[pos] == '/' && text[pos+1] == '*'
 }
 
 func isHexadecimalLiteralStart(text []rune, pos int, eofPos int) bool {
@@ -809,7 +809,7 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 			// invalid hexadecimal literal
 		}
 		return HexadecimalLiteralToken
-	} else if isDigitChar(text[*pos]) || text[*pos] == chCode_dot {
+	} else if isDigitChar(text[*pos]) || text[*pos] == '.' {
 		// TODO throw error if there is no number past the dot.
 		prevPos = *pos
 		isValidFloatingLiteral := scanFloatingPointLiteral(text, pos, eofPos)

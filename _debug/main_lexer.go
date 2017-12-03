@@ -1,10 +1,9 @@
-package main
+package _debug
 
 import (
-	//"fmt"
 	"fmt"
-	"io/ioutil"
 	"github.com/emilioastarita/gphp/lexer"
+	"io/ioutil"
 	"os"
 	"path/filepath"
 )

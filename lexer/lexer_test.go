@@ -7,17 +7,6 @@ import (
 	"testing"
 )
 
-func TestDoubleQuote(t *testing.T) {
-	//	input := `<?php
-	//"{$pi['a'.'{b}']";`
-	//	DebugTokens(input)
-}
-func TestDoubleQuote2(t *testing.T) {
-	//	input := ` <?php
-	//"${x}"
-	//`
-	//	DebugTokens(input)
-}
 func BenchmarkComplex(b *testing.B) {
 	data, _ := ioutil.ReadFile("cases/complex.php")
 	stream := TokensStream{}

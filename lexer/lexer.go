@@ -47,13 +47,13 @@ func (s *TokensStream) Source(content string) {
 
 func (s *TokensStream) CreateTokens() {
 	lexer := s.lexer
-	var token Token
+	var token *Token = &Token{}
 	for token.Kind != EndOfFileToken {
 		token, s.tokenMem = lexer.scan(nil)
 		if token.Kind == -1 {
 			s.Tokens = append(s.Tokens, s.tokenMem...)
 		} else {
-			s.Tokens = append(s.Tokens, token)
+			s.Tokens = append(s.Tokens, *token)
 			lexer.pos = token.fullStart + token.length
 		}
 	}
@@ -90,22 +90,22 @@ func (l *LexerScanner) addToMemInPlace(kind TokenKind, pos int, length int, toke
 	return tokenMem
 }
 
-func (l *LexerScanner) createToken(kind TokenKind) Token {
-	return Token{kind, l.fullStart, l.start, l.pos - l.fullStart}
+func (l *LexerScanner) createToken(kind TokenKind) *Token {
+	return &Token{kind, l.fullStart, l.start, l.pos - l.fullStart}
 }
 
-func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
+func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 	l.fullStart = l.pos
 
 	for {
 		l.start = l.pos
 		// handling end of file
 		if l.pos >= l.eofPos {
-			var current Token
+			var current *Token
 			if l.state != LexStateHtmlSection {
 				current = l.createToken(EndOfFileToken)
 			} else {
-				current = Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}
+				current = &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}
 			}
 			l.state = LexStateScriptSection
 			if current.Kind == InlineHtml && l.pos-l.fullStart == 0 {
@@ -125,7 +125,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 			if l.pos-l.fullStart == 0 {
 				continue
 			}
-			return Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}, tokenMem
+			return &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}, tokenMem
 		}
 
 		charCode := l.content[l.pos]
@@ -205,14 +205,14 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 	}
 }
 
-func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (Token, []Token) {
+func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
 	if isNameStart(l.content, l.pos, l.eofPos) {
 		scanName(l.content, &l.pos, l.eofPos)
 		token := l.createToken(Name)
 		tokenText := token.getText(l.content)
 		lowerText := strings.ToLower(tokenText)
 		if isKeywordOrReservedWordStart(lowerText) {
-			token = getKeywordOrReservedWordTokenFromNameToken(&token, lowerText, l.content, &l.pos, l.eofPos)
+			token = getKeywordOrReservedWordTokenFromNameToken(token, lowerText, l.content, &l.pos, l.eofPos)
 		}
 		return token, tokenMem
 	} else if isDigitChar(l.content[l.pos]) {
@@ -223,7 +223,7 @@ func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (Token, []Token) {
 	return l.createToken(Unknown), tokenMem
 }
 
-func getStringQuoteTokens(l *LexerScanner, tokenMem []Token) (Token, []Token) {
+func getStringQuoteTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
 	if l.content[l.pos] == '"' {
 		tokenMem = scanTemplateAndSetTokenValue(l, tokenMem)
 		return l.createToken(-1), tokenMem
@@ -265,7 +265,7 @@ func isScriptStartTag(text []rune, pos int, eofPos int) bool {
 	return false
 }
 
-func scanOperatorOrPunctuactorToken(lexer *LexerScanner) Token {
+func scanOperatorOrPunctuactorToken(lexer *LexerScanner) *Token {
 	// TODO this can be made more performant, but we're going for simple/correct first.
 	// TODO
 	for tokenEnd := 6; tokenEnd >= 0; tokenEnd-- {
@@ -291,7 +291,7 @@ func scanOperatorOrPunctuactorToken(lexer *LexerScanner) Token {
 	panic("Unknown token Kind in OPERATORS_AND_PUNCTUATORS")
 }
 
-func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart string, text []rune, pos *int, eofPos int) Token {
+func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart string, text []rune, pos *int, eofPos int) *Token {
 
 	kind, ok := KEYWORDS[lowerKeywordStart]
 	if !ok {
@@ -309,7 +309,7 @@ func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart 
 		//	*pos = savedPos;
 		//}
 	}
-	return *token
+	return token
 }
 
 func isDigitChar(at rune) bool {
@@ -509,7 +509,7 @@ func saveCurlyExpression(lexer *LexerScanner, openToken TokenKind, pos *int, sta
 		if t.Kind == Name {
 			t.Kind = StringVarname
 		}
-		tokenMem = append(tokenMem, t)
+		tokenMem = append(tokenMem, *t)
 		if t.Kind == ScriptSectionEndTag {
 			return true, tokenMem
 		}

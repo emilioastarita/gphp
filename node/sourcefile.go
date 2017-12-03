@@ -6,7 +6,7 @@ type sourceFile struct {
 	node
 	fileContents   string
 	uri            string
-	statementList  []Node
+	statementList  []*Node
 	endOfFileToken lexer.Token
 	childNames     [2]string
 }
@@ -20,7 +20,11 @@ func NewSourceFile(fileContents string, uri string) *sourceFile {
 }
 
 func (s *sourceFile) Add(n Node) {
-	s.statementList = append(s.statementList, n)
+	s.statementList = append(s.statementList, &n)
+}
+
+func (s *sourceFile) Merge(nodes []*Node) {
+	s.statementList = append(s.statementList, nodes...)
 }
 
 func (s *sourceFile) Parent() *Node {

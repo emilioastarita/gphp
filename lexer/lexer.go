@@ -54,7 +54,7 @@ func (s *TokensStream) CreateTokens() {
 			s.Tokens = append(s.Tokens, s.tokenMem...)
 		} else {
 			s.Tokens = append(s.Tokens, *token)
-			lexer.pos = token.fullStart + token.length
+			lexer.pos = token.FullStart + token.length
 		}
 	}
 	s.Pos = 0
@@ -304,7 +304,7 @@ func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart 
 		//lowerText = strings.ToLower(nextToken.getFullText(text))
 		//if (preg_replace('/\s+/', '', strtolower($nextToken->getFullText($text))) == "from") {
 		//	token.Kind = YieldFromKeyword;
-		//	token.length = *pos - token.fullStart;
+		//	token.length = *pos - token.FullStart;
 		//} else {
 		//	*pos = savedPos;
 		//}

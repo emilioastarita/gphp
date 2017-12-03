@@ -128,8 +128,6 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 			return Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}, tokenMem
 		}
 
-		quoteStart := false
-
 		charCode := l.content[l.pos]
 
 		switch charCode {
@@ -162,16 +160,9 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 			',', // , (TODO should this actually be treated as compound?)
 
 			// Non-compound
-			'@', // @
-			'[',
-			']',
-			'(',
-			')',
-			'{',
-			'}',
-			';',
-			'~',
-			'\\':
+			'@', '[', ']', '(',
+			')', '{', '}', ';',
+			'~', '\\':
 
 			if charCode == '.' && isDigitChar(l.content[l.pos+1]) {
 				kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
@@ -193,7 +184,6 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 			}
 			l.pos++
 			return l.createToken(SlashToken), tokenMem
-
 		case '$':
 			l.pos++
 			if isNameStart(l.content, l.pos, l.eofPos) {
@@ -201,48 +191,48 @@ func (l *LexerScanner) scan(tokenMem []Token) (Token, []Token) {
 				return l.createToken(VariableName), tokenMem
 			}
 			return l.createToken(DollarToken), tokenMem
+		case '"', '\'':
+			return getStringQuoteTokens(l, tokenMem)
+		case 'b', 'B':
+			if l.pos+1 < l.eofPos && (l.content[l.pos+1] == '\'' || l.content[l.pos+1] == '"') {
+				l.pos++
+				return getStringQuoteTokens(l, tokenMem)
+			}
+			return getNameOrDigitTokens(l, tokenMem)
 		default:
-
-			if charCode == '"' || charCode == '\'' || charCode == 'b' || charCode == 'B' {
-				if charCode == '"' || charCode == '\'' {
-					quoteStart = true
-				}
-
-				if l.content[l.pos] == '\'' ||
-					l.content[l.pos] == '"' ||
-					(l.pos+1 < l.eofPos && (l.content[l.pos+1] == '\'' || l.content[l.pos+1] == '"')) {
-					if quoteStart == false {
-						l.pos++
-					}
-					if l.content[l.pos] == '"' {
-						tokenMem = scanTemplateAndSetTokenValue(l, tokenMem)
-						return l.createToken(-1), tokenMem
-					}
-					l.pos++
-					if scanStringLiteral(l.content, &l.pos, l.eofPos) {
-						return l.createToken(StringLiteralToken), tokenMem
-					}
-					return l.createToken(EncapsedAndWhitespace), tokenMem
-				}
-			}
-
-			if isNameStart(l.content, l.pos, l.eofPos) {
-				scanName(l.content, &l.pos, l.eofPos)
-				token := l.createToken(Name)
-				tokenText := token.getText(l.content)
-				lowerText := strings.ToLower(tokenText)
-				if isKeywordOrReservedWordStart(lowerText) {
-					token = getKeywordOrReservedWordTokenFromNameToken(&token, lowerText, l.content, &l.pos, l.eofPos)
-				}
-				return token, tokenMem
-			} else if isDigitChar(l.content[l.pos]) {
-				kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
-				return l.createToken(kind), tokenMem
-			}
-			l.pos++
-			return l.createToken(Unknown), tokenMem
+			return getNameOrDigitTokens(l, tokenMem)
 		}
 	}
+}
+
+func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (Token, []Token) {
+	if isNameStart(l.content, l.pos, l.eofPos) {
+		scanName(l.content, &l.pos, l.eofPos)
+		token := l.createToken(Name)
+		tokenText := token.getText(l.content)
+		lowerText := strings.ToLower(tokenText)
+		if isKeywordOrReservedWordStart(lowerText) {
+			token = getKeywordOrReservedWordTokenFromNameToken(&token, lowerText, l.content, &l.pos, l.eofPos)
+		}
+		return token, tokenMem
+	} else if isDigitChar(l.content[l.pos]) {
+		kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
+		return l.createToken(kind), tokenMem
+	}
+	l.pos++
+	return l.createToken(Unknown), tokenMem
+}
+
+func getStringQuoteTokens(l *LexerScanner, tokenMem []Token) (Token, []Token) {
+	if l.content[l.pos] == '"' {
+		tokenMem = scanTemplateAndSetTokenValue(l, tokenMem)
+		return l.createToken(-1), tokenMem
+	}
+	l.pos++
+	if scanStringLiteral(l.content, &l.pos, l.eofPos) {
+		return l.createToken(StringLiteralToken), tokenMem
+	}
+	return l.createToken(EncapsedAndWhitespace), tokenMem
 }
 
 func isScriptStartTag(text []rune, pos int, eofPos int) bool {
@@ -442,8 +432,6 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 					if fileContent[*pos] == ']' {
 						*pos++
 						tokenMem = l.addToMem(CloseBracketToken, *pos, tokenMem)
-					} else {
-						// todo error!
 					}
 				} else if *pos+1 < eofPos && fileContent[*pos] == '-' && fileContent[*pos+1] == '>' {
 					*pos++
@@ -487,8 +475,6 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 
 		*pos++
 	}
-
-	// TODO throw error
 	return tokenMem
 }
 

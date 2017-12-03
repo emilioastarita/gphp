@@ -4,7 +4,7 @@ import (
 	//"fmt"
 	"fmt"
 	"io/ioutil"
-	"lexer"
+	"github.com/emilioastarita/gphp/lexer"
 	"os"
 	"path/filepath"
 )
@@ -40,8 +40,11 @@ func parseFile(file string) {
 		return
 	}
 	//fmt.Println("Data", string(dat));
-	tokens := lexer.GetTokens(string(dat))
-	fmt.Println("File: ", file, "Tokens: ", len(tokens))
+	stream := lexer.TokensStream{}
+	stream.Source(string(dat))
+	stream.CreateTokens()
+
+	fmt.Println("File: ", file, "Tokens: ", len(stream.Tokens))
 	//for key, token := range tokens {
 	//	fmt.Println(key, token)
 	//}

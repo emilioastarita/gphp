@@ -1,7 +1,7 @@
 package parser
 
 import (
-	"lexer"
+	"github.com/emilioastarita/gphp/lexer"
 )
 
 type Parser struct {

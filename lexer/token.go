@@ -5,6 +5,7 @@ type Token struct {
 	FullStart int
 	start     int
 	length    int
+	missing   bool
 }
 
 type TokenShortForm struct {

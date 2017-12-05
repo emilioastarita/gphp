@@ -422,7 +422,8 @@ func (p *Parser) checkToken(kind lexer.TokenKind) bool {
 }
 
 func (p *Parser) parseUnaryOpExpression(parent ast.Node) ast.Node {
-	st := ast.UnaryOpExpression{P: &parent}
+	st := ast.UnaryOpExpression{}
+	st.P = &parent
 	st.Operator = p.eat(lexer.PlusToken, lexer.MinusToken, lexer.ExclamationToken, lexer.TildeToken)
 	operand := p.parseUnaryExpressionOrHigher(st)
 	st.Operand = &operand
@@ -449,7 +450,16 @@ func (p *Parser) parseErrorControlExpression(parent ast.Node) ast.Node {
 	errorExpr.Operand = &operand
 	return errorExpr
 }
-func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
 
+func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
+	n := ast.PrefixUpdateExpression{}
+	n.P = &parent
+	n.IncrementOrDecrementOperator = p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken)
+	n.Operand = p.parsePrimaryExpression(n)
+	switch n.Operand.(type) {
+	case []ast.Variable:
+		n.Operand = p.parsePostfixExpressionRest(n.Operand, false)
+	}
+	return n;
 }
 

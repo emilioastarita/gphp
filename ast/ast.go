@@ -4,7 +4,14 @@ import "github.com/emilioastarita/gphp/lexer"
 
 
 // node
-type Node interface {}
+type Node interface {
+	Parent() *Node
+}
+
+type CNode struct {
+	Node
+	P *Node
+}
 
 type SourceFile struct {
 	P              *Node
@@ -23,12 +30,12 @@ func (s *SourceFile) Merge(nodes []*Node) {
 }
 
 type Missing struct {
-	P *Node
+	CNode
 	Token *lexer.Token
 }
 
 type AnonymousFunctionUseClause struct {
-	P *Node
+	CNode
 	UseKeyword          *lexer.Token
 	OpenParen           *lexer.Token
 	CloseParen          *lexer.Token
@@ -36,7 +43,7 @@ type AnonymousFunctionUseClause struct {
 }
 
 type ArrayElement struct {
-	P *Node
+	CNode
 	ByRef        *lexer.Token
 	ArrowToken   *lexer.Token
 	ElementKey   *Node
@@ -44,7 +51,7 @@ type ArrayElement struct {
 }
 
 type CaseStatement struct {
-	P *Node
+	CNode
 	CaseKeyword            *lexer.Token
 	Expression             *Node
 	StatementList          []*Node
@@ -52,7 +59,7 @@ type CaseStatement struct {
 }
 
 type CatchClause struct {
-	P *Node
+	CNode
 
 	Catch             *lexer.Token
 	OpenParen         *lexer.Token
@@ -63,7 +70,7 @@ type CatchClause struct {
 }
 
 type ClassConstDeclaration struct {
-	P *Node
+	CNode
 	Modifiers     []*lexer.Token
 	ConstKeyword  *lexer.Token
 	Semicolon     *lexer.Token
@@ -71,14 +78,14 @@ type ClassConstDeclaration struct {
 }
 
 type ClassBaseClause struct {
-	P *Node
+	CNode
 	ExtendsKeyword *lexer.Token
 	BaseClass      *Node
 }
 
 
 type ClassInterfaceClause struct {
-	P *Node
+	CNode
 	ImplementsKeyword *lexer.Token
 	InterfaceNameList      *Node
 }
@@ -86,14 +93,14 @@ type ClassInterfaceClause struct {
 // statements
 
 type CompoundStatement struct {
-	P *Node
+	CNode
 	OpenBrace  *lexer.Token
 	Statements []*Node
 	CloseBrace *lexer.Token
 }
 
 type IfStatement struct {
-	P *Node
+	CNode
 	IfKeyword     *lexer.Token
 	OpenParen     *lexer.Token
 	Expression    *Node
@@ -107,7 +114,7 @@ type IfStatement struct {
 }
 
 type InlineHtml struct {
-	P *Node
+	CNode
 	ScriptSectionEndTag   *lexer.Token
 	Text                  *lexer.Token
 	ScriptSectionStartTag *lexer.Token
@@ -115,7 +122,7 @@ type InlineHtml struct {
 
 
 type NamedLabelStatement struct {
-	P *Node
+	CNode
 	Name       *lexer.Token
 	Colon      *lexer.Token
 	Statement  *Node
@@ -126,7 +133,7 @@ type NamedLabelStatement struct {
 
 
 type UnaryOpExpression struct {
-	P *Node
+	CNode
 	Operator   *lexer.Token
 	Operand    *Node
 }
@@ -137,15 +144,18 @@ type ErrorControlExpression struct {
 
 type PrefixUpdateExpression struct {
 	UnaryOpExpression
-	incrementOrDecrementOperator *lexer.Token
-	operand *Node
+	IncrementOrDecrementOperator *lexer.Token
+	Operand *Variable
 }
 
 type Variable struct {
-	P *Node
+	CNode
 	dollar *lexer.Token
 	name *Node
 	childNames [2]string
 }
 
-// Node Interface
+// Implements Interface
+func (n *CNode) Parent() *Node {
+	return n.P
+}

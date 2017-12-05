@@ -2,7 +2,7 @@ package parser
 
 import (
 	"github.com/emilioastarita/gphp/lexer"
-	"github.com/emilioastarita/gphp/node"
+	"github.com/emilioastarita/gphp/ast"
 )
 
 type Parser struct {
@@ -33,7 +33,7 @@ func (p *Parser) ParseSourceFile(source string, uri string) {
 	p.stream.Source(source)
 	p.stream.CreateTokens()
 	p.reset()
-	sourceFile := node.NewSourceFile(source, uri)
+	sourceFile := ast.SourceFile{P:nil, FileContents: source, Uri: uri}
 	if p.token.Kind != lexer.EndOfFileToken {
 		sourceFile.Add(p.parseInlineHtml(sourceFile))
 	}
@@ -49,11 +49,11 @@ func (p *Parser) advanceToken() {
 	p.token = p.stream.ScanNext()
 }
 
-func (p *Parser) parseInlineHtml(source node.Node) node.Node {
+func (p *Parser) parseInlineHtml(source ast.Node) ast.Node {
 	end := p.eatOptional1(lexer.ScriptSectionEndTag)
 	text := p.eatOptional1(lexer.InlineHtml)
 	start := p.eatOptional1(lexer.ScriptSectionStartTag)
-	n := node.NewInlineHtml(&source, end, text, start)
+	n := ast.InlineHtml{&source, end, text, start}
 	return n
 }
 
@@ -66,19 +66,19 @@ func (p *Parser) eatOptional1(kind lexer.TokenKind) *lexer.Token {
 	return nil
 }
 
-func (p *Parser) parseList(parentNode node.Node, context ParseContext) []*node.Node {
+func (p *Parser) parseList(parentNode ast.Node, context ParseContext) []*ast.Node {
 	savedCurrentParseContext := p.currentParseContext
 	p.currentParseContext |= 1 << context
 	parseListElementFn := p.getParseListElementFn(context)
 }
 
-func (p *Parser) parseExpressionFn() func(*node.Node) node.Node {
-	return func(parent *node.Node) node.Node {
+func (p *Parser) parseExpressionFn() func(*ast.Node) ast.Node {
+	return func(parent *ast.Node) ast.Node {
 		return p.parseBinaryExpressionOrHigher(0, parent)
 	}
 }
 
-func (p *Parser) parseUnaryExpressionOrHigher(parentNode node.Node) node.Node {
+func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 	token := p.token
 	switch token.Kind {
 	case lexer.PlusToken,
@@ -162,11 +162,11 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode node.Node) node.Node {
 }
 }
 
-func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode *node.Node) node.Node {
+func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode *ast.Node) ast.Node {
 	leftOperand := p.parseUnaryExpressionOrHigher(parentNode);
 }
 
-func (p *Parser) getParseListElementFn(context ParseContext) func(*node.Node) node.Node {
+func (p *Parser) getParseListElementFn(context ParseContext) func(*ast.Node) ast.Node {
 	switch context {
 	case SourceElements,
 		BlockStatements,
@@ -193,8 +193,8 @@ func (p *Parser) getParseListElementFn(context ParseContext) func(*node.Node) no
 	}
 }
 
-func (p *Parser) parseStatementFn() func(*node.Node) node.Node {
-	return func(parentNode *node.Node) node.Node {
+func (p *Parser) parseStatementFn() func(*ast.Node) ast.Node {
+	return func(parentNode *ast.Node) ast.Node {
 		token := p.token
 		switch token.Kind {
 		// compound-statement
@@ -256,7 +256,7 @@ func (p *Parser) parseStatementFn() func(*node.Node) node.Node {
 		case lexer.AbstractKeyword:
 			if !p.lookahead(lexer.ClassKeyword) {
 				p.advanceToken()
-				return node.newSkippedToken(token)
+				return ast.newSkippedToken(token)
 			}
 		case lexer.ClassKeyword:
 			return p.parseClassDeclaration(parentNode)
@@ -309,14 +309,14 @@ func (p *Parser) parseStatementFn() func(*node.Node) node.Node {
 	}
 }
 
-func (p *Parser) parseStatement(parentNode node.Node) *node.Node {
+func (p *Parser) parseStatement(parentNode ast.Node) *ast.Node {
 	fn := p.parseStatementFn()
 	st := fn(&parentNode)
 	return &st
 }
 
-func (p *Parser) parseIfStatement(parentNode *node.Node) node.Node {
-	st := node.NewIfStatement(parentNode)
+func (p *Parser) parseIfStatement(parentNode *ast.Node) ast.Node {
+	st := ast.IfStatement{P: parentNode}
 	st.IfKeyword = p.eat1(lexer.IfKeyword);
 	st.OpenParen = p.eat1(lexer.OpenParenToken);
 	exp := p.parseExpression(st, false);
@@ -327,7 +327,7 @@ func (p *Parser) parseIfStatement(parentNode *node.Node) node.Node {
 		st.Statements = p.parseList(st, IfClause2Elements);
 	} else {
 		// @todo
-		st.Statements = []*node.Node{p.parseStatement(st)};
+		st.Statements = []*ast.Node{p.parseStatement(st)};
 	}
 	st.ElseIfClauses = nil;
 	for (p.checkToken(lexer.ElseIfKeyword)) {
@@ -346,16 +346,16 @@ func (p *Parser) parseIfStatement(parentNode *node.Node) node.Node {
 	return st;
 }
 
-func (p *Parser) parseNamedLabelStatement(parentNode *node.Node) node.Node {
-	st := node.NewNamedLabelStatement(parentNode)
+func (p *Parser) parseNamedLabelStatement(parentNode *ast.Node) ast.Node {
+	st := ast.NamedLabelStatement{ P: parentNode}
 	st.Name = p.eat1(lexer.Name)
 	st.Colon = p.eat1(lexer.ColonToken)
 	st.Statement = p.parseStatement(st)
 	return st
 }
 
-func (p *Parser) parseCompoundStatement(parentNode *node.Node) node.Node {
-	st := node.NewCompoundStatement(parentNode)
+func (p *Parser) parseCompoundStatement(parentNode *ast.Node) ast.Node {
+	st := ast.CompoundStatement{ P: parentNode }
 	st.OpenBrace = p.eat1(lexer.OpenBraceToken)
 	st.Statements = p.parseList(st, BlockStatements)
 	st.CloseBrace = p.eat1(lexer.CloseBraceToken)
@@ -402,12 +402,11 @@ func (p *Parser) eat1(kind lexer.TokenKind) *lexer.Token {
 	return t
 }
 
-func (p *Parser) parseExpression(parentNode node.Node, force bool) node.Node {
+func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 	token := p.token
-	if (token.Kind == lexer.EndOfFileToken) {
+	if token.Kind == lexer.EndOfFileToken {
 		t := &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
-		missing := node.NewMissing(&parentNode)
-		missing.Token = t;
+		missing := &ast.Missing{ &parentNode, t }
 		return missing;
 	}
 	fnExpression := p.parseExpressionFn()
@@ -422,8 +421,8 @@ func (p *Parser) checkToken(kind lexer.TokenKind) bool {
 	return p.token.Kind == kind
 }
 
-func (p *Parser) parseUnaryOpExpression(parent node.Node) node.Node {
-	st := node.NewUnaryOpExpression(&parent)
+func (p *Parser) parseUnaryOpExpression(parent ast.Node) ast.Node {
+	st := ast.UnaryOpExpression{P: &parent}
 	st.Operator = p.eat(lexer.PlusToken, lexer.MinusToken, lexer.ExclamationToken, lexer.TildeToken)
 	operand := p.parseUnaryExpressionOrHigher(st)
 	st.Operand = &operand
@@ -442,11 +441,15 @@ func (p *Parser) eat(kinds ... lexer.TokenKind) *lexer.Token {
 	return t;
 }
 
-func (p *Parser) parseErrorControlExpression(parent node.Node) node.Node {
-	errorExpr := node.NewErrorControlExpression(&parent)
+func (p *Parser) parseErrorControlExpression(parent ast.Node) ast.Node {
+	errorExpr := ast.ErrorControlExpression{}
+	errorExpr.P = &parent
 	errorExpr.Operator = p.eat1(lexer.AtSymbolToken)
 	operand := p.parseUnaryExpressionOrHigher(errorExpr)
 	errorExpr.Operand = &operand
 	return errorExpr
+}
+func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
+
 }
 

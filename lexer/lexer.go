@@ -79,19 +79,19 @@ func (s *TokensStream) Debug() {
 }
 
 func (l *LexerScanner) addToMem(kind TokenKind, pos int, tokenMem []Token) []Token {
-	tokenMem = append(tokenMem, Token{kind, l.fullStart, l.start, pos - l.fullStart})
+	tokenMem = append(tokenMem, Token{kind, l.fullStart, l.start, pos - l.fullStart, false})
 	l.fullStart = pos
 	l.start = pos
 	return tokenMem
 }
 
 func (l *LexerScanner) addToMemInPlace(kind TokenKind, pos int, length int, tokenMem []Token) []Token {
-	tokenMem = append(tokenMem, Token{kind, pos, pos, length})
+	tokenMem = append(tokenMem, Token{kind, pos, pos, length, false})
 	return tokenMem
 }
 
 func (l *LexerScanner) createToken(kind TokenKind) *Token {
-	return &Token{kind, l.fullStart, l.start, l.pos - l.fullStart}
+	return &Token{kind, l.fullStart, l.start, l.pos - l.fullStart, false}
 }
 
 func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
@@ -105,7 +105,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 			if l.state != LexStateHtmlSection {
 				current = l.createToken(EndOfFileToken)
 			} else {
-				current = &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}
+				current = &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart, false}
 			}
 			l.state = LexStateScriptSection
 			if current.Kind == InlineHtml && l.pos-l.fullStart == 0 {
@@ -125,7 +125,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 			if l.pos-l.fullStart == 0 {
 				continue
 			}
-			return &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart}, tokenMem
+			return &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart, false}, tokenMem
 		}
 
 		charCode := l.content[l.pos]
@@ -374,9 +374,9 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		if *pos >= eofPos {
 			// UNTERMINATED, report error
 			if len(tokenMem) == 0 {
-				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1})
+				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, false})
 				l.fullStart = l.start
-				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart})
+				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, false})
 				return tokenMem
 			} else {
 				return tokenMem

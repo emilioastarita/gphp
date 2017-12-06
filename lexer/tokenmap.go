@@ -1,5 +1,6 @@
 package lexer
 
+
 var OPERATORS_AND_PUNCTUATORS = map[string]TokenKind{
 	"[":  OpenBracketToken,
 	"]":  CloseBracketToken,
@@ -163,4 +164,18 @@ var KEYWORDS = map[string]TokenKind{
 	"xor":          XorKeyword,
 	"yield":        YieldKeyword,
 	"yield from":   YieldFromKeyword,
+}
+
+
+func valueInMap(v TokenKind, m map[string]TokenKind) bool {
+	for _, value := range m {
+		if (v == value) {
+			return true
+		}
+	}
+	return false
+}
+
+func IsReserverdWordToken(v TokenKind) bool {
+	return valueInMap(v, RESERVED_WORDS)
 }

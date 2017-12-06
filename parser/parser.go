@@ -3,12 +3,14 @@ package parser
 import (
 	"github.com/emilioastarita/gphp/lexer"
 	"github.com/emilioastarita/gphp/ast"
+	"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
 type Parser struct {
 	stream              lexer.TokensStream
 	token               lexer.Token
 	currentParseContext ParseContext
+	isParsingObjectCreationExpression bool
 }
 
 type ParseContext uint
@@ -53,7 +55,11 @@ func (p *Parser) parseInlineHtml(source ast.Node) ast.Node {
 	end := p.eatOptional1(lexer.ScriptSectionEndTag)
 	text := p.eatOptional1(lexer.InlineHtml)
 	start := p.eatOptional1(lexer.ScriptSectionStartTag)
-	n := ast.InlineHtml{&source, end, text, start}
+	n := ast.InlineHtml{}
+	n.P = &source
+	n.ScriptSectionEndTag = end
+	n.ScriptSectionStartTag = start
+	n.Text = text
 	return n
 }
 
@@ -72,10 +78,49 @@ func (p *Parser) parseList(parentNode ast.Node, context ParseContext) []*ast.Nod
 	parseListElementFn := p.getParseListElementFn(context)
 }
 
+
+
+func (p *Parser) parseClassElementFn() func(*ast.Node) ast.Node {
+	return func(parentNode *ast.Node) ast.Node {
+		modifiers := p.parseModifiers();
+
+		token := p.token;
+		switch (token.Kind) {
+		case lexer.ConstKeyword:
+			return p.parseClassConstDeclaration(parentNode, modifiers);
+
+		case lexer.FunctionKeyword:
+			return p.parseMethodDeclaration(parentNode, modifiers);
+
+		case lexer.VariableName:
+			return p.parsePropertyDeclaration(parentNode, modifiers);
+
+		case lexer.UseKeyword:
+			return p.parseTraitUseClause(parentNode);
+
+		default:
+			missingClassMemberDeclaration := ast.MissingMemberDeclaration{};
+			missingClassMemberDeclaration.P = parentNode;
+			missingClassMemberDeclaration.Modifiers = modifiers;
+			return missingClassMemberDeclaration;
+		}
+	};
+}
 func (p *Parser) parseExpressionFn() func(*ast.Node) ast.Node {
 	return func(parent *ast.Node) ast.Node {
 		return p.parseBinaryExpressionOrHigher(0, parent)
 	}
+}
+
+func (p *Parser) parseModifiers() []lexer.Token {
+	modifiers := []lexer.Token{}
+	token := p.token;
+	for (p.isModifier(token)) {
+		modifiers = append(modifiers, token)
+		p.advanceToken();
+		token = p.token;
+	}
+	return modifiers;
 }
 
 func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
@@ -158,13 +203,159 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 	}
 
 	expression := p.parsePrimaryExpression(parentNode);
-	return p.parsePostfixExpressionRest(expression);
-}
+	return p.parsePostfixExpressionRest(expression, true);
+
 }
 
 func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode *ast.Node) ast.Node {
-	leftOperand := p.parseUnaryExpressionOrHigher(parentNode);
+	panic("Not implemented")
 }
+
+func (p *Parser)  parseSimpleVariableFn() func(ast.Node) ast.Node {
+	return func (parentNode ast.Node) ast.Node {
+		token := p.token;
+		variable := ast.Variable{};
+		variable.P = &parentNode;
+
+		if (token.Kind == lexer.DollarToken) {
+			variable.Dollar = p.eat1(lexer.DollarToken);
+			token = p.token;
+
+			if (token.Kind == lexer.OpenBraceToken) {
+				variable.Name = p.parseBracedExpression(variable)
+			} else {
+				variable.Name = p.parseSimpleVariable(variable)
+			}
+
+		} else if (token.Kind == lexer.VariableName || token.Kind == lexer.StringVarname) {
+			// TODO consider splitting into dollar and name.
+			// StringVarname is the variable name without , used in a template string e.g. `"{foo}"`
+			tokName := p.eat(lexer.VariableName, lexer.StringVarname);
+			tokNode := ast.TokenNode{}
+			tokNode.Token = tokName;
+			variable.Name = tokNode
+		} else {
+			t := &lexer.Token{lexer.VariableName, token.FullStart, token.FullStart, 0, true}
+			missing := ast.Missing{}
+			missing.Token = t;
+			variable.Name = missing
+		}
+
+		return variable;
+	};
+}
+
+func (p *Parser)  parseBracedExpression(parentNode ast.Node) ast.Node {
+	bracedExpression := ast.BracedExpression{};
+	bracedExpression.P = &parentNode;
+	bracedExpression.OpenBrace = p.eat1(lexer.OpenBraceToken);
+	bracedExpression.Expression = p.parseExpression(bracedExpression, false);
+	bracedExpression.CloseBrace = p.eat1(lexer.CloseBraceToken);
+	return bracedExpression;
+}
+
+func (p *Parser) isExpressionStartFn() func(*lexer.Token) bool {
+
+	return func(token *lexer.Token) bool {
+		switch (token.Kind) {
+		// Script Inclusion Expression
+		case lexer.RequireKeyword,
+		lexer.RequireOnceKeyword,
+		lexer.IncludeKeyword,
+		lexer.IncludeOnceKeyword,
+
+			// yield-expression
+		lexer.YieldKeyword,
+		lexer.YieldFromKeyword,
+
+			// object-creation-expression
+		 lexer.NewKeyword,
+		lexer.CloneKeyword:
+			return true;
+
+			// unary-op-expression
+		case lexer.PlusToken,
+		lexer.MinusToken,
+		lexer.ExclamationToken,
+		lexer.TildeToken,
+
+			// error-control-expression
+		lexer.AtSymbolToken,
+
+			// prefix-increment-expression
+		lexer.PlusPlusToken,
+			// prefix-decrement-expression
+		lexer.MinusMinusToken:
+			return true;
+
+			// variable-name
+		case lexer.VariableName,
+			lexer.DollarToken:
+			return true;
+
+			// qualified-name
+		case lexer.Name,
+			lexer.BackslashToken:
+			return true;
+		case lexer.NamespaceKeyword:
+			// TODO currently only supports qualified-names, but eventually parse namespace declarations
+			return p.checkToken(lexer.BackslashToken);
+
+			// literal
+		case // TODO merge dec, oct, hex, bin, float . NumericLiteral
+			lexer.OctalLiteralToken,
+			lexer.HexadecimalLiteralToken,
+			lexer.BinaryLiteralToken,
+			lexer.FloatingLiteralToken,
+			lexer.InvalidOctalLiteralToken,
+			lexer.InvalidHexadecimalLiteral,
+			lexer.InvalidBinaryLiteral,
+			lexer.IntegerLiteralToken,
+
+			lexer.StringLiteralToken,
+
+			lexer.SingleQuoteToken,
+			lexer.DoubleQuoteToken,
+			lexer.HeredocStart,
+			lexer.BacktickToken,
+
+			// array-creation-expression
+		lexer.ArrayKeyword,
+		lexer.OpenBracketToken,
+
+			// intrinsic-construct
+		lexer.EchoKeyword,
+		lexer.ListKeyword,
+		lexer.UnsetKeyword,
+
+			// intrinsic-operator
+		lexer.EmptyKeyword,
+		lexer.EvalKeyword,
+		lexer.ExitKeyword,
+		lexer.DieKeyword,
+		lexer.IsSetKeyword,
+		lexer.PrintKeyword,
+
+			// ( expression )
+		lexer.OpenParenToken,
+		lexer.ArrayCastToken,
+		lexer.BoolCastToken,
+		lexer.DoubleCastToken,
+		lexer.IntCastToken,
+		lexer.ObjectCastToken,
+		lexer.StringCastToken,
+		lexer.UnsetCastToken,
+
+			// anonymous-function-creation-expression
+		lexer.StaticKeyword,
+		lexer.FunctionKeyword:
+			return true;
+		}
+		return lexer.IsReserverdWordToken(token.Kind);
+	};
+}
+
+
 
 func (p *Parser) getParseListElementFn(context ParseContext) func(*ast.Node) ast.Node {
 	switch context {
@@ -406,7 +597,9 @@ func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 	token := p.token
 	if token.Kind == lexer.EndOfFileToken {
 		t := &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
-		missing := &ast.Missing{ &parentNode, t }
+		missing := &ast.Missing{}
+		missing.P = &parentNode;
+		missing.Token = t
 		return missing;
 	}
 	fnExpression := p.parseExpressionFn()
@@ -455,11 +648,567 @@ func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
 	n := ast.PrefixUpdateExpression{}
 	n.P = &parent
 	n.IncrementOrDecrementOperator = p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken)
-	n.Operand = p.parsePrimaryExpression(n)
+	op := p.parsePrimaryExpression(n)
+	n.Operand = op
 	switch n.Operand.(type) {
 	case []ast.Variable:
 		n.Operand = p.parsePostfixExpressionRest(n.Operand, false)
 	}
 	return n;
 }
+
+
+
+
+func (p *Parser)  parsePostfixExpressionRest(expression ast.Node, allowUpdateExpression bool) ast.Node {
+	tokenKind := p.token.Kind;
+
+	// `--a++` is invalid
+	if (allowUpdateExpression &&
+		(tokenKind == lexer.PlusPlusToken ||
+			tokenKind == lexer.MinusMinusToken)) {
+		return p.parseParsePostfixUpdateExpression(expression);
+	}
+
+	retExpr := true;
+	switch expression.(type) {
+	case ast.Variable,
+		 ast.ParenthesizedExpression,
+		 ast.QualifiedName,
+		 ast.CallExpression,
+		 ast.MemberAccessExpression,
+		 ast.SubscriptExpression,
+		 ast.ScopedPropertyAccessExpression,
+		 ast.StringLiteral,
+		 ast.ArrayCreationExpression:
+		 	retExpr = false;
+	}
+	if retExpr {
+		return expression
+	}
+
+
+	if (tokenKind == lexer.ColonColonToken) {
+		expression = p.parseScopedPropertyAccessExpression(expression);
+		return p.parsePostfixExpressionRest(expression, true);
+	}
+
+	for ;; {
+		tokenKind = p.token.Kind;
+
+		if (tokenKind == lexer.OpenBraceToken ||
+			tokenKind == lexer.OpenBracketToken) {
+			expression = p.parseSubscriptExpression(expression);
+			return p.parsePostfixExpressionRest(expression, true);
+		}
+
+		switch expression.(type) {
+		case ast.ArrayCreationExpression:
+			// Remaining postfix expressions are invalid, so abort
+			return expression;
+		}
+
+
+		if (tokenKind == lexer.ArrowToken) {
+			expression = p.parseMemberAccessExpression(expression);
+			return p.parsePostfixExpressionRest(expression, true);
+		}
+
+		if (tokenKind == lexer.OpenParenToken && !p.isParsingObjectCreationExpression) {
+			expression = p.parseCallExpressionRest(expression);
+
+			if (p.checkToken(lexer.OpenParenToken)) {
+				// a()() should get parsed as CallExpr-ParenExpr, so do not recurse
+				return expression
+			}
+			return p.parsePostfixExpressionRest(expression, true)
+		}
+
+		// Reached the end of the postfix-expression, so return
+		return expression;
+	}
+}
+
+func (p *Parser)  parseParsePostfixUpdateExpression(prefixExpression ast.Node) ast.Node {
+	postfixUpdateExpression := &ast.PostfixUpdateExpression{};
+	postfixUpdateExpression.Operand = &prefixExpression;
+	postfixUpdateExpression.P = prefixExpression.Parent();
+	prefixExpression.SetParent(postfixUpdateExpression)
+	postfixUpdateExpression.IncrementOrDecrementOperator =
+		p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken);
+	return postfixUpdateExpression;
+}
+
+
+
+func (p *Parser)  parsePrimaryExpression(parentNode ast.Node) ast.Node {
+	token := p.token;
+	switch token.Kind {
+	// variable-name
+	case lexer.VariableName, // TODO special case this
+		 lexer.DollarToken:
+		return p.parseSimpleVariable(parentNode);
+
+		// qualified-name
+	case lexer.Name, // TODO Qualified name
+	 lexer.BackslashToken,
+	 lexer.NamespaceKeyword:
+		return p.parseQualifiedName(parentNode);
+
+	case  // TODO merge dec, oct, hex, bin, float . NumericLiteral
+		lexer.OctalLiteralToken,
+		lexer.HexadecimalLiteralToken,
+		lexer.BinaryLiteralToken,
+		lexer.FloatingLiteralToken,
+		lexer.InvalidOctalLiteralToken,
+		lexer.InvalidHexadecimalLiteral,
+		lexer.InvalidBinaryLiteral,
+		lexer.IntegerLiteralToken:
+		return p.parseNumericLiteralExpression(parentNode);
+
+	case lexer.StringLiteralToken:
+		return p.parseStringLiteralExpression(parentNode);
+
+	case lexer.DoubleQuoteToken,
+		lexer.SingleQuoteToken,
+		lexer.HeredocStart,
+		lexer.BacktickToken:
+		return p.parseStringLiteralExpression2(parentNode);
+
+		// TODO constant-expression
+
+		// array-creation-expression
+	case lexer.ArrayKeyword,
+		lexer.OpenBracketToken:
+		return p.parseArrayCreationExpression(parentNode);
+
+		// intrinsic-construct
+	case lexer.EchoKeyword:
+		return p.parseEchoExpression(parentNode);
+	case lexer.ListKeyword:
+		return p.parseListIntrinsicExpression(parentNode);
+	case lexer.UnsetKeyword:
+		return p.parseUnsetIntrinsicExpression(parentNode);
+
+		// intrinsic-operator
+	case lexer.EmptyKeyword:
+		return p.parseEmptyIntrinsicExpression(parentNode);
+	case lexer.EvalKeyword:
+		return p.parseEvalIntrinsicExpression(parentNode);
+
+	case lexer.ExitKeyword,
+		lexer.DieKeyword:
+		return p.parseExitIntrinsicExpression(parentNode);
+
+	case lexer.IsSetKeyword:
+		return p.parseIssetIntrinsicExpression(parentNode);
+
+	case lexer.PrintKeyword:
+		return p.parsePrintIntrinsicExpression(parentNode);
+
+		// ( expression )
+	case lexer.OpenParenToken:
+		return p.parseParenthesizedExpression(parentNode);
+
+		// anonymous-function-creation-expression
+	case lexer.StaticKeyword:
+		// handle `static::`, `static(`
+		if (p.lookahead([lexer.ColonColonToken, lexer.OpenParenToken])) {
+	return p.parseQualifiedName(parentNode);
+	}
+		// Could be `static function` anonymous function creation expression, so flow through
+	case lexer.FunctionKeyword:
+		return p.parseAnonymousFunctionCreationExpression(parentNode);
+
+	case lexer.TrueReservedWord:
+	case lexer.FalseReservedWord:
+	case lexer.NullReservedWord:
+		// handle `true::`, `true(`, `true\`
+		if (p.lookahead([lexer.BackslashToken, lexer.ColonColonToken, lexer.OpenParenToken])) {
+	return p.parseQualifiedName(parentNode);
+	}
+		return p.parseReservedWordExpression(parentNode);
+	}
+
+	if (lexer.IsReserverdWordToken(token.Kind)) {
+		return p.parseQualifiedName(parentNode)
+	}
+
+	missing := &ast.Missing{}
+	missing.P = &parentNode
+	missing.Token = &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
+	return missing;
+}
+func (p *Parser) parseSimpleVariable(variable ast.Variable) ast.Node {
+	fn := p.parseSimpleVariableFn()
+	return fn(variable)
+}
+func (p *Parser) isModifier(token lexer.Token) bool {
+	switch (token.Kind) {
+	// class-modifier
+	case lexer.AbstractKeyword,
+	lexer.FinalKeyword,
+		// visibility-modifier
+	lexer.PublicKeyword,
+	lexer.ProtectedKeyword,
+	lexer.PrivateKeyword,
+		// static-modifier
+	lexer.StaticKeyword,
+		// var
+	lexer.VarKeyword:
+		return true;
+	}
+	return false;
+
+}
+func (p *Parser) parseClassConstDeclaration(parentNode *ast.Node, modifiers []lexer.Token) ast.Node {
+	classConstDeclaration := ast.ClassConstDeclaration{};
+	classConstDeclaration.P = parentNode;
+	classConstDeclaration.Modifiers = modifiers;
+	classConstDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword);
+	classConstDeclaration.ConstElements = p.parseConstElements(classConstDeclaration);
+	classConstDeclaration.Semicolon = p.eat1(lexer.SemicolonToken);
+
+	return classConstDeclaration;
+
+}
+
+func (p *Parser) parseConstElements(parentNode ast.ClassConstDeclaration) *ast.Node {
+	panic("Not implemented parseConstElements");
+}
+
+func (p *Parser) parseMethodDeclaration(parentNode *ast.Node, modifiers []lexer.Token) ast.Node {
+	methodDeclaration := ast.MethodDeclaration{};
+	methodDeclaration.Modifiers = modifiers;
+	p.parseFunctionType(methodDeclaration, true);
+	methodDeclaration.P = parentNode;
+	return methodDeclaration;
+
+}
+
+func (p *Parser) parseFunctionType(parent ast.MethodDeclaration, b bool) {
+	panic("Not implemented parseFunctionType")
+}
+
+func (p *Parser) parsePropertyDeclaration(parentNode *ast.Node, modifiers []lexer.Token) ast.Node {
+	propertyDeclaration := ast.PropertyDeclaration{};
+	propertyDeclaration.P = parentNode;
+
+	propertyDeclaration.Modifiers = modifiers;
+	propertyDeclaration.PropertyElements = p.parseExpressionList(propertyDeclaration);
+	propertyDeclaration.Semicolon = p.eat1(lexer.SemicolonToken);
+
+	return propertyDeclaration;
+}
+
+func (p *Parser) parseExpressionList(parentNode ast.Node) *ast.Node {
+	panic("Not implemented parseExpressionList")
+}
+
+func (p *Parser) parseTraitUseClause(parentNode *ast.Node) ast.Node {
+	panic("Not implemented parseTraitUseClause")
+}
+
+func (p *Parser) parseCastExpression(parentNode ast.Node) ast.Node {
+	castExpression := ast.CastExpression{};
+	castExpression.P = &parentNode;
+	castExpression.CastType = p.eat(
+		lexer.ArrayCastToken,
+		lexer.BoolCastToken,
+		lexer.DoubleCastToken,
+		lexer.IntCastToken,
+		lexer.ObjectCastToken,
+		lexer.StringCastToken,
+		lexer.UnsetCastToken);
+	castExpression.Operand = p.parseUnaryExpressionOrHigher(castExpression);
+	return castExpression;
+}
+
+func (p *Parser) parseCastExpressionGranular(parentNode ast.Node) ast.Node {
+	castExpression :=  ast.CastExpression{};
+	castExpression.P = &parentNode;
+
+	castExpression.OpenParen = p.eat1(lexer.OpenParenToken);
+	castExpression.CastType = p.eat(
+		lexer.ArrayKeyword,
+		lexer.BinaryReservedWord,
+		lexer.BoolReservedWord,
+		lexer.BooleanReservedWord,
+		lexer.DoubleReservedWord,
+		lexer.IntReservedWord,
+		lexer.IntegerReservedWord,
+		lexer.FloatReservedWord,
+		lexer.ObjectReservedWord,
+		lexer.RealReservedWord,
+		lexer.StringReservedWord,
+		lexer.UnsetKeyword);
+	castExpression.CloseParen = p.eat1(lexer.CloseParenToken);
+	castExpression.Operand = p.parseUnaryExpressionOrHigher(castExpression);
+
+	return castExpression;
+}
+
+func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
+	objectCreationExpression := ast.ObjectCreationExpression{};
+	objectCreationExpression.P = &parentNode;
+	objectCreationExpression.NewKeword = p.eat1(lexer.NewKeyword);
+	// TODO - add tests for this scenario
+	p.isParsingObjectCreationExpression = true;
+
+	if r := p.eatOptional1(lexer.ClassKeyword) ; r != nil {
+		tokNode := ast.TokenNode{}
+		tokNode.Token = r
+		objectCreationExpression.ClassTypeDesignator = tokNode
+	} else if r := p.eatOptional1(lexer.StaticKeyword) ; r != nil {
+		tokNode := ast.TokenNode{}
+		tokNode.Token = r
+		objectCreationExpression.ClassTypeDesignator = tokNode
+	} else {
+		r := p.parseExpression(objectCreationExpression, false)
+		objectCreationExpression.ClassTypeDesignator = r
+	}
+
+	p.isParsingObjectCreationExpression = false;
+
+	objectCreationExpression.OpenParen = p.eatOptional1(lexer.OpenParenToken);
+	if (objectCreationExpression.OpenParen != nil) {
+		objectCreationExpression.ArgumentExpressionList = p.parseArgumentExpressionList(objectCreationExpression);
+		objectCreationExpression.CloseParen = p.eat1(lexer.CloseParenToken);
+	}
+
+	objectCreationExpression.ClassBaseClause = p.parseClassBaseClause(objectCreationExpression);
+	objectCreationExpression.ClassInterfaceClause = p.parseClassInterfaceClause(objectCreationExpression);
+
+	if (p.token.Kind == lexer.OpenBraceToken) {
+		objectCreationExpression.ClassMembers = p.parseClassMembers(objectCreationExpression);
+	}
+
+	return objectCreationExpression;
+
+}
+
+func (p *Parser) parseArgumentExpressionList(parentNode ast.Node) ast.Node {
+	panic("Not implemented parseArgumentExpressionList")
+}
+
+func (p *Parser) parseClassBaseClause(parentNode ast.Node) ast.Node {
+	classBaseClause := ast.ClassBaseClause{};
+	classBaseClause.P = &parentNode;
+
+	classBaseClause.ExtendsKeyword = p.eatOptional1(lexer.ExtendsKeyword);
+	if (classBaseClause.ExtendsKeyword == nil) {
+		return nil;
+	}
+	classBaseClause.BaseClass = p.parseQualifiedName(classBaseClause);
+
+	return classBaseClause;
+
+}
+func (p *Parser) parseQualifiedName(parentNode ast.Node) *ast.Node {
+	panic("Not implemented parseQualifiedName")
+}
+
+func (p *Parser) parseClassInterfaceClause(parentNode ast.Node) ast.Node {
+	classInterfaceClause := ast.ClassInterfaceClause{};
+	classInterfaceClause.P = &parentNode;
+	classInterfaceClause.ImplementsKeyword = p.eatOptional1(lexer.ImplementsKeyword);
+
+	if (classInterfaceClause.ImplementsKeyword == nil) {
+		return nil;
+	}
+
+	classInterfaceClause.InterfaceNameList = p.parseQualifiedNameList(classInterfaceClause);
+	return classInterfaceClause;
+
+}
+
+func (p *Parser) parseQualifiedNameList(parentNode ast.Node) *ast.Node {
+	panic("Not implemented")
+}
+
+func (p *Parser) parseCloneExpression(parentNode ast.Node) ast.Node {
+	cloneExpression := ast.CloneExpression{};
+	cloneExpression.P = &parentNode;
+
+	cloneExpression.CloneKeyword = p.eat1(lexer.CloneKeyword);
+	cloneExpression.Expression = p.parseUnaryExpressionOrHigher(cloneExpression);
+	return cloneExpression;
+}
+func (p *Parser) parseYieldExpression(parentNode ast.Node) ast.Node {
+	panic("Not implemented")
+}
+
+func (p *Parser) parseScriptInclusionExpression(parentNode ast.Node) ast.Node {
+	scriptInclusionExpression := ast.ScriptInclusionExpression{};
+	scriptInclusionExpression.P = &parentNode;
+	scriptInclusionExpression.RequireOrIncludeKeyword = p.eat(
+			lexer.RequireKeyword, lexer.RequireOnceKeyword,
+			lexer.IncludeKeyword, lexer.IncludeOnceKeyword);
+	scriptInclusionExpression.Expression = p.parseExpression(scriptInclusionExpression, false);
+	return scriptInclusionExpression;
+}
+func (p *Parser) parseTraitElementFn() func(*ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseInterfaceElementFn() func(*ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseCaseOrDefaultStatement() func(*ast.Node) ast.Node {
+	return func (parentNode *ast.Node) ast.Node {
+		caseStatement := ast.CaseStatement{};
+		caseStatement.P = parentNode;
+		// TODO add error checking
+		caseStatement.CaseKeyword = p.eat(lexer.CaseKeyword, lexer.DefaultKeyword);
+		if (caseStatement.CaseKeyword.Kind == lexer.CaseKeyword) {
+			expr := p.parseExpression(caseStatement, false)
+			caseStatement.Expression = &expr;
+		}
+		caseStatement.DefaultLabelTerminator = p.eat(lexer.ColonToken, lexer.SemicolonToken);
+		caseStatement.StatementList = p.parseList(caseStatement, CaseStatementElements);
+		return caseStatement;
+	};
+
+}
+func (p *Parser) parseSwitchStatement(parentNode ast.Node) ast.Node {
+	switchStatement := ast.SwitchStatement{};
+	switchStatement.P = &parentNode;
+	switchStatement.SwitchKeyword = p.eat1(lexer.SwitchKeyword);
+	switchStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	expr := p.parseExpression(switchStatement, false);
+	switchStatement.Expression = &expr
+	switchStatement.CloseParen = p.eat1(lexer.CloseParenToken);
+	switchStatement.OpenBrace = p.eatOptional1(lexer.OpenBraceToken);
+	switchStatement.Colon = p.eatOptional1(lexer.ColonToken);
+	switchStatement.CaseStatements = p.parseList(switchStatement, SwitchStatementElements);
+	if (switchStatement.Colon != nil) {
+		switchStatement.Endswitch = p.eat1(lexer.EndSwitchKeyword);
+		switchStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	} else {
+		switchStatement.CloseBrace = p.eat1(lexer.CloseBraceToken);
+	}
+
+	return switchStatement;
+
+}
+
+func (p *Parser) eatSemicolonOrAbortStatement() *lexer.Token {
+	if (p.token.Kind != lexer.ScriptSectionEndTag) {
+		return p.eat1(lexer.SemicolonToken);
+	}
+	return nil;
+}
+
+func (p *Parser) parseWhileStatement(parentNode ast.Node) ast.Node {
+	whileStatement := ast.WhileStatement{};
+	whileStatement.P = &parentNode;
+	whileStatement.WhileToken = p.eat1(lexer.WhileKeyword);
+	whileStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	expr := p.parseExpression(whileStatement, false)
+	whileStatement.Expression = &expr;
+	whileStatement.CloseParen = p.eat1(lexer.CloseParenToken);
+	whileStatement.Colon = p.eatOptional1(lexer.ColonToken);
+	if (whileStatement.Colon != nil) {
+		whileStatement.Statements = p.parseList(whileStatement, WhileStatementElements);
+		whileStatement.EndWhile = p.eat1(lexer.EndWhileKeyword);
+		whileStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	} else {
+		whileStatement.Statements = []*ast.Node{p.parseStatement(whileStatement)};
+	}
+	return whileStatement;
+
+}
+
+func (p *Parser) parseDoStatement(parentNode ast.Node) ast.Node {
+	doStatement := ast.DoStatement{};
+	doStatement.P = &parentNode;
+	doStatement.Do = p.eat1(lexer.DoKeyword);
+	doStatement.Statement = p.parseStatement(doStatement);
+	doStatement.WhileToken = p.eat1(lexer.WhileKeyword);
+	doStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	expr := p.parseExpression(doStatement, false);
+	doStatement.Expression = &expr;
+	doStatement.CloseParen = p.eat1(lexer.CloseParenToken);
+	doStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	return doStatement;
+}
+
+func (p *Parser) parseForStatement(parentNode ast.Node) ast.Node {
+	forStatement := ast.ForStatement{};
+	forStatement.P = &parentNode;
+	forStatement.For = p.eat1(lexer.ForKeyword);
+	forStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	forStatement.ForInitializer = p.parseExpressionList(forStatement); // TODO spec is redundant
+	forStatement.ExprGroupSemicolon1 = p.eat1(lexer.SemicolonToken);
+	forStatement.ForControl = p.parseExpressionList(forStatement);
+	forStatement.ExprGroupSemicolon2 = p.eat1(lexer.SemicolonToken);
+	forStatement.ForEndOfLoop = p.parseExpressionList(forStatement);
+	forStatement.CloseParen = p.eat1(lexer.CloseParenToken);
+	forStatement.Colon = p.eatOptional1(lexer.ColonToken);
+	if (forStatement.Colon != nil) {
+		forStatement.Statements = p.parseList(forStatement, ForStatementElements);
+		forStatement.EndFor = p.eat1(lexer.EndForKeyword);
+		forStatement.EndForSemicolon = p.eatSemicolonOrAbortStatement();
+	} else {
+		forStatement.Statements = []*ast.Node{p.parseStatement(forStatement)};
+	}
+	return forStatement;
+
+}
+
+func (p *Parser) parseForeachStatement(parentNode ast.Node) ast.Node {
+	foreachStatement := ast.ForeachStatement{};
+	foreachStatement.P = &parentNode;
+	foreachStatement.Foreach = p.eat1(lexer.ForeachKeyword);
+	foreachStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	expr := p.parseExpression(foreachStatement, false)
+	foreachStatement.ForEachCollectionName = &expr;
+	foreachStatement.AsKeyword = p.eat1(lexer.AsKeyword);
+	foreachStatement.ForeachKey = p.tryParseForeachKey(foreachStatement);
+	foreachStatement.ForeachValue = p.parseForeachValue(foreachStatement);
+	foreachStatement.CloseParen = p.eat1(lexer.CloseParenToken);
+	foreachStatement.Colon = p.eatOptional1(lexer.ColonToken);
+	if (foreachStatement.Colon != nil) {
+		foreachStatement.Statements = p.parseList(foreachStatement, ForeachStatementElements);
+		foreachStatement.EndForeach = p.eat1(lexer.EndForEachKeyword);
+		foreachStatement.EndForeachSemicolon = p.eatSemicolonOrAbortStatement();
+	} else {
+		foreachStatement.Statements = []*ast.Node{p.parseStatement(foreachStatement)};
+	}
+	return foreachStatement;
+
+}
+func (p *Parser) tryParseForeachKey(parentNode ast.Node) ast.Node {
+	if (!p.isExpressionStart(p.token)) {
+		return nil;
+	}
+
+	startPos := p.stream.Pos;
+	startToken := p.token;
+	foreachKey := ast.ForeachKey{};
+	foreachKey.P = &parentNode;
+	foreachKey.Expression = p.parseExpression(foreachKey, false);
+
+	if (!p.checkToken(lexer.DoubleArrowToken)) {
+		p.stream.Pos = startPos;
+		p.token = startToken;
+		return nil;
+	}
+
+	foreachKey.Arrow = p.eat1(lexer.DoubleArrowToken);
+	return foreachKey;
+
+}
+func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
+	foreachValue := ast.ForeachValue{};
+	foreachValue.P = &parentNode;
+	foreachValue.Ampersand = p.eatOptional1(lexer.AmpersandToken);
+	foreachValue.Expression = p.parseExpression(foreachValue, false);
+	return foreachValue;
+
+}
+func (P *Parser) isExpressionStart(token lexer.Token) bool {
+	fn := p.isExpressionStartFn()
+	return fn(token);
+}
+
 

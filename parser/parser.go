@@ -1,8 +1,8 @@
 package parser
 
 import (
-	"github.com/emilioastarita/gphp/lexer"
 	"github.com/emilioastarita/gphp/ast"
+	"github.com/emilioastarita/gphp/lexer"
 )
 
 type Parser struct {
@@ -16,19 +16,19 @@ type Parser struct {
 type ParseContext uint
 
 const (
-	SourceElements           = iota
-	BlockStatements          
-	ClassMembers             
-	IfClause2Elements        
-	SwitchStatementElements  
-	CaseStatementElements    
-	WhileStatementElements   
-	ForStatementElements     
-	ForeachStatementElements 
-	DeclareStatementElements 
-	InterfaceMembers         
-	TraitMembers             
-	Count                    
+	SourceElements = iota
+	BlockStatements
+	ClassMembers
+	IfClause2Elements
+	SwitchStatementElements
+	CaseStatementElements
+	WhileStatementElements
+	ForStatementElements
+	ForeachStatementElements
+	DeclareStatementElements
+	InterfaceMembers
+	TraitMembers
+	Count
 )
 
 func (p *Parser) ParseSourceFile(source string, uri string) {
@@ -79,23 +79,23 @@ func (p *Parser) parseList(parentNode ast.Node, listParseContext ParseContext) [
 	savedParseContext := p.currentParseContext
 	p.currentParseContext |= 1 << listParseContext
 	parseListElementFn := p.getParseListElementFn(listParseContext)
-	var nodes []ast.Node;
+	var nodes []ast.Node
 	for p.isListTerminator(listParseContext) == false {
-		if (p.isValidListElement(listParseContext, p.token)) {
-			element := parseListElementFn(&parentNode);
+		if p.isValidListElement(listParseContext, p.token) {
+			element := parseListElementFn(&parentNode)
 			element.SetParent(parentNode)
-			nodes = append(nodes, element);
-			continue;
+			nodes = append(nodes, element)
+			continue
 		}
-		if (p.isCurrentTokenValidInEnclosingContexts()) {
-			break;
+		if p.isCurrentTokenValidInEnclosingContexts() {
+			break
 		}
 
 		t := &lexer.Token{p.token.Kind, p.token.FullStart, p.token.FullStart, 0, true}
 		skipped := &ast.SkippedNode{}
 		skipped.Token = t
-		nodes = append(nodes, skipped);
-		p.advanceToken();
+		nodes = append(nodes, skipped)
+		p.advanceToken()
 	}
 	p.currentParseContext = savedParseContext
 	return nodes
@@ -103,28 +103,28 @@ func (p *Parser) parseList(parentNode ast.Node, listParseContext ParseContext) [
 
 func (p *Parser) parseClassElementFn() func(*ast.Node) ast.Node {
 	return func(parentNode *ast.Node) ast.Node {
-		modifiers := p.parseModifiers();
-		token := p.token;
-		switch (token.Kind) {
+		modifiers := p.parseModifiers()
+		token := p.token
+		switch token.Kind {
 		case lexer.ConstKeyword:
-			return p.parseClassConstDeclaration(parentNode, modifiers);
+			return p.parseClassConstDeclaration(parentNode, modifiers)
 
 		case lexer.FunctionKeyword:
-			return p.parseMethodDeclaration(parentNode, modifiers);
+			return p.parseMethodDeclaration(parentNode, modifiers)
 
 		case lexer.VariableName:
-			return p.parsePropertyDeclaration(parentNode, modifiers);
+			return p.parsePropertyDeclaration(parentNode, modifiers)
 
 		case lexer.UseKeyword:
-			return p.parseTraitUseClause(parentNode);
+			return p.parseTraitUseClause(parentNode)
 
 		default:
-			missingClassMemberDeclaration := ast.MissingMemberDeclaration{};
-			missingClassMemberDeclaration.P = parentNode;
-			missingClassMemberDeclaration.Modifiers = modifiers;
-			return missingClassMemberDeclaration;
+			missingClassMemberDeclaration := ast.MissingMemberDeclaration{}
+			missingClassMemberDeclaration.P = parentNode
+			missingClassMemberDeclaration.Modifiers = modifiers
+			return missingClassMemberDeclaration
 		}
-	};
+	}
 }
 func (p *Parser) parseExpressionFn() func(*ast.Node) ast.Node {
 	return func(parent *ast.Node) ast.Node {
@@ -134,13 +134,13 @@ func (p *Parser) parseExpressionFn() func(*ast.Node) ast.Node {
 
 func (p *Parser) parseModifiers() []lexer.Token {
 	modifiers := []lexer.Token{}
-	token := p.token;
-	for (p.isModifier(token)) {
+	token := p.token
+	for p.isModifier(token) {
 		modifiers = append(modifiers, token)
-		p.advanceToken();
-		token = p.token;
+		p.advanceToken()
+		token = p.token
 	}
-	return modifiers;
+	return modifiers
 }
 
 func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
@@ -150,17 +150,17 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 		lexer.MinusToken,
 		lexer.ExclamationToken,
 		lexer.TildeToken:
-		return p.parseUnaryOpExpression(parentNode);
+		return p.parseUnaryOpExpression(parentNode)
 
 		// error-control-expression
 	case lexer.AtSymbolToken:
-		return p.parseErrorControlExpression(parentNode);
+		return p.parseErrorControlExpression(parentNode)
 
 		// prefix-increment-expression
 	case lexer.PlusPlusToken,
 		// prefix-decrement-expression
 		lexer.MinusMinusToken:
-		return p.parsePrefixUpdateExpression(parentNode);
+		return p.parsePrefixUpdateExpression(parentNode)
 
 	case lexer.ArrayCastToken,
 		lexer.BoolCastToken,
@@ -169,11 +169,11 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 		lexer.ObjectCastToken,
 		lexer.StringCastToken,
 		lexer.UnsetCastToken:
-		return p.parseCastExpression(parentNode);
+		return p.parseCastExpression(parentNode)
 
 	case lexer.OpenParenToken:
 		// TODO remove duplication
-		if (p.lookahead(
+		if p.lookahead(
 			[]lexer.TokenKind{lexer.ArrayKeyword,
 				lexer.BinaryReservedWord,
 				lexer.BoolReservedWord,
@@ -185,31 +185,31 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 				lexer.ObjectReservedWord,
 				lexer.RealReservedWord,
 				lexer.StringReservedWord,
-				lexer.UnsetKeyword}, lexer.CloseParenToken)) {
-			return p.parseCastExpressionGranular(parentNode);
+				lexer.UnsetKeyword}, lexer.CloseParenToken) {
+			return p.parseCastExpressionGranular(parentNode)
 		}
 
 		/*
-		
-					case lexer.BacktickToken:
-						return p.parseShellCommandExpression(parentNode);
-		
-					case lexer.OpenParenToken:
-						// TODO
-		//                return p.parseCastExpressionGranular(parentNode);
-						break;*/
+
+						case lexer.BacktickToken:
+							return p.parseShellCommandExpression(parentNode);
+
+						case lexer.OpenParenToken:
+							// TODO
+			//                return p.parseCastExpressionGranular(parentNode);
+							break;*/
 
 		// object-creation-expression (postfix-expression)
 	case lexer.NewKeyword:
-		return p.parseObjectCreationExpression(parentNode);
+		return p.parseObjectCreationExpression(parentNode)
 
 		// clone-expression (postfix-expression)
 	case lexer.CloneKeyword:
-		return p.parseCloneExpression(parentNode);
+		return p.parseCloneExpression(parentNode)
 
 	case lexer.YieldKeyword,
 		lexer.YieldFromKeyword:
-		return p.parseYieldExpression(parentNode);
+		return p.parseYieldExpression(parentNode)
 
 		// include-expression
 		// include-once-expression
@@ -219,11 +219,11 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 		lexer.IncludeOnceKeyword,
 		lexer.RequireKeyword,
 		lexer.RequireOnceKeyword:
-		return p.parseScriptInclusionExpression(parentNode);
+		return p.parseScriptInclusionExpression(parentNode)
 	}
 
-	expression := p.parsePrimaryExpression(parentNode);
-	return p.parsePostfixExpressionRest(expression, true);
+	expression := p.parsePrimaryExpression(parentNode)
+	return p.parsePostfixExpressionRest(expression, true)
 }
 
 func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode *ast.Node) ast.Node {
@@ -232,49 +232,49 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode *ast.N
 
 func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
 	return func(parentNode ast.Node) ast.Node {
-		token := p.token;
-		variable := ast.Variable{};
-		variable.P = &parentNode;
-		if (token.Kind == lexer.DollarToken) {
-			variable.Dollar = p.eat1(lexer.DollarToken);
-			token = p.token;
-			if (token.Kind == lexer.OpenBraceToken) {
+		token := p.token
+		variable := ast.Variable{}
+		variable.P = &parentNode
+		if token.Kind == lexer.DollarToken {
+			variable.Dollar = p.eat1(lexer.DollarToken)
+			token = p.token
+			if token.Kind == lexer.OpenBraceToken {
 				variable.Name = p.parseBracedExpression(variable)
 			} else {
 				variable.Name = p.parseSimpleVariable(variable)
 			}
 
-		} else if (token.Kind == lexer.VariableName || token.Kind == lexer.StringVarname) {
+		} else if token.Kind == lexer.VariableName || token.Kind == lexer.StringVarname {
 			// TODO consider splitting into dollar and name.
 			// StringVarname is the variable name without , used in a template string e.g. `"{foo}"`
-			tokName := p.eat(lexer.VariableName, lexer.StringVarname);
+			tokName := p.eat(lexer.VariableName, lexer.StringVarname)
 			tokNode := ast.TokenNode{}
-			tokNode.Token = tokName;
+			tokNode.Token = tokName
 			variable.Name = tokNode
 		} else {
 			t := &lexer.Token{lexer.VariableName, token.FullStart, token.FullStart, 0, true}
 			missing := ast.Missing{}
-			missing.Token = t;
+			missing.Token = t
 			variable.Name = missing
 		}
 
-		return variable;
-	};
+		return variable
+	}
 }
 
 func (p *Parser) parseBracedExpression(parentNode ast.Node) ast.Node {
-	bracedExpression := ast.BracedExpression{};
-	bracedExpression.P = &parentNode;
-	bracedExpression.OpenBrace = p.eat1(lexer.OpenBraceToken);
-	bracedExpression.Expression = p.parseExpression(bracedExpression, false);
-	bracedExpression.CloseBrace = p.eat1(lexer.CloseBraceToken);
-	return bracedExpression;
+	bracedExpression := ast.BracedExpression{}
+	bracedExpression.P = &parentNode
+	bracedExpression.OpenBrace = p.eat1(lexer.OpenBraceToken)
+	bracedExpression.Expression = p.parseExpression(bracedExpression, false)
+	bracedExpression.CloseBrace = p.eat1(lexer.CloseBraceToken)
+	return bracedExpression
 }
 
 func (p *Parser) isExpressionStartFn() func(*lexer.Token) bool {
 
 	return func(token *lexer.Token) bool {
-		switch (token.Kind) {
+		switch token.Kind {
 		// Script Inclusion Expression
 		case lexer.RequireKeyword,
 			lexer.RequireOnceKeyword,
@@ -288,7 +288,7 @@ func (p *Parser) isExpressionStartFn() func(*lexer.Token) bool {
 			// object-creation-expression
 			lexer.NewKeyword,
 			lexer.CloneKeyword:
-			return true;
+			return true
 
 			// unary-op-expression
 		case lexer.PlusToken,
@@ -303,20 +303,20 @@ func (p *Parser) isExpressionStartFn() func(*lexer.Token) bool {
 			lexer.PlusPlusToken,
 			// prefix-decrement-expression
 			lexer.MinusMinusToken:
-			return true;
+			return true
 
 			// variable-name
 		case lexer.VariableName,
 			lexer.DollarToken:
-			return true;
+			return true
 
 			// qualified-name
 		case lexer.Name,
 			lexer.BackslashToken:
-			return true;
+			return true
 		case lexer.NamespaceKeyword:
 			// TODO currently only supports qualified-names, but eventually parse namespace declarations
-			return p.checkToken(lexer.BackslashToken);
+			return p.checkToken(lexer.BackslashToken)
 
 			// literal
 		case // TODO merge dec, oct, hex, bin, float . NumericLiteral
@@ -366,10 +366,10 @@ func (p *Parser) isExpressionStartFn() func(*lexer.Token) bool {
 			// anonymous-function-creation-expression
 			lexer.StaticKeyword,
 			lexer.FunctionKeyword:
-			return true;
+			return true
 		}
-		return lexer.IsReserverdWordToken(token.Kind);
-	};
+		return lexer.IsReserverdWordToken(token.Kind)
+	}
 }
 
 func (p *Parser) getParseListElementFn(context ParseContext) func(*ast.Node) ast.Node {
@@ -510,11 +510,11 @@ func (p *Parser) parseStatementFn() func(*ast.Node) ast.Node {
 			return p.parseInlineHtml(parentNode)
 		}
 
-		expressionStatement := ast.ExpressionStatement{};
-		expressionStatement.P = parentNode;
-		expressionStatement.Expression = p.parseExpression(expressionStatement, true);
-		expressionStatement.Semicolon = p.eatSemicolonOrAbortStatement();
-		return expressionStatement;
+		expressionStatement := ast.ExpressionStatement{}
+		expressionStatement.P = parentNode
+		expressionStatement.Expression = p.parseExpression(expressionStatement, true)
+		expressionStatement.Semicolon = p.eatSemicolonOrAbortStatement()
+		return expressionStatement
 	}
 }
 
@@ -527,33 +527,33 @@ func (p *Parser) parseStatement(parentNode ast.Node) *ast.Node {
 func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
 	st := ast.IfStatement{}
 	st.P = &parentNode
-	st.IfKeyword = p.eat1(lexer.IfKeyword);
-	st.OpenParen = p.eat1(lexer.OpenParenToken);
-	exp := p.parseExpression(st, false);
-	st.Expression = &exp;
-	st.CloseParen = p.eat1(lexer.CloseParenToken);
-	if (p.checkToken(lexer.ColonToken)) {
-		st.Colon = p.eat1(lexer.ColonToken);
-		st.Statements = p.parseList(st, IfClause2Elements);
+	st.IfKeyword = p.eat1(lexer.IfKeyword)
+	st.OpenParen = p.eat1(lexer.OpenParenToken)
+	exp := p.parseExpression(st, false)
+	st.Expression = &exp
+	st.CloseParen = p.eat1(lexer.CloseParenToken)
+	if p.checkToken(lexer.ColonToken) {
+		st.Colon = p.eat1(lexer.ColonToken)
+		st.Statements = p.parseList(st, IfClause2Elements)
 	} else {
 		// @todo
-		st.Statements = []ast.Node{p.parseStatement(st)};
+		st.Statements = []ast.Node{p.parseStatement(st)}
 	}
-	st.ElseIfClauses = nil;
-	for (p.checkToken(lexer.ElseIfKeyword)) {
-		st.ElseIfClauses = append(st.ElseIfClauses, p.parseElseIfClause(st));
-	}
-
-	if (p.checkToken(lexer.ElseKeyword)) {
-		st.ElseClause = p.parseElseClause(st);
+	st.ElseIfClauses = nil
+	for p.checkToken(lexer.ElseIfKeyword) {
+		st.ElseIfClauses = append(st.ElseIfClauses, p.parseElseIfClause(st))
 	}
 
-	st.EndifKeyword = p.eatOptional1(lexer.EndIfKeyword);
-	if (st.EndifKeyword != nil) {
-		st.SemiColon = p.eatSemicolonOrAbortStatement();
+	if p.checkToken(lexer.ElseKeyword) {
+		st.ElseClause = p.parseElseClause(st)
 	}
 
-	return st;
+	st.EndifKeyword = p.eatOptional1(lexer.EndIfKeyword)
+	if st.EndifKeyword != nil {
+		st.SemiColon = p.eatSemicolonOrAbortStatement()
+	}
+
+	return st
 }
 
 func (p *Parser) parseNamedLabelStatement(parentNode *ast.Node) ast.Node {
@@ -588,8 +588,8 @@ func (p *Parser) lookahead(expectedKinds ...interface{}) bool {
 			succeeded = false
 			for _, kindOption := range kind.([]lexer.TokenKind) {
 				if currentPos <= eofPos && token.Kind == kindOption {
-					succeeded = true;
-					break;
+					succeeded = true
+					break
 				}
 			}
 		case lexer.TokenKind:
@@ -619,9 +619,9 @@ func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 	if token.Kind == lexer.EndOfFileToken {
 		t := &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
 		missing := &ast.Missing{}
-		missing.P = &parentNode;
+		missing.P = &parentNode
 		missing.Token = t
-		return missing;
+		return missing
 	}
 	fnExpression := p.parseExpressionFn()
 	expression := fnExpression(&parentNode)
@@ -629,7 +629,7 @@ func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 	// @todo this not make sense
 	// if (force && expression)
 
-	return expression;
+	return expression
 }
 func (p *Parser) checkToken(kind lexer.TokenKind) bool {
 	return p.token.Kind == kind
@@ -644,8 +644,8 @@ func (p *Parser) parseUnaryOpExpression(parent ast.Node) ast.Node {
 	return st
 }
 
-func (p *Parser) eat(kinds ... lexer.TokenKind) *lexer.Token {
-	token := p.token;
+func (p *Parser) eat(kinds ...lexer.TokenKind) *lexer.Token {
+	token := p.token
 	for _, k := range kinds {
 		if token.Kind == k {
 			p.advanceToken()
@@ -653,7 +653,7 @@ func (p *Parser) eat(kinds ... lexer.TokenKind) *lexer.Token {
 		}
 	}
 	t := &lexer.Token{kinds[0], token.FullStart, token.FullStart, 0, true}
-	return t;
+	return t
 }
 
 func (p *Parser) parseErrorControlExpression(parent ast.Node) ast.Node {
@@ -675,63 +675,63 @@ func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
 	case []ast.Variable:
 		n.Operand = p.parsePostfixExpressionRest(n.Operand, false)
 	}
-	return n;
+	return n
 }
 
 func (p *Parser) parsePostfixExpressionRest(expression ast.Node, allowUpdateExpression bool) ast.Node {
-	tokenKind := p.token.Kind;
+	tokenKind := p.token.Kind
 
 	// `--a++` is invalid
-	if (allowUpdateExpression &&
+	if allowUpdateExpression &&
 		(tokenKind == lexer.PlusPlusToken ||
-			tokenKind == lexer.MinusMinusToken)) {
-		return p.parseParsePostfixUpdateExpression(expression);
+			tokenKind == lexer.MinusMinusToken) {
+		return p.parseParsePostfixUpdateExpression(expression)
 	}
 
-	retExpr := true;
+	retExpr := true
 	switch expression.(type) {
 	case ast.Variable,
-	ast.ParenthesizedExpression,
-	ast.QualifiedName,
-	ast.CallExpression,
-	ast.MemberAccessExpression,
-	ast.SubscriptExpression,
-	ast.ScopedPropertyAccessExpression,
-	ast.StringLiteral,
-	ast.ArrayCreationExpression:
-		retExpr = false;
+		ast.ParenthesizedExpression,
+		ast.QualifiedName,
+		ast.CallExpression,
+		ast.MemberAccessExpression,
+		ast.SubscriptExpression,
+		ast.ScopedPropertyAccessExpression,
+		ast.StringLiteral,
+		ast.ArrayCreationExpression:
+		retExpr = false
 	}
 	if retExpr {
 		return expression
 	}
 
-	if (tokenKind == lexer.ColonColonToken) {
-		expression = p.parseScopedPropertyAccessExpression(expression);
-		return p.parsePostfixExpressionRest(expression, true);
+	if tokenKind == lexer.ColonColonToken {
+		expression = p.parseScopedPropertyAccessExpression(expression)
+		return p.parsePostfixExpressionRest(expression, true)
 	}
 
-	for ; ; {
-		tokenKind = p.token.Kind;
-		if (tokenKind == lexer.OpenBraceToken ||
-			tokenKind == lexer.OpenBracketToken) {
-			expression = p.parseSubscriptExpression(expression);
-			return p.parsePostfixExpressionRest(expression, true);
+	for {
+		tokenKind = p.token.Kind
+		if tokenKind == lexer.OpenBraceToken ||
+			tokenKind == lexer.OpenBracketToken {
+			expression = p.parseSubscriptExpression(expression)
+			return p.parsePostfixExpressionRest(expression, true)
 		}
 
 		switch expression.(type) {
 		case ast.ArrayCreationExpression:
 			// Remaining postfix expressions are invalid, so abort
-			return expression;
+			return expression
 		}
 
-		if (tokenKind == lexer.ArrowToken) {
-			expression = p.parseMemberAccessExpression(expression);
-			return p.parsePostfixExpressionRest(expression, true);
+		if tokenKind == lexer.ArrowToken {
+			expression = p.parseMemberAccessExpression(expression)
+			return p.parsePostfixExpressionRest(expression, true)
 		}
 
-		if (tokenKind == lexer.OpenParenToken && !p.isParsingObjectCreationExpression) {
-			expression = p.parseCallExpressionRest(expression);
-			if (p.checkToken(lexer.OpenParenToken)) {
+		if tokenKind == lexer.OpenParenToken && !p.isParsingObjectCreationExpression {
+			expression = p.parseCallExpressionRest(expression)
+			if p.checkToken(lexer.OpenParenToken) {
 				// a()() should get parsed as CallExpr-ParenExpr, so do not recurse
 				return expression
 			}
@@ -739,33 +739,33 @@ func (p *Parser) parsePostfixExpressionRest(expression ast.Node, allowUpdateExpr
 		}
 
 		// Reached the end of the postfix-expression, so return
-		return expression;
+		return expression
 	}
 }
 
 func (p *Parser) parseParsePostfixUpdateExpression(prefixExpression ast.Node) ast.Node {
-	postfixUpdateExpression := &ast.PostfixUpdateExpression{};
-	postfixUpdateExpression.Operand = &prefixExpression;
-	postfixUpdateExpression.P = prefixExpression.Parent();
+	postfixUpdateExpression := &ast.PostfixUpdateExpression{}
+	postfixUpdateExpression.Operand = &prefixExpression
+	postfixUpdateExpression.P = prefixExpression.Parent()
 	prefixExpression.SetParent(postfixUpdateExpression)
 	postfixUpdateExpression.IncrementOrDecrementOperator =
-		p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken);
-	return postfixUpdateExpression;
+		p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken)
+	return postfixUpdateExpression
 }
 
 func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
-	token := p.token;
+	token := p.token
 	switch token.Kind {
 	// variable-name
 	case lexer.VariableName, // TODO special case this
 		lexer.DollarToken:
-		return p.parseSimpleVariable(parentNode);
+		return p.parseSimpleVariable(parentNode)
 
 		// qualified-name
 	case lexer.Name, // TODO Qualified name
 		lexer.BackslashToken,
 		lexer.NamespaceKeyword:
-		return p.parseQualifiedName(parentNode);
+		return p.parseQualifiedName(parentNode)
 
 	case // TODO merge dec, oct, hex, bin, float . NumericLiteral
 		lexer.OctalLiteralToken,
@@ -776,87 +776,87 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 		lexer.InvalidHexadecimalLiteral,
 		lexer.InvalidBinaryLiteral,
 		lexer.IntegerLiteralToken:
-		return p.parseNumericLiteralExpression(parentNode);
+		return p.parseNumericLiteralExpression(parentNode)
 
 	case lexer.StringLiteralToken:
-		return p.parseStringLiteralExpression(parentNode);
+		return p.parseStringLiteralExpression(parentNode)
 
 	case lexer.DoubleQuoteToken,
 		lexer.SingleQuoteToken,
 		lexer.HeredocStart,
 		lexer.BacktickToken:
-		return p.parseStringLiteralExpression2(parentNode);
+		return p.parseStringLiteralExpression2(parentNode)
 
 		// TODO constant-expression
 
 		// array-creation-expression
 	case lexer.ArrayKeyword,
 		lexer.OpenBracketToken:
-		return p.parseArrayCreationExpression(parentNode);
+		return p.parseArrayCreationExpression(parentNode)
 
 		// intrinsic-construct
 	case lexer.EchoKeyword:
-		return p.parseEchoExpression(parentNode);
+		return p.parseEchoExpression(parentNode)
 	case lexer.ListKeyword:
-		return p.parseListIntrinsicExpression(parentNode);
+		return p.parseListIntrinsicExpression(parentNode)
 	case lexer.UnsetKeyword:
-		return p.parseUnsetIntrinsicExpression(parentNode);
+		return p.parseUnsetIntrinsicExpression(parentNode)
 
 		// intrinsic-operator
 	case lexer.EmptyKeyword:
-		return p.parseEmptyIntrinsicExpression(parentNode);
+		return p.parseEmptyIntrinsicExpression(parentNode)
 	case lexer.EvalKeyword:
-		return p.parseEvalIntrinsicExpression(parentNode);
+		return p.parseEvalIntrinsicExpression(parentNode)
 
 	case lexer.ExitKeyword,
 		lexer.DieKeyword:
-		return p.parseExitIntrinsicExpression(parentNode);
+		return p.parseExitIntrinsicExpression(parentNode)
 
 	case lexer.IsSetKeyword:
-		return p.parseIssetIntrinsicExpression(parentNode);
+		return p.parseIssetIntrinsicExpression(parentNode)
 
 	case lexer.PrintKeyword:
-		return p.parsePrintIntrinsicExpression(parentNode);
+		return p.parsePrintIntrinsicExpression(parentNode)
 
 		// ( expression )
 	case lexer.OpenParenToken:
-		return p.parseParenthesizedExpression(parentNode);
+		return p.parseParenthesizedExpression(parentNode)
 
 		// anonymous-function-creation-expression
 	case lexer.StaticKeyword:
 		// handle `static::`, `static(`
-		if (p.lookahead([]lexer.TokenKind{lexer.ColonColonToken, lexer.OpenParenToken})) {
-			return p.parseQualifiedName(parentNode);
+		if p.lookahead([]lexer.TokenKind{lexer.ColonColonToken, lexer.OpenParenToken}) {
+			return p.parseQualifiedName(parentNode)
 		}
 		// Could be `static function` anonymous function creation expression, so flow through
 	case lexer.FunctionKeyword:
-		return p.parseAnonymousFunctionCreationExpression(parentNode);
+		return p.parseAnonymousFunctionCreationExpression(parentNode)
 
 	case lexer.TrueReservedWord:
 	case lexer.FalseReservedWord:
 	case lexer.NullReservedWord:
 		// handle `true::`, `true(`, `true\`
-		if (p.lookahead([]lexer.TokenKind{lexer.BackslashToken, lexer.ColonColonToken, lexer.OpenParenToken})) {
-			return p.parseQualifiedName(parentNode);
+		if p.lookahead([]lexer.TokenKind{lexer.BackslashToken, lexer.ColonColonToken, lexer.OpenParenToken}) {
+			return p.parseQualifiedName(parentNode)
 		}
-		return p.parseReservedWordExpression(parentNode);
+		return p.parseReservedWordExpression(parentNode)
 	}
 
-	if (lexer.IsReserverdWordToken(token.Kind)) {
+	if lexer.IsReserverdWordToken(token.Kind) {
 		return p.parseQualifiedName(parentNode)
 	}
 
 	missing := &ast.Missing{}
 	missing.P = &parentNode
 	missing.Token = &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
-	return missing;
+	return missing
 }
 func (p *Parser) parseSimpleVariable(variable ast.Node) ast.Node {
 	fn := p.parseSimpleVariableFn()
 	return fn(variable)
 }
 func (p *Parser) isModifier(token lexer.Token) bool {
-	switch (token.Kind) {
+	switch token.Kind {
 	// class-modifier
 	case lexer.AbstractKeyword,
 		lexer.FinalKeyword,
@@ -868,30 +868,30 @@ func (p *Parser) isModifier(token lexer.Token) bool {
 		lexer.StaticKeyword,
 		// var
 		lexer.VarKeyword:
-		return true;
+		return true
 	}
-	return false;
+	return false
 }
 func (p *Parser) parseClassConstDeclaration(parentNode *ast.Node, modifiers []lexer.Token) ast.Node {
-	classConstDeclaration := ast.ClassConstDeclaration{};
-	classConstDeclaration.P = parentNode;
-	classConstDeclaration.Modifiers = modifiers;
-	classConstDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword);
-	classConstDeclaration.ConstElements = p.parseConstElements(classConstDeclaration);
-	classConstDeclaration.Semicolon = p.eat1(lexer.SemicolonToken);
-	return classConstDeclaration;
+	classConstDeclaration := ast.ClassConstDeclaration{}
+	classConstDeclaration.P = parentNode
+	classConstDeclaration.Modifiers = modifiers
+	classConstDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword)
+	classConstDeclaration.ConstElements = p.parseConstElements(classConstDeclaration)
+	classConstDeclaration.Semicolon = p.eat1(lexer.SemicolonToken)
+	return classConstDeclaration
 }
 
 func (p *Parser) parseConstElements(parentNode ast.Node) *ast.Node {
-	panic("Not implemented parseConstElements");
+	panic("Not implemented parseConstElements")
 }
 
 func (p *Parser) parseMethodDeclaration(parentNode *ast.Node, modifiers []lexer.Token) ast.Node {
-	methodDeclaration := ast.MethodDeclaration{};
-	methodDeclaration.Modifiers = modifiers;
-	p.parseFunctionType(methodDeclaration, true);
-	methodDeclaration.P = parentNode;
-	return methodDeclaration;
+	methodDeclaration := ast.MethodDeclaration{}
+	methodDeclaration.Modifiers = modifiers
+	p.parseFunctionType(methodDeclaration, true)
+	methodDeclaration.P = parentNode
+	return methodDeclaration
 }
 
 func (p *Parser) parseFunctionType(parent ast.MethodDeclaration, b bool) {
@@ -899,12 +899,12 @@ func (p *Parser) parseFunctionType(parent ast.MethodDeclaration, b bool) {
 }
 
 func (p *Parser) parsePropertyDeclaration(parentNode *ast.Node, modifiers []lexer.Token) ast.Node {
-	propertyDeclaration := ast.PropertyDeclaration{};
-	propertyDeclaration.P = parentNode;
-	propertyDeclaration.Modifiers = modifiers;
-	propertyDeclaration.PropertyElements = p.parseExpressionList(propertyDeclaration);
-	propertyDeclaration.Semicolon = p.eat1(lexer.SemicolonToken);
-	return propertyDeclaration;
+	propertyDeclaration := ast.PropertyDeclaration{}
+	propertyDeclaration.P = parentNode
+	propertyDeclaration.Modifiers = modifiers
+	propertyDeclaration.PropertyElements = p.parseExpressionList(propertyDeclaration)
+	propertyDeclaration.Semicolon = p.eat1(lexer.SemicolonToken)
+	return propertyDeclaration
 }
 
 func (p *Parser) parseExpressionList(parentNode ast.Node) *ast.Node {
@@ -916,8 +916,8 @@ func (p *Parser) parseTraitUseClause(parentNode *ast.Node) ast.Node {
 }
 
 func (p *Parser) parseCastExpression(parentNode ast.Node) ast.Node {
-	castExpression := ast.CastExpression{};
-	castExpression.P = &parentNode;
+	castExpression := ast.CastExpression{}
+	castExpression.P = &parentNode
 	castExpression.CastType = p.eat(
 		lexer.ArrayCastToken,
 		lexer.BoolCastToken,
@@ -925,15 +925,15 @@ func (p *Parser) parseCastExpression(parentNode ast.Node) ast.Node {
 		lexer.IntCastToken,
 		lexer.ObjectCastToken,
 		lexer.StringCastToken,
-		lexer.UnsetCastToken);
-	castExpression.Operand = p.parseUnaryExpressionOrHigher(castExpression);
-	return castExpression;
+		lexer.UnsetCastToken)
+	castExpression.Operand = p.parseUnaryExpressionOrHigher(castExpression)
+	return castExpression
 }
 
 func (p *Parser) parseCastExpressionGranular(parentNode ast.Node) ast.Node {
-	castExpression := ast.CastExpression{};
-	castExpression.P = &parentNode;
-	castExpression.OpenParen = p.eat1(lexer.OpenParenToken);
+	castExpression := ast.CastExpression{}
+	castExpression.P = &parentNode
+	castExpression.OpenParen = p.eat1(lexer.OpenParenToken)
 	castExpression.CastType = p.eat(
 		lexer.ArrayKeyword,
 		lexer.BinaryReservedWord,
@@ -946,18 +946,18 @@ func (p *Parser) parseCastExpressionGranular(parentNode ast.Node) ast.Node {
 		lexer.ObjectReservedWord,
 		lexer.RealReservedWord,
 		lexer.StringReservedWord,
-		lexer.UnsetKeyword);
-	castExpression.CloseParen = p.eat1(lexer.CloseParenToken);
-	castExpression.Operand = p.parseUnaryExpressionOrHigher(castExpression);
-	return castExpression;
+		lexer.UnsetKeyword)
+	castExpression.CloseParen = p.eat1(lexer.CloseParenToken)
+	castExpression.Operand = p.parseUnaryExpressionOrHigher(castExpression)
+	return castExpression
 }
 
 func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
-	objectCreationExpression := ast.ObjectCreationExpression{};
-	objectCreationExpression.P = &parentNode;
-	objectCreationExpression.NewKeword = p.eat1(lexer.NewKeyword);
+	objectCreationExpression := ast.ObjectCreationExpression{}
+	objectCreationExpression.P = &parentNode
+	objectCreationExpression.NewKeword = p.eat1(lexer.NewKeyword)
 	// TODO - add tests for this scenario
-	p.isParsingObjectCreationExpression = true;
+	p.isParsingObjectCreationExpression = true
 	if r := p.eatOptional1(lexer.ClassKeyword); r != nil {
 		tokNode := ast.TokenNode{}
 		tokNode.Token = r
@@ -971,20 +971,20 @@ func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
 		objectCreationExpression.ClassTypeDesignator = r
 	}
 
-	p.isParsingObjectCreationExpression = false;
-	objectCreationExpression.OpenParen = p.eatOptional1(lexer.OpenParenToken);
-	if (objectCreationExpression.OpenParen != nil) {
-		objectCreationExpression.ArgumentExpressionList = p.parseArgumentExpressionList(objectCreationExpression);
-		objectCreationExpression.CloseParen = p.eat1(lexer.CloseParenToken);
+	p.isParsingObjectCreationExpression = false
+	objectCreationExpression.OpenParen = p.eatOptional1(lexer.OpenParenToken)
+	if objectCreationExpression.OpenParen != nil {
+		objectCreationExpression.ArgumentExpressionList = p.parseArgumentExpressionList(objectCreationExpression)
+		objectCreationExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 	}
 
-	objectCreationExpression.ClassBaseClause = p.parseClassBaseClause(objectCreationExpression);
-	objectCreationExpression.ClassInterfaceClause = p.parseClassInterfaceClause(objectCreationExpression);
-	if (p.token.Kind == lexer.OpenBraceToken) {
-		objectCreationExpression.ClassMembers = p.parseClassMembers(objectCreationExpression);
+	objectCreationExpression.ClassBaseClause = p.parseClassBaseClause(objectCreationExpression)
+	objectCreationExpression.ClassInterfaceClause = p.parseClassInterfaceClause(objectCreationExpression)
+	if p.token.Kind == lexer.OpenBraceToken {
+		objectCreationExpression.ClassMembers = p.parseClassMembers(objectCreationExpression)
 	}
 
-	return objectCreationExpression;
+	return objectCreationExpression
 }
 
 func (p *Parser) parseArgumentExpressionList(parentNode ast.Node) ast.Node {
@@ -992,29 +992,29 @@ func (p *Parser) parseArgumentExpressionList(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseClassBaseClause(parentNode ast.Node) ast.Node {
-	classBaseClause := ast.ClassBaseClause{};
-	classBaseClause.P = &parentNode;
-	classBaseClause.ExtendsKeyword = p.eatOptional1(lexer.ExtendsKeyword);
-	if (classBaseClause.ExtendsKeyword == nil) {
-		return nil;
+	classBaseClause := ast.ClassBaseClause{}
+	classBaseClause.P = &parentNode
+	classBaseClause.ExtendsKeyword = p.eatOptional1(lexer.ExtendsKeyword)
+	if classBaseClause.ExtendsKeyword == nil {
+		return nil
 	}
-	classBaseClause.BaseClass = p.parseQualifiedName(classBaseClause);
-	return classBaseClause;
+	classBaseClause.BaseClass = p.parseQualifiedName(classBaseClause)
+	return classBaseClause
 }
 func (p *Parser) parseQualifiedName(parentNode ast.Node) *ast.Node {
 	panic("Not implemented parseQualifiedName")
 }
 
 func (p *Parser) parseClassInterfaceClause(parentNode ast.Node) ast.Node {
-	classInterfaceClause := ast.ClassInterfaceClause{};
-	classInterfaceClause.P = &parentNode;
-	classInterfaceClause.ImplementsKeyword = p.eatOptional1(lexer.ImplementsKeyword);
-	if (classInterfaceClause.ImplementsKeyword == nil) {
-		return nil;
+	classInterfaceClause := ast.ClassInterfaceClause{}
+	classInterfaceClause.P = &parentNode
+	classInterfaceClause.ImplementsKeyword = p.eatOptional1(lexer.ImplementsKeyword)
+	if classInterfaceClause.ImplementsKeyword == nil {
+		return nil
 	}
 
-	classInterfaceClause.InterfaceNameList = p.parseQualifiedNameList(classInterfaceClause);
-	return classInterfaceClause;
+	classInterfaceClause.InterfaceNameList = p.parseQualifiedNameList(classInterfaceClause)
+	return classInterfaceClause
 }
 
 func (p *Parser) parseQualifiedNameList(parentNode ast.Node) *ast.Node {
@@ -1022,189 +1022,193 @@ func (p *Parser) parseQualifiedNameList(parentNode ast.Node) *ast.Node {
 }
 
 func (p *Parser) parseCloneExpression(parentNode ast.Node) ast.Node {
-	cloneExpression := ast.CloneExpression{};
-	cloneExpression.P = &parentNode;
-	cloneExpression.CloneKeyword = p.eat1(lexer.CloneKeyword);
-	cloneExpression.Expression = p.parseUnaryExpressionOrHigher(cloneExpression);
-	return cloneExpression;
+	cloneExpression := ast.CloneExpression{}
+	cloneExpression.P = &parentNode
+	cloneExpression.CloneKeyword = p.eat1(lexer.CloneKeyword)
+	cloneExpression.Expression = p.parseUnaryExpressionOrHigher(cloneExpression)
+	return cloneExpression
 }
+
 func (p *Parser) parseYieldExpression(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
 
 func (p *Parser) parseScriptInclusionExpression(parentNode ast.Node) ast.Node {
-	scriptInclusionExpression := ast.ScriptInclusionExpression{};
-	scriptInclusionExpression.P = &parentNode;
+	scriptInclusionExpression := ast.ScriptInclusionExpression{}
+	scriptInclusionExpression.P = &parentNode
 	scriptInclusionExpression.RequireOrIncludeKeyword = p.eat(
 		lexer.RequireKeyword, lexer.RequireOnceKeyword,
-		lexer.IncludeKeyword, lexer.IncludeOnceKeyword);
-	scriptInclusionExpression.Expression = p.parseExpression(scriptInclusionExpression, false);
-	return scriptInclusionExpression;
+		lexer.IncludeKeyword, lexer.IncludeOnceKeyword)
+	scriptInclusionExpression.Expression = p.parseExpression(scriptInclusionExpression, false)
+	return scriptInclusionExpression
 }
+
 func (p *Parser) parseTraitElementFn() func(*ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseInterfaceElementFn() func(*ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseCaseOrDefaultStatement() func(*ast.Node) ast.Node {
 	return func(parentNode *ast.Node) ast.Node {
-		caseStatement := ast.CaseStatement{};
-		caseStatement.P = parentNode;
+		caseStatement := ast.CaseStatement{}
+		caseStatement.P = parentNode
 		// TODO add error checking
-		caseStatement.CaseKeyword = p.eat(lexer.CaseKeyword, lexer.DefaultKeyword);
-		if (caseStatement.CaseKeyword.Kind == lexer.CaseKeyword) {
+		caseStatement.CaseKeyword = p.eat(lexer.CaseKeyword, lexer.DefaultKeyword)
+		if caseStatement.CaseKeyword.Kind == lexer.CaseKeyword {
 			expr := p.parseExpression(caseStatement, false)
-			caseStatement.Expression = &expr;
+			caseStatement.Expression = &expr
 		}
-		caseStatement.DefaultLabelTerminator = p.eat(lexer.ColonToken, lexer.SemicolonToken);
-		caseStatement.StatementList = p.parseList(caseStatement, CaseStatementElements);
-		return caseStatement;
-	};
+		caseStatement.DefaultLabelTerminator = p.eat(lexer.ColonToken, lexer.SemicolonToken)
+		caseStatement.StatementList = p.parseList(caseStatement, CaseStatementElements)
+		return caseStatement
+	}
 }
 func (p *Parser) parseSwitchStatement(parentNode ast.Node) ast.Node {
-	switchStatement := ast.SwitchStatement{};
-	switchStatement.P = &parentNode;
-	switchStatement.SwitchKeyword = p.eat1(lexer.SwitchKeyword);
-	switchStatement.OpenParen = p.eat1(lexer.OpenParenToken);
-	expr := p.parseExpression(switchStatement, false);
+	switchStatement := ast.SwitchStatement{}
+	switchStatement.P = &parentNode
+	switchStatement.SwitchKeyword = p.eat1(lexer.SwitchKeyword)
+	switchStatement.OpenParen = p.eat1(lexer.OpenParenToken)
+	expr := p.parseExpression(switchStatement, false)
 	switchStatement.Expression = &expr
-	switchStatement.CloseParen = p.eat1(lexer.CloseParenToken);
-	switchStatement.OpenBrace = p.eatOptional1(lexer.OpenBraceToken);
-	switchStatement.Colon = p.eatOptional1(lexer.ColonToken);
-	switchStatement.CaseStatements = p.parseList(switchStatement, SwitchStatementElements);
-	if (switchStatement.Colon != nil) {
-		switchStatement.Endswitch = p.eat1(lexer.EndSwitchKeyword);
-		switchStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	switchStatement.CloseParen = p.eat1(lexer.CloseParenToken)
+	switchStatement.OpenBrace = p.eatOptional1(lexer.OpenBraceToken)
+	switchStatement.Colon = p.eatOptional1(lexer.ColonToken)
+	switchStatement.CaseStatements = p.parseList(switchStatement, SwitchStatementElements)
+	if switchStatement.Colon != nil {
+		switchStatement.Endswitch = p.eat1(lexer.EndSwitchKeyword)
+		switchStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		switchStatement.CloseBrace = p.eat1(lexer.CloseBraceToken);
+		switchStatement.CloseBrace = p.eat1(lexer.CloseBraceToken)
 	}
 
-	return switchStatement;
+	return switchStatement
 }
 
 func (p *Parser) eatSemicolonOrAbortStatement() *lexer.Token {
-	if (p.token.Kind != lexer.ScriptSectionEndTag) {
-		return p.eat1(lexer.SemicolonToken);
+	if p.token.Kind != lexer.ScriptSectionEndTag {
+		return p.eat1(lexer.SemicolonToken)
 	}
-	return nil;
+	return nil
 }
 
 func (p *Parser) parseWhileStatement(parentNode ast.Node) ast.Node {
-	whileStatement := ast.WhileStatement{};
-	whileStatement.P = &parentNode;
-	whileStatement.WhileToken = p.eat1(lexer.WhileKeyword);
-	whileStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	whileStatement := ast.WhileStatement{}
+	whileStatement.P = &parentNode
+	whileStatement.WhileToken = p.eat1(lexer.WhileKeyword)
+	whileStatement.OpenParen = p.eat1(lexer.OpenParenToken)
 	expr := p.parseExpression(whileStatement, false)
-	whileStatement.Expression = &expr;
-	whileStatement.CloseParen = p.eat1(lexer.CloseParenToken);
-	whileStatement.Colon = p.eatOptional1(lexer.ColonToken);
-	if (whileStatement.Colon != nil) {
-		whileStatement.Statements = p.parseList(whileStatement, WhileStatementElements);
-		whileStatement.EndWhile = p.eat1(lexer.EndWhileKeyword);
-		whileStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	whileStatement.Expression = &expr
+	whileStatement.CloseParen = p.eat1(lexer.CloseParenToken)
+	whileStatement.Colon = p.eatOptional1(lexer.ColonToken)
+	if whileStatement.Colon != nil {
+		whileStatement.Statements = p.parseList(whileStatement, WhileStatementElements)
+		whileStatement.EndWhile = p.eat1(lexer.EndWhileKeyword)
+		whileStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		whileStatement.Statements = []ast.Node{p.parseStatement(whileStatement)};
+		whileStatement.Statements = []ast.Node{p.parseStatement(whileStatement)}
 	}
-	return whileStatement;
+	return whileStatement
 }
 
 func (p *Parser) parseDoStatement(parentNode ast.Node) ast.Node {
-	doStatement := ast.DoStatement{};
-	doStatement.P = &parentNode;
-	doStatement.Do = p.eat1(lexer.DoKeyword);
-	doStatement.Statement = p.parseStatement(doStatement);
-	doStatement.WhileToken = p.eat1(lexer.WhileKeyword);
-	doStatement.OpenParen = p.eat1(lexer.OpenParenToken);
-	expr := p.parseExpression(doStatement, false);
-	doStatement.Expression = &expr;
-	doStatement.CloseParen = p.eat1(lexer.CloseParenToken);
-	doStatement.Semicolon = p.eatSemicolonOrAbortStatement();
-	return doStatement;
+	doStatement := ast.DoStatement{}
+	doStatement.P = &parentNode
+	doStatement.Do = p.eat1(lexer.DoKeyword)
+	doStatement.Statement = p.parseStatement(doStatement)
+	doStatement.WhileToken = p.eat1(lexer.WhileKeyword)
+	doStatement.OpenParen = p.eat1(lexer.OpenParenToken)
+	expr := p.parseExpression(doStatement, false)
+	doStatement.Expression = &expr
+	doStatement.CloseParen = p.eat1(lexer.CloseParenToken)
+	doStatement.Semicolon = p.eatSemicolonOrAbortStatement()
+	return doStatement
 }
 
 func (p *Parser) parseForStatement(parentNode ast.Node) ast.Node {
-	forStatement := ast.ForStatement{};
-	forStatement.P = &parentNode;
-	forStatement.For = p.eat1(lexer.ForKeyword);
-	forStatement.OpenParen = p.eat1(lexer.OpenParenToken);
-	forStatement.ForInitializer = p.parseExpressionList(forStatement); // TODO spec is redundant
-	forStatement.ExprGroupSemicolon1 = p.eat1(lexer.SemicolonToken);
-	forStatement.ForControl = p.parseExpressionList(forStatement);
-	forStatement.ExprGroupSemicolon2 = p.eat1(lexer.SemicolonToken);
-	forStatement.ForEndOfLoop = p.parseExpressionList(forStatement);
-	forStatement.CloseParen = p.eat1(lexer.CloseParenToken);
-	forStatement.Colon = p.eatOptional1(lexer.ColonToken);
-	if (forStatement.Colon != nil) {
-		forStatement.Statements = p.parseList(forStatement, ForStatementElements);
-		forStatement.EndFor = p.eat1(lexer.EndForKeyword);
-		forStatement.EndForSemicolon = p.eatSemicolonOrAbortStatement();
+	forStatement := ast.ForStatement{}
+	forStatement.P = &parentNode
+	forStatement.For = p.eat1(lexer.ForKeyword)
+	forStatement.OpenParen = p.eat1(lexer.OpenParenToken)
+	forStatement.ForInitializer = p.parseExpressionList(forStatement) // TODO spec is redundant
+	forStatement.ExprGroupSemicolon1 = p.eat1(lexer.SemicolonToken)
+	forStatement.ForControl = p.parseExpressionList(forStatement)
+	forStatement.ExprGroupSemicolon2 = p.eat1(lexer.SemicolonToken)
+	forStatement.ForEndOfLoop = p.parseExpressionList(forStatement)
+	forStatement.CloseParen = p.eat1(lexer.CloseParenToken)
+	forStatement.Colon = p.eatOptional1(lexer.ColonToken)
+	if forStatement.Colon != nil {
+		forStatement.Statements = p.parseList(forStatement, ForStatementElements)
+		forStatement.EndFor = p.eat1(lexer.EndForKeyword)
+		forStatement.EndForSemicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		forStatement.Statements = []ast.Node{p.parseStatement(forStatement)};
+		forStatement.Statements = []ast.Node{p.parseStatement(forStatement)}
 	}
-	return forStatement;
+	return forStatement
 }
 
 func (p *Parser) parseForeachStatement(parentNode ast.Node) ast.Node {
-	foreachStatement := ast.ForeachStatement{};
-	foreachStatement.P = &parentNode;
-	foreachStatement.Foreach = p.eat1(lexer.ForeachKeyword);
-	foreachStatement.OpenParen = p.eat1(lexer.OpenParenToken);
+	foreachStatement := ast.ForeachStatement{}
+	foreachStatement.P = &parentNode
+	foreachStatement.Foreach = p.eat1(lexer.ForeachKeyword)
+	foreachStatement.OpenParen = p.eat1(lexer.OpenParenToken)
 	expr := p.parseExpression(foreachStatement, false)
-	foreachStatement.ForEachCollectionName = &expr;
-	foreachStatement.AsKeyword = p.eat1(lexer.AsKeyword);
-	foreachStatement.ForeachKey = p.tryParseForeachKey(foreachStatement);
-	foreachStatement.ForeachValue = p.parseForeachValue(foreachStatement);
-	foreachStatement.CloseParen = p.eat1(lexer.CloseParenToken);
-	foreachStatement.Colon = p.eatOptional1(lexer.ColonToken);
-	if (foreachStatement.Colon != nil) {
-		foreachStatement.Statements = p.parseList(foreachStatement, ForeachStatementElements);
-		foreachStatement.EndForeach = p.eat1(lexer.EndForEachKeyword);
-		foreachStatement.EndForeachSemicolon = p.eatSemicolonOrAbortStatement();
+	foreachStatement.ForEachCollectionName = &expr
+	foreachStatement.AsKeyword = p.eat1(lexer.AsKeyword)
+	foreachStatement.ForeachKey = p.tryParseForeachKey(foreachStatement)
+	foreachStatement.ForeachValue = p.parseForeachValue(foreachStatement)
+	foreachStatement.CloseParen = p.eat1(lexer.CloseParenToken)
+	foreachStatement.Colon = p.eatOptional1(lexer.ColonToken)
+	if foreachStatement.Colon != nil {
+		foreachStatement.Statements = p.parseList(foreachStatement, ForeachStatementElements)
+		foreachStatement.EndForeach = p.eat1(lexer.EndForEachKeyword)
+		foreachStatement.EndForeachSemicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		foreachStatement.Statements = []ast.Node{p.parseStatement(foreachStatement)};
+		foreachStatement.Statements = []ast.Node{p.parseStatement(foreachStatement)}
 	}
-	return foreachStatement;
+	return foreachStatement
 }
 func (p *Parser) tryParseForeachKey(parentNode ast.Node) ast.Node {
-	if (!p.isExpressionStart(p.token)) {
-		return nil;
+	if !p.isExpressionStart(p.token) {
+		return nil
 	}
 
-	startPos := p.stream.Pos;
-	startToken := p.token;
-	foreachKey := ast.ForeachKey{};
-	foreachKey.P = &parentNode;
-	foreachKey.Expression = p.parseExpression(foreachKey, false);
-	if (!p.checkToken(lexer.DoubleArrowToken)) {
-		p.stream.Pos = startPos;
-		p.token = startToken;
-		return nil;
+	startPos := p.stream.Pos
+	startToken := p.token
+	foreachKey := ast.ForeachKey{}
+	foreachKey.P = &parentNode
+	foreachKey.Expression = p.parseExpression(foreachKey, false)
+	if !p.checkToken(lexer.DoubleArrowToken) {
+		p.stream.Pos = startPos
+		p.token = startToken
+		return nil
 	}
 
-	foreachKey.Arrow = p.eat1(lexer.DoubleArrowToken);
-	return foreachKey;
+	foreachKey.Arrow = p.eat1(lexer.DoubleArrowToken)
+	return foreachKey
 }
 func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
-	foreachValue := ast.ForeachValue{};
-	foreachValue.P = &parentNode;
-	foreachValue.Ampersand = p.eatOptional1(lexer.AmpersandToken);
-	foreachValue.Expression = p.parseExpression(foreachValue, false);
-	return foreachValue;
+	foreachValue := ast.ForeachValue{}
+	foreachValue.P = &parentNode
+	foreachValue.Ampersand = p.eatOptional1(lexer.AmpersandToken)
+	foreachValue.Expression = p.parseExpression(foreachValue, false)
+	return foreachValue
 }
 func (p *Parser) isExpressionStart(token lexer.Token) bool {
 	fn := p.isExpressionStartFn()
-	return fn(&token);
+	return fn(&token)
 }
 
 func (p *Parser) parseEmptyIntrinsicExpression(parentNode ast.Node) ast.Node {
-	emptyExpression := ast.EmptyIntrinsicExpression{};
-	emptyExpression.P = &parentNode;
-	emptyExpression.EmptyKeyword = p.eat1(lexer.EmptyKeyword);
-	emptyExpression.OpenParen = p.eat1(lexer.OpenParenToken);
-	emptyExpression.Expression = p.parseExpression(emptyExpression, false);
-	emptyExpression.CloseParen = p.eat1(lexer.CloseParenToken);
-	return emptyExpression;
+	emptyExpression := ast.EmptyIntrinsicExpression{}
+	emptyExpression.P = &parentNode
+	emptyExpression.EmptyKeyword = p.eat1(lexer.EmptyKeyword)
+	emptyExpression.OpenParen = p.eat1(lexer.OpenParenToken)
+	emptyExpression.Expression = p.parseExpression(emptyExpression, false)
+	emptyExpression.CloseParen = p.eat1(lexer.CloseParenToken)
+	return emptyExpression
 }
 func (p *Parser) parseGotoStatement(parentNode *ast.Node) ast.Node {
 	panic("Not implemented")
@@ -1213,13 +1217,13 @@ func (p *Parser) parseBreakOrContinueStatement(parentNode *ast.Node) ast.Node {
 	panic("Not implemented")
 }
 func (p *Parser) parseReturnStatement(parentNode *ast.Node) ast.Node {
-	returnStatement := ast.ReturnStatement{};
-	returnStatement.P = parentNode;
-	returnStatement.ReturnKeyword = p.eat1(lexer.ReturnKeyword);
-	if (p.isExpressionStart(p.token)) {
-		returnStatement.Expression = p.parseExpression(returnStatement, false);
+	returnStatement := ast.ReturnStatement{}
+	returnStatement.P = parentNode
+	returnStatement.ReturnKeyword = p.eat1(lexer.ReturnKeyword)
+	if p.isExpressionStart(p.token) {
+		returnStatement.Expression = p.parseExpression(returnStatement, false)
 	}
-	returnStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	returnStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 	return returnStatement
 }
 func (p *Parser) parseThrowStatement(parentNode *ast.Node) ast.Node {
@@ -1254,10 +1258,10 @@ func (p *Parser) parseNamespaceUseDeclaration(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
 func (p *Parser) parseEmptyStatement(parentNode ast.Node) ast.Node {
-	emptyStatement := ast.EmptyStatement{};
-	emptyStatement.P = &parentNode;
-	emptyStatement.Semicolon = p.eat1(lexer.SemicolonToken);
-	return emptyStatement;
+	emptyStatement := ast.EmptyStatement{}
+	emptyStatement.P = &parentNode
+	emptyStatement.Semicolon = p.eat1(lexer.SemicolonToken)
+	return emptyStatement
 }
 func (p *Parser) parseTraitDeclaration(parentNode *ast.Node) ast.Node {
 	panic("Not implemented")
@@ -1266,14 +1270,14 @@ func (p *Parser) parseGlobalDeclaration(parentNode *ast.Node) ast.Node {
 	panic("Not implemented")
 }
 func (p *Parser) parseConstDeclaration(parentNode *ast.Node) ast.Node {
-	constDeclaration := ast.ConstDeclaration{};
-	constDeclaration.P = parentNode;
-	constDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword);
-	constDeclaration.ConstElements = p.parseConstElements(constDeclaration);
-	constDeclaration.Semicolon = p.eatSemicolonOrAbortStatement();
-	return constDeclaration;
+	constDeclaration := ast.ConstDeclaration{}
+	constDeclaration.P = parentNode
+	constDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword)
+	constDeclaration.ConstElements = p.parseConstElements(constDeclaration)
+	constDeclaration.Semicolon = p.eatSemicolonOrAbortStatement()
+	return constDeclaration
 }
-func (parser *Parser) parseFunctionStaticDeclaration(node *ast.Node) ast.Node {
+func (p *Parser) parseFunctionStaticDeclaration(node *ast.Node) ast.Node {
 	panic("Not implemented")
 }
 func (p *Parser) parseElseIfClause(statement ast.IfStatement) *ast.Node {
@@ -1282,103 +1286,103 @@ func (p *Parser) parseElseIfClause(statement ast.IfStatement) *ast.Node {
 func (p *Parser) parseElseClause(statement ast.IfStatement) *ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseScopedPropertyAccessExpression(node ast.Node) ast.Node {
+func (p *Parser) parseScopedPropertyAccessExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseSubscriptExpression(node ast.Node) ast.Node {
+func (p *Parser) parseSubscriptExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseNumericLiteralExpression(node ast.Node) ast.Node {
+func (p *Parser) parseNumericLiteralExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseStringLiteralExpression(node ast.Node) ast.Node {
+func (p *Parser) parseStringLiteralExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseAnonymousFunctionCreationExpression(node ast.Node) ast.Node {
+func (p *Parser) parseAnonymousFunctionCreationExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseMemberAccessExpression(node ast.Node) ast.Node {
+func (p *Parser) parseMemberAccessExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseStringLiteralExpression2(node ast.Node) ast.Node {
+func (p *Parser) parseStringLiteralExpression2(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseCallExpressionRest(node ast.Node) ast.Node {
+func (p *Parser) parseCallExpressionRest(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseArrayCreationExpression(node ast.Node) ast.Node {
+func (p *Parser) parseArrayCreationExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseEchoExpression(node ast.Node) ast.Node {
+func (p *Parser) parseEchoExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseListIntrinsicExpression(node ast.Node) ast.Node {
+func (p *Parser) parseListIntrinsicExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseUnsetIntrinsicExpression(node ast.Node) ast.Node {
+func (p *Parser) parseUnsetIntrinsicExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseEvalIntrinsicExpression(node ast.Node) ast.Node {
+func (p *Parser) parseEvalIntrinsicExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseExitIntrinsicExpression(node ast.Node) ast.Node {
+func (p *Parser) parseExitIntrinsicExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseIssetIntrinsicExpression(node ast.Node) ast.Node {
+func (p *Parser) parseIssetIntrinsicExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parsePrintIntrinsicExpression(node ast.Node) ast.Node {
+func (p *Parser) parsePrintIntrinsicExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseReservedWordExpression(node ast.Node) ast.Node {
+func (p *Parser) parseReservedWordExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (parser *Parser) parseParenthesizedExpression(node ast.Node) ast.Node {
+func (p *Parser) parseParenthesizedExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
 func (p *Parser) isListTerminator(context ParseContext) bool {
-	tokenKind := p.token.Kind;
-	if (tokenKind == lexer.EndOfFileToken) {
+	tokenKind := p.token.Kind
+	if tokenKind == lexer.EndOfFileToken {
 		// Being at the end of the file ends all lists.
-		return true;
+		return true
 	}
 
 	switch context {
 	case SourceElements:
-		return false;
+		return false
 
 	case InterfaceMembers,
 		ClassMembers,
 		BlockStatements,
 		TraitMembers:
-		return tokenKind == lexer.CloseBraceToken;
+		return tokenKind == lexer.CloseBraceToken
 	case SwitchStatementElements:
-		return tokenKind == lexer.CloseBraceToken || tokenKind == lexer.EndSwitchKeyword;
+		return tokenKind == lexer.CloseBraceToken || tokenKind == lexer.EndSwitchKeyword
 	case IfClause2Elements:
-		return tokenKind == lexer.ElseIfKeyword || tokenKind == lexer.ElseKeyword || tokenKind == lexer.EndIfKeyword;
+		return tokenKind == lexer.ElseIfKeyword || tokenKind == lexer.ElseKeyword || tokenKind == lexer.EndIfKeyword
 
 	case WhileStatementElements:
-		return tokenKind == lexer.EndWhileKeyword;
+		return tokenKind == lexer.EndWhileKeyword
 
 	case CaseStatementElements:
 		return tokenKind == lexer.CaseKeyword ||
-			tokenKind == lexer.DefaultKeyword;
+			tokenKind == lexer.DefaultKeyword
 
 	case ForStatementElements:
-		return tokenKind == lexer.EndForKeyword;
+		return tokenKind == lexer.EndForKeyword
 
 	case ForeachStatementElements:
-		return tokenKind == lexer.EndForEachKeyword;
+		return tokenKind == lexer.EndForEachKeyword
 
 	case DeclareStatementElements:
-		return tokenKind == lexer.EndDeclareKeyword;
+		return tokenKind == lexer.EndDeclareKeyword
 	}
 	// TODO warn about unhandled parse context
-	return false;
+	return false
 }
 func (p *Parser) isValidListElement(context ParseContext, token lexer.Token) bool {
 	// TODO
-	switch (context) {
+	switch context {
 	case SourceElements,
 		BlockStatements,
 		IfClause2Elements,
@@ -1387,21 +1391,21 @@ func (p *Parser) isValidListElement(context ParseContext, token lexer.Token) boo
 		ForStatementElements,
 		ForeachStatementElements,
 		DeclareStatementElements:
-		return p.isStatementStart(token);
+		return p.isStatementStart(token)
 
 	case ClassMembers:
-		return p.isClassMemberDeclarationStart(token);
+		return p.isClassMemberDeclarationStart(token)
 
 	case TraitMembers:
-		return p.isTraitMemberDeclarationStart(token);
+		return p.isTraitMemberDeclarationStart(token)
 
 	case InterfaceMembers:
-		return p.isInterfaceMemberDeclarationStart(token);
+		return p.isInterfaceMemberDeclarationStart(token)
 
 	case SwitchStatementElements:
-		return token.Kind == lexer.CaseKeyword || token.Kind == lexer.DefaultKeyword;
+		return token.Kind == lexer.CaseKeyword || token.Kind == lexer.DefaultKeyword
 	}
-	return false;
+	return false
 }
 func (p *Parser) isStatementStart(token lexer.Token) bool {
 	// https://github.com/php/php-langspec/blob/master/spec/19-grammar.md#statements
@@ -1452,13 +1456,13 @@ func (p *Parser) isStatementStart(token lexer.Token) bool {
 		// function-static-declaration
 		lexer.StaticKeyword,
 		lexer.ScriptSectionEndTag:
-		return true;
+		return true
 	}
-	return p.isExpressionStart(token);
+	return p.isExpressionStart(token)
 }
 
 func (p *Parser) isClassMemberDeclarationStart(token lexer.Token) bool {
-	switch (token.Kind) {
+	switch token.Kind {
 	// const-modifier
 	case lexer.ConstKeyword,
 
@@ -1479,11 +1483,11 @@ func (p *Parser) isClassMemberDeclarationStart(token lexer.Token) bool {
 		lexer.FunctionKeyword,
 
 		lexer.UseKeyword:
-		return true;
+		return true
 
 	}
 
-	return false;
+	return false
 }
 
 func (p *Parser) isCurrentTokenValidInEnclosingContexts() bool {
@@ -1491,11 +1495,11 @@ func (p *Parser) isCurrentTokenValidInEnclosingContexts() bool {
 	for ; contextKind < Count; contextKind++ {
 		if p.isInParseContext(contextKind) {
 			if p.isValidListElement(contextKind, p.token) || p.isListTerminator(contextKind) {
-				return true;
+				return true
 			}
 		}
 	}
-	return false;
+	return false
 }
 
 func (p *Parser) isInParseContext(context ParseContext) bool {

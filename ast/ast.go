@@ -204,6 +204,13 @@ type CompoundStatement struct {
 	CloseBrace *lexer.Token
 }
 
+type ReturnStatement struct {
+	CNode
+	ReturnKeyword *lexer.Token
+	Expression Node
+	Semicolon *lexer.Token
+}
+
 type IfStatement struct {
 	CNode
 	IfKeyword     *lexer.Token
@@ -267,6 +274,14 @@ type PostfixUpdateExpression struct {
 type CloneExpression struct {
 	CNode
 	CloneKeyword *lexer.Token
+	Expression   Node
+}
+
+type EmptyIntrinsicExpression struct {
+	CNode
+	EmptyKeyword *lexer.Token
+	OpenParen *lexer.Token
+	CloseParen *lexer.Token
 	Expression   Node
 }
 

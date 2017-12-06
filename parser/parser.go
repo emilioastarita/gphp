@@ -3,7 +3,6 @@ package parser
 import (
 	"github.com/emilioastarita/gphp/lexer"
 	"github.com/emilioastarita/gphp/ast"
-	"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
 type Parser struct {
@@ -11,6 +10,7 @@ type Parser struct {
 	token               lexer.Token
 	currentParseContext ParseContext
 	isParsingObjectCreationExpression bool
+	nameOrKeywordOrReservedWordTokens []lexer.Token
 }
 
 type ParseContext uint
@@ -32,6 +32,9 @@ const (
 )
 
 func (p *Parser) ParseSourceFile(source string, uri string) {
+
+	p.nameOrKeywordOrReservedWordTokens = lexer.ReserverTokens()
+
 	p.stream.Source(source)
 	p.stream.CreateTokens()
 	p.reset()
@@ -824,7 +827,7 @@ func (p *Parser)  parsePrimaryExpression(parentNode ast.Node) ast.Node {
 	case lexer.FalseReservedWord:
 	case lexer.NullReservedWord:
 		// handle `true::`, `true(`, `true\`
-		if (p.lookahead([lexer.BackslashToken, lexer.ColonColonToken, lexer.OpenParenToken])) {
+		if (p.lookahead([]lexer.TokenKind{lexer.BackslashToken, lexer.ColonColonToken, lexer.OpenParenToken})) {
 	return p.parseQualifiedName(parentNode);
 	}
 		return p.parseReservedWordExpression(parentNode);
@@ -1206,9 +1209,54 @@ func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
 	return foreachValue;
 
 }
-func (P *Parser) isExpressionStart(token lexer.Token) bool {
+func (p *Parser) isExpressionStart(token lexer.Token) bool {
 	fn := p.isExpressionStartFn()
-	return fn(token);
+	return fn(&token);
+}
+
+func (p *Parser) parseEmptyIntrinsicExpression(parentNode ast.Node) ast.Node {
+	emptyExpression := ast.EmptyIntrinsicExpression{};
+	emptyExpression.P = &parentNode;
+
+	emptyExpression.EmptyKeyword = p.eat1(lexer.EmptyKeyword);
+	emptyExpression.OpenParen = p.eat1(lexer.OpenParenToken);
+	emptyExpression.Expression = p.parseExpression(emptyExpression, false);
+	emptyExpression.CloseParen = p.eat1(lexer.CloseParenToken);
+
+	return emptyExpression;
+
+}
+func (p *Parser) parseGotoStatement(parentNode *ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseBreakOrContinueStatement(parentNode *ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseReturnStatement(parentNode *ast.Node) ast.Node {
+	returnStatement := ast.ReturnStatement{};
+	returnStatement.P = parentNode;
+	returnStatement.ReturnKeyword = p.eat1(lexer.ReturnKeyword);
+	if (p.isExpressionStart(p.token)) {
+		returnStatement.Expression = p.parseExpression(returnStatement, false);
+	}
+	returnStatement.Semicolon = p.eatSemicolonOrAbortStatement();
+	return returnStatement
+}
+func (p *Parser) parseThrowStatement(parentNode *ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseTryStatement(parentNode *ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseDeclareStatement(parentNode *ast.Node) ast.Node {
+	panic("Not implemented")
+}
+func (p *Parser) parseFunctionDeclaration(node *ast.Node) ast.Node {
+	panic("Not implemented")
+	//functionNode := ast.FunctionDeclaration{};
+	//p.parseFunctionType(functionNode);
+	//functionNode.P = &parentNode;
+	//return functionNode;
 }
 
 

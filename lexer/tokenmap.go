@@ -180,9 +180,9 @@ func IsReserverdWordToken(v TokenKind) bool {
 	return valueInMap(v, RESERVED_WORDS)
 }
 
-func ReserverTokens() []Token {
-	var tokens []Token;
-	for _, value := range m {
+func ReserverTokens() []TokenKind {
+	var tokens []TokenKind;
+	for _, value := range RESERVED_WORDS {
 		tokens = append(tokens, value)
 	}
 	return tokens;

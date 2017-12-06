@@ -18,7 +18,7 @@ type SourceFile struct {
 	P              *Node
 	FileContents   string
 	Uri            string
-	StatementList  []*Node
+	StatementList  []Node
 	EndOfFileToken lexer.Token
 }
 
@@ -26,11 +26,16 @@ func (s *SourceFile) Add(n Node) {
 	s.StatementList = append(s.StatementList, &n)
 }
 
-func (s *SourceFile) Merge(nodes []*Node) {
+func (s *SourceFile) Merge(nodes []Node) {
 	s.StatementList = append(s.StatementList, nodes...)
 }
 
 type Missing struct {
+	CNode
+	Token *lexer.Token
+}
+
+type SkippedNode struct {
 	CNode
 	Token *lexer.Token
 }
@@ -43,16 +48,14 @@ type TokenNode struct {
 type ForeachKey struct {
 	CNode
 	Expression Node
-	Arrow *lexer.Token
+	Arrow      *lexer.Token
 }
 
 type ForeachValue struct {
 	CNode
 	Expression Node
-	Ampersand *lexer.Token
-
+	Ampersand  *lexer.Token
 }
-
 
 type AnonymousFunctionUseClause struct {
 	CNode
@@ -74,8 +77,26 @@ type CaseStatement struct {
 	CNode
 	CaseKeyword            *lexer.Token
 	Expression             *Node
-	StatementList          []*Node
+	StatementList          []Node
 	DefaultLabelTerminator *lexer.Token
+}
+
+type ExpressionStatement struct {
+	CNode
+	Expression Node
+	Semicolon  *lexer.Token
+}
+
+type EmptyStatement struct {
+	CNode
+	Semicolon *lexer.Token
+}
+
+type ConstDeclaration struct {
+	CNode
+	ConstKeyword  *lexer.Token
+	ConstElements Node
+	Semicolon     *lexer.Token
 }
 
 type SwitchStatement struct {
@@ -86,7 +107,7 @@ type SwitchStatement struct {
 	CloseParen     *lexer.Token
 	Colon          *lexer.Token
 	OpenBrace      *lexer.Token
-	CaseStatements []*Node
+	CaseStatements []Node
 	CloseBrace     *lexer.Token
 	Endswitch      *lexer.Token
 	Semicolon      *lexer.Token
@@ -99,7 +120,7 @@ type WhileStatement struct {
 	Expression *Node
 	CloseParen *lexer.Token
 	Colon      *lexer.Token
-	Statements []*Node
+	Statements []Node
 	EndWhile   *lexer.Token
 	Semicolon  *lexer.Token
 }
@@ -127,7 +148,7 @@ type ForStatement struct {
 	ForEndOfLoop        *Node
 	CloseParen          *lexer.Token
 	Colon               *lexer.Token
-	Statements          []*Node
+	Statements          []Node
 	EndFor              *lexer.Token
 	EndForSemicolon     *lexer.Token
 }
@@ -142,11 +163,10 @@ type ForeachStatement struct {
 	ForeachValue          Node
 	CloseParen            *lexer.Token
 	Colon                 *lexer.Token
-	Statements          []*Node
+	Statements            []Node
 	EndForeach            *lexer.Token
 	EndForeachSemicolon   *lexer.Token
 }
-
 
 type CatchClause struct {
 	CNode
@@ -176,6 +196,12 @@ type MissingMemberDeclaration struct {
 	Modifiers []lexer.Token
 }
 
+type QualifiedName struct {
+	CNode
+	GlobalSpecifier   lexer.Token
+	RelativeSpecifier Node
+}
+
 type PropertyDeclaration struct {
 	CNode
 	Modifiers        []lexer.Token
@@ -200,15 +226,15 @@ type ClassInterfaceClause struct {
 type CompoundStatement struct {
 	CNode
 	OpenBrace  *lexer.Token
-	Statements []*Node
+	Statements []Node
 	CloseBrace *lexer.Token
 }
 
 type ReturnStatement struct {
 	CNode
 	ReturnKeyword *lexer.Token
-	Expression Node
-	Semicolon *lexer.Token
+	Expression    Node
+	Semicolon     *lexer.Token
 }
 
 type IfStatement struct {
@@ -218,8 +244,8 @@ type IfStatement struct {
 	Expression    *Node
 	CloseParen    *lexer.Token
 	Colon         *lexer.Token
-	Statements    []*Node
-	ElseIfClauses []*Node
+	Statements    []Node
+	ElseIfClauses []Node
 	ElseClause    *Node
 	EndifKeyword  *lexer.Token
 	SemiColon     *lexer.Token
@@ -280,9 +306,61 @@ type CloneExpression struct {
 type EmptyIntrinsicExpression struct {
 	CNode
 	EmptyKeyword *lexer.Token
-	OpenParen *lexer.Token
-	CloseParen *lexer.Token
+	OpenParen    *lexer.Token
+	CloseParen   *lexer.Token
 	Expression   Node
+}
+
+type ParenthesizedExpression struct {
+	CNode
+	OpenParen  *lexer.Token
+	CloseParen *lexer.Token
+	Expression Node
+}
+
+type CallExpression struct {
+	CNode
+	OpenParen              *lexer.Token
+	CloseParen             *lexer.Token
+	CallableExpression     Node
+	ArgumentExpressionList Node
+}
+
+type MemberAccessExpression struct {
+	CNode
+	ArrowToken               *lexer.Token
+	MemberName               *lexer.Token
+	DereferencableExpression Node
+}
+
+type SubscriptExpression struct {
+	CNode
+	OpenBracketOrBrace  *lexer.Token
+	CloseBracketOrBrace *lexer.Token
+	AccessExpression    Node
+	PostfixExpression   Node
+}
+
+type ScopedPropertyAccessExpression struct {
+	CNode
+	ScopeResolutionQualifier *lexer.Token
+	DoubleColon              *lexer.Token
+	MemberName               Node
+}
+
+type ArrayCreationExpression struct {
+	CNode
+	ArrayKeyword        *lexer.Token
+	OpenParenOrBracket  *lexer.Token
+	CloseParenOrBracket *lexer.Token
+	ArrayElements       Node
+}
+
+type StringLiteral struct {
+	CNode
+	StartQuote *lexer.Token
+	Children   Node
+	EndQuote   *lexer.Token
 }
 
 type ScriptInclusionExpression struct {

@@ -4,18 +4,18 @@ import "github.com/emilioastarita/gphp/lexer"
 
 // node
 type Node interface {
-	Parent() *Node
+	Parent() Node
 	SetParent(p Node)
 }
 
 type CNode struct {
 	Node
-	P *Node
+	P Node
 }
 
 type SourceFile struct {
 	CNode
-	P              *Node
+	P              Node
 	FileContents   string
 	Uri            string
 	StatementList  []Node
@@ -23,7 +23,7 @@ type SourceFile struct {
 }
 
 func (s *SourceFile) Add(n Node) {
-	s.StatementList = append(s.StatementList, &n)
+	s.StatementList = append(s.StatementList, n)
 }
 
 func (s *SourceFile) Merge(nodes []Node) {
@@ -62,21 +62,21 @@ type AnonymousFunctionUseClause struct {
 	UseKeyword          *lexer.Token
 	OpenParen           *lexer.Token
 	CloseParen          *lexer.Token
-	UseVariableNameList *Node
+	UseVariableNameList Node
 }
 
 type ArrayElement struct {
 	CNode
 	ByRef        *lexer.Token
 	ArrowToken   *lexer.Token
-	ElementKey   *Node
-	ElementValue *Node
+	ElementKey   Node
+	ElementValue Node
 }
 
 type CaseStatement struct {
 	CNode
 	CaseKeyword            *lexer.Token
-	Expression             *Node
+	Expression             Node
 	StatementList          []Node
 	DefaultLabelTerminator *lexer.Token
 }
@@ -103,7 +103,7 @@ type SwitchStatement struct {
 	CNode
 	SwitchKeyword  *lexer.Token
 	OpenParen      *lexer.Token
-	Expression     *Node
+	Expression     Node
 	CloseParen     *lexer.Token
 	Colon          *lexer.Token
 	OpenBrace      *lexer.Token
@@ -117,7 +117,7 @@ type WhileStatement struct {
 	CNode
 	WhileToken *lexer.Token
 	OpenParen  *lexer.Token
-	Expression *Node
+	Expression Node
 	CloseParen *lexer.Token
 	Colon      *lexer.Token
 	Statements []Node
@@ -128,10 +128,10 @@ type WhileStatement struct {
 type DoStatement struct {
 	CNode
 	Do         *lexer.Token
-	Statement  *Node
+	Statement  Node
 	WhileToken *lexer.Token
 	OpenParen  *lexer.Token
-	Expression *Node
+	Expression Node
 	CloseParen *lexer.Token
 	Semicolon  *lexer.Token
 }
@@ -140,12 +140,12 @@ type ForStatement struct {
 	CNode
 	For            *lexer.Token
 	OpenParen      *lexer.Token
-	ForInitializer *Node
+	ForInitializer Node
 
 	ExprGroupSemicolon1 *lexer.Token
-	ForControl          *Node
+	ForControl          Node
 	ExprGroupSemicolon2 *lexer.Token
-	ForEndOfLoop        *Node
+	ForEndOfLoop        Node
 	CloseParen          *lexer.Token
 	Colon               *lexer.Token
 	Statements          []Node
@@ -175,8 +175,8 @@ type CatchClause struct {
 	OpenParen         *lexer.Token
 	VariableName      *lexer.Token
 	CloseParen        *lexer.Token
-	QualifiedName     *Node
-	CompoundStatement *Node
+	QualifiedName     Node
+	CompoundStatement Node
 }
 
 type ClassConstDeclaration struct {
@@ -184,7 +184,7 @@ type ClassConstDeclaration struct {
 	Modifiers     []lexer.Token
 	ConstKeyword  *lexer.Token
 	Semicolon     *lexer.Token
-	ConstElements *Node
+	ConstElements Node
 }
 type MethodDeclaration struct {
 	CNode
@@ -205,20 +205,20 @@ type QualifiedName struct {
 type PropertyDeclaration struct {
 	CNode
 	Modifiers        []lexer.Token
-	PropertyElements *Node
+	PropertyElements Node
 	Semicolon        *lexer.Token
 }
 
 type ClassBaseClause struct {
 	CNode
 	ExtendsKeyword *lexer.Token
-	BaseClass      *Node
+	BaseClass      Node
 }
 
 type ClassInterfaceClause struct {
 	CNode
 	ImplementsKeyword *lexer.Token
-	InterfaceNameList *Node
+	InterfaceNameList Node
 }
 
 // statements
@@ -241,12 +241,12 @@ type IfStatement struct {
 	CNode
 	IfKeyword     *lexer.Token
 	OpenParen     *lexer.Token
-	Expression    *Node
+	Expression    Node
 	CloseParen    *lexer.Token
 	Colon         *lexer.Token
 	Statements    []Node
 	ElseIfClauses []Node
-	ElseClause    *Node
+	ElseClause    Node
 	EndifKeyword  *lexer.Token
 	SemiColon     *lexer.Token
 }
@@ -262,7 +262,7 @@ type NamedLabelStatement struct {
 	CNode
 	Name      *lexer.Token
 	Colon     *lexer.Token
-	Statement *Node
+	Statement Node
 }
 
 // expressions
@@ -270,7 +270,7 @@ type NamedLabelStatement struct {
 type UnaryOpExpression struct {
 	CNode
 	Operator *lexer.Token
-	Operand  *Node
+	Operand  Node
 }
 
 type ErrorControlExpression struct {
@@ -294,7 +294,7 @@ type PrefixUpdateExpression struct {
 type PostfixUpdateExpression struct {
 	CNode
 	IncrementOrDecrementOperator *lexer.Token
-	Operand                      *Node
+	Operand                      Node
 }
 
 type CloneExpression struct {
@@ -395,9 +395,9 @@ type BracedExpression struct {
 }
 
 // Implements Interface
-func (n *CNode) Parent() *Node {
+func (n CNode) Parent() Node {
 	return n.P
 }
-func (n *CNode) SetParent(p *Node) {
+func (n CNode) SetParent(p Node) {
 	n.P = p
 }

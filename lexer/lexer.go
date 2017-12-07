@@ -54,7 +54,7 @@ func (s *TokensStream) CreateTokens() {
 			s.Tokens = append(s.Tokens, s.tokenMem...)
 		} else {
 			s.Tokens = append(s.Tokens, *token)
-			lexer.pos = token.FullStart + token.length
+			lexer.pos = token.FullStart + token.Length
 		}
 	}
 	s.Pos = 0
@@ -115,7 +115,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 		}
 
 		if l.state == LexStateHtmlSection {
-			// Keep scanning until we hit a script section start tag
+			// Keep scanning until we hit a script section Start tag
 			if !isScriptStartTag(l.content, l.pos, l.eofPos) {
 				l.pos++
 				continue
@@ -304,7 +304,7 @@ func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart 
 		//lowerText = strings.ToLower(nextToken.getFullText(text))
 		//if (preg_replace('/\s+/', '', strtolower($nextToken->getFullText($text))) == "from") {
 		//	token.Kind = YieldFromKeyword;
-		//	token.length = *pos - token.FullStart;
+		//	token.Length = *pos - token.FullStart;
 		//} else {
 		//	*pos = savedPos;
 		//}

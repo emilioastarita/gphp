@@ -51,7 +51,7 @@ func TestCases(t *testing.T) {
 			for idx, expected := range expectedTokens {
 
 				if idx >= tokensLen {
-					t.Fatalf("Failed %s | %s: Expected Kind %s has no match. Actual tokens has length %d", resultFile, sourceFileName, expected.Kind, tokensLen)
+					t.Fatalf("Failed %s | %s: Expected Kind %s has no match. Actual tokens has Length %d", resultFile, sourceFileName, expected.Kind, tokensLen)
 					return
 				}
 

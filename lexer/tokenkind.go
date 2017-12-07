@@ -133,8 +133,8 @@ const (
 	DotDotDotToken
 	BackslashToken
 	ColonColonToken
-	DoubleArrowToken         // TODO missing from spec
-	LessThanGreaterThanToken // TODO missing from spec
+	DoubleArrowToken         // TODO Missing from spec
+	LessThanGreaterThanToken // TODO Missing from spec
 	AtSymbolToken
 	BacktickToken
 	QuestionToken

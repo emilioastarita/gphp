@@ -91,7 +91,7 @@ func (p *Parser) parseList(parentNode ast.Node, listParseContext ParseContext) [
 			break
 		}
 
-		t := &lexer.Token{p.token.Kind, p.token.FullStart, p.token.FullStart, 0, true}
+		t := &lexer.Token{Kind: p.token.Kind, FullStart: p.token.FullStart, Start: p.token.FullStart, Missing: true}
 		skipped := &ast.SkippedNode{}
 		skipped.Token = t
 		nodes = append(nodes, skipped)
@@ -133,7 +133,7 @@ func (p *Parser) parseExpressionFn() func(*ast.Node) ast.Node {
 }
 
 func (p *Parser) parseModifiers() []lexer.Token {
-	modifiers := []lexer.Token{}
+	var modifiers []lexer.Token
 	token := p.token
 	for p.isModifier(token) {
 		modifiers = append(modifiers, token)
@@ -252,7 +252,7 @@ func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
 			tokNode.Token = tokName
 			variable.Name = tokNode
 		} else {
-			t := &lexer.Token{lexer.VariableName, token.FullStart, token.FullStart, 0, true}
+			t := &lexer.Token{Kind: lexer.VariableName, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 			missing := ast.Missing{}
 			missing.Token = t
 			variable.Name = missing
@@ -462,7 +462,7 @@ func (p *Parser) parseStatementFn() func(*ast.Node) ast.Node {
 		case lexer.AbstractKeyword:
 			if !p.lookahead(lexer.ClassKeyword) {
 				p.advanceToken()
-				t := &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
+				t := &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 				skipped := &ast.SkippedNode{}
 				skipped.Token = t
 				return skipped
@@ -610,14 +610,14 @@ func (p *Parser) eat1(kind lexer.TokenKind) *lexer.Token {
 		p.advanceToken()
 		return &token
 	}
-	t := &lexer.Token{kind, token.FullStart, token.FullStart, 0, true}
+	t := &lexer.Token{Kind: kind, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 	return t
 }
 
 func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 	token := p.token
 	if token.Kind == lexer.EndOfFileToken {
-		t := &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
+		t := &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 		missing := &ast.Missing{}
 		missing.P = &parentNode
 		missing.Token = t
@@ -652,7 +652,7 @@ func (p *Parser) eat(kinds ...lexer.TokenKind) *lexer.Token {
 			return &token
 		}
 	}
-	t := &lexer.Token{kinds[0], token.FullStart, token.FullStart, 0, true}
+	t := &lexer.Token{Kind: kinds[0], FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 	return t
 }
 
@@ -848,7 +848,7 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 
 	missing := &ast.Missing{}
 	missing.P = &parentNode
-	missing.Token = &lexer.Token{lexer.Expression, token.FullStart, token.FullStart, 0, true}
+	missing.Token = &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 	return missing
 }
 func (p *Parser) parseSimpleVariable(variable ast.Node) ast.Node {

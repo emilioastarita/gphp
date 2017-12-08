@@ -257,7 +257,7 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 			shouldConsumeCurrentOperator = newPrecedence > precedence
 		}
 
-		if shouldConsumeCurrentOperator {
+		if shouldConsumeCurrentOperator == false {
 			break
 		}
 		unaryExpression, isUnaryExpression := leftOperand.(ast.UnaryOpExpression)

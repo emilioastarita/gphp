@@ -8,9 +8,7 @@ import (
 
 func TestParser(t *testing.T) {
 	p := Parser{}
-	sourceFile := p.ParseSourceFile(`
-		<?php echo "test";
-`, "")
+	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
 	jsonSource, err := json.Marshal(sourceFile)
 	if err != nil {
 		println(err)

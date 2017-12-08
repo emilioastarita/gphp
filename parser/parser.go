@@ -12,11 +12,19 @@ type Parser struct {
 	isParsingObjectCreationExpression bool
 	nameOrKeywordOrReservedWordTokens []lexer.TokenKind
 }
+type Assocciativity int
+
+const (
+	AssocNone  Assocciativity = iota
+	AssocLeft
+	AssocRight
+	AssocUnknown
+)
 
 type ParseContext uint
 
 const (
-	SourceElements = iota
+	SourceElements           = iota
 	BlockStatements
 	ClassMembers
 	IfClause2Elements
@@ -227,7 +235,40 @@ func (p *Parser) parseUnaryExpressionOrHigher(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	leftOperand := p.parseUnaryExpressionOrHigher(parentNode)
+	prevNewPrecedence, prevAssociativity := AssocUnknown, AssocUnknown
+	for {
+		token := p.token
+		newPrecedence, associativity := p.getBinaryOperatorPrecedenceAndAssociativity(token)
+		if prevAssociativity == AssocNone && prevNewPrecedence == newPrecedence {
+			break;
+		}
+		shouldConsumeCurrentOperator := newPrecedence >= precedence
+		if associativity != AssocRight {
+			shouldConsumeCurrentOperator = newPrecedence > precedence
+		}
+
+
+		if (shouldConsumeCurrentOperator) {
+			break
+		}
+
+		shouldOperatorTakePrecedenceOverUnary := false
+		var leftOperand ast.Node;
+		var unaryExpression ast.UnaryOpExpression;
+		if token.Kind == lexer.AsteriskAsteriskToken {
+			switch leftOperand.(type) {
+			// @todo this not work
+			case ast.UnaryOpExpression:
+				unaryExpression = leftOperand;
+				shouldOperatorTakePrecedenceOverUnary = true
+				leftOperand = leftOperand.Operand;
+			}
+		}
+
+		panic("Not finished")
+
+	}
 }
 
 func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
@@ -691,14 +732,14 @@ func (p *Parser) parsePostfixExpressionRest(expression ast.Node, allowUpdateExpr
 	retExpr := true
 	switch expression.(type) {
 	case ast.Variable,
-		ast.ParenthesizedExpression,
-		ast.QualifiedName,
-		ast.CallExpression,
-		ast.MemberAccessExpression,
-		ast.SubscriptExpression,
-		ast.ScopedPropertyAccessExpression,
-		ast.StringLiteral,
-		ast.ArrayCreationExpression:
+	ast.ParenthesizedExpression,
+	ast.QualifiedName,
+	ast.CallExpression,
+	ast.MemberAccessExpression,
+	ast.SubscriptExpression,
+	ast.ScopedPropertyAccessExpression,
+	ast.StringLiteral,
+	ast.ArrayCreationExpression:
 		retExpr = false
 	}
 	if retExpr {

@@ -4,12 +4,13 @@ import (
 	"testing"
 	"encoding/json"
 	"bytes"
+	"github.com/emilioastarita/gphp/ast"
 )
 
 func TestParser(t *testing.T) {
 	p := Parser{}
 	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
-	jsonSource, err := json.Marshal(sourceFile)
+	jsonSource, err := json.Marshal(ast.Serializable(sourceFile))
 	if err != nil {
 		println(err)
 	} else {

@@ -1,12 +1,41 @@
 package ast
 
-import "github.com/emilioastarita/gphp/lexer"
+import (
+	"github.com/emilioastarita/gphp/lexer"
+	"reflect"
+
+	"fmt"
+)
 
 // node
 type Node interface {
 	Parent() Node
 	SetParent(p Node)
+
 }
+
+
+//func Serializable(n Node) interface{} {
+//	t := reflect.TypeOf(n)
+//	me := make(map[string]interface{})
+//	childs := make(map[string]interface{})
+//
+//	s := reflect.ValueOf(&n).Elem()
+//	typeOfN := s.Type()
+//	for i := 0; i < s.NumField(); i++ {
+//		f := s.Field(i)
+//
+//		childs[typeOfN.Field(i).Name] = f.Interface()
+//
+//
+//		fmt.Printf("%d: %s %s = %v\n", i,
+//			typeOfN.Field(i).Name, f.Type(), f.Interface())
+//	}
+//
+//	me[t.String()] = childs
+//	return me
+//}
+
 
 type DelimitedList interface {
 	Node

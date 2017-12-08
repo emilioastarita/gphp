@@ -8,18 +8,41 @@ type Node interface {
 	SetParent(p Node)
 }
 
-type CNode struct {
+type DelimitedList interface {
 	Node
-	P Node
+	AddNode(n Node)
+	Children() []Node
+}
+
+type ExpressionList struct {
+	CNode
+	Childs []Node
+}
+
+func (e *ExpressionList) AddNode(node Node) {
+	if (node == nil) {
+		return
+	}
+	e.Childs = append(e.Childs, node)
+}
+
+func (e *ExpressionList) Children() []Node {
+	return e.Childs
+}
+
+
+type CNode struct {
+	Node `json:"-"`
+	P Node `json:"-"`
 }
 
 type SourceFile struct {
-	CNode
-	P              Node
-	FileContents   string
-	Uri            string
+	CNode `json:"-"`
+	P              Node `json:"-"`
+	FileContents   string `json:"-"`
+	Uri            string `json:"-"`
 	StatementList  []Node
-	EndOfFileToken lexer.Token
+	EndOfFileToken lexer.Token `json:"-"`
 }
 
 func (s *SourceFile) Add(n Node) {
@@ -31,34 +54,34 @@ func (s *SourceFile) Merge(nodes []Node) {
 }
 
 type Missing struct {
-	CNode
+	CNode `json:"-"`
 	Token *lexer.Token
 }
 
 type SkippedNode struct {
-	CNode
+	CNode `json:"-"`
 	Token *lexer.Token
 }
 
 type TokenNode struct {
-	CNode
+	CNode `json:"-"`
 	Token *lexer.Token
 }
 
 type ForeachKey struct {
-	CNode
+	CNode `json:"-"`
 	Expression Node
 	Arrow      *lexer.Token
 }
 
 type ForeachValue struct {
-	CNode
+	CNode `json:"-"`
 	Expression Node
 	Ampersand  *lexer.Token
 }
 
 type AnonymousFunctionUseClause struct {
-	CNode
+	CNode `json:"-"`
 	UseKeyword          *lexer.Token
 	OpenParen           *lexer.Token
 	CloseParen          *lexer.Token
@@ -66,7 +89,7 @@ type AnonymousFunctionUseClause struct {
 }
 
 type ArrayElement struct {
-	CNode
+	CNode `json:"-"`
 	ByRef        *lexer.Token
 	ArrowToken   *lexer.Token
 	ElementKey   Node
@@ -74,7 +97,7 @@ type ArrayElement struct {
 }
 
 type CaseStatement struct {
-	CNode
+	CNode `json:"-"`
 	CaseKeyword            *lexer.Token
 	Expression             Node
 	StatementList          []Node
@@ -82,25 +105,25 @@ type CaseStatement struct {
 }
 
 type ExpressionStatement struct {
-	CNode
+	CNode `json:"-"`
 	Expression Node
 	Semicolon  *lexer.Token
 }
 
 type EmptyStatement struct {
-	CNode
+	CNode `json:"-"`
 	Semicolon *lexer.Token
 }
 
 type ConstDeclaration struct {
-	CNode
+	CNode `json:"-"`
 	ConstKeyword  *lexer.Token
 	ConstElements Node
 	Semicolon     *lexer.Token
 }
 
 type SwitchStatement struct {
-	CNode
+	CNode `json:"-"`
 	SwitchKeyword  *lexer.Token
 	OpenParen      *lexer.Token
 	Expression     Node
@@ -114,7 +137,7 @@ type SwitchStatement struct {
 }
 
 type WhileStatement struct {
-	CNode
+	CNode `json:"-"`
 	WhileToken *lexer.Token
 	OpenParen  *lexer.Token
 	Expression Node
@@ -126,7 +149,7 @@ type WhileStatement struct {
 }
 
 type DoStatement struct {
-	CNode
+	CNode `json:"-"`
 	Do         *lexer.Token
 	Statement  Node
 	WhileToken *lexer.Token
@@ -137,7 +160,7 @@ type DoStatement struct {
 }
 
 type ForStatement struct {
-	CNode
+	CNode `json:"-"`
 	For            *lexer.Token
 	OpenParen      *lexer.Token
 	ForInitializer Node
@@ -154,7 +177,7 @@ type ForStatement struct {
 }
 
 type ForeachStatement struct {
-	CNode
+	CNode `json:"-"`
 	Foreach               *lexer.Token
 	ForEachCollectionName Node
 	OpenParen             *lexer.Token
@@ -169,7 +192,7 @@ type ForeachStatement struct {
 }
 
 type CatchClause struct {
-	CNode
+	CNode `json:"-"`
 
 	Catch             *lexer.Token
 	OpenParen         *lexer.Token
@@ -180,43 +203,43 @@ type CatchClause struct {
 }
 
 type ClassConstDeclaration struct {
-	CNode
+	CNode `json:"-"`
 	Modifiers     []lexer.Token
 	ConstKeyword  *lexer.Token
 	Semicolon     *lexer.Token
 	ConstElements Node
 }
 type MethodDeclaration struct {
-	CNode
+	CNode `json:"-"`
 	Modifiers []lexer.Token
 }
 
 type MissingMemberDeclaration struct {
-	CNode
+	CNode `json:"-"`
 	Modifiers []lexer.Token
 }
 
 type QualifiedName struct {
-	CNode
+	CNode `json:"-"`
 	GlobalSpecifier   lexer.Token
 	RelativeSpecifier Node
 }
 
 type PropertyDeclaration struct {
-	CNode
+	CNode `json:"-"`
 	Modifiers        []lexer.Token
 	PropertyElements Node
 	Semicolon        *lexer.Token
 }
 
 type ClassBaseClause struct {
-	CNode
+	CNode `json:"-"`
 	ExtendsKeyword *lexer.Token
 	BaseClass      Node
 }
 
 type ClassInterfaceClause struct {
-	CNode
+	CNode `json:"-"`
 	ImplementsKeyword *lexer.Token
 	InterfaceNameList Node
 }
@@ -224,21 +247,21 @@ type ClassInterfaceClause struct {
 // statements
 
 type CompoundStatement struct {
-	CNode
+	CNode `json:"-"`
 	OpenBrace  *lexer.Token
 	Statements []Node
 	CloseBrace *lexer.Token
 }
 
 type ReturnStatement struct {
-	CNode
+	CNode `json:"-"`
 	ReturnKeyword *lexer.Token
 	Expression    Node
 	Semicolon     *lexer.Token
 }
 
 type IfStatement struct {
-	CNode
+	CNode `json:"-"`
 	IfKeyword     *lexer.Token
 	OpenParen     *lexer.Token
 	Expression    Node
@@ -252,14 +275,14 @@ type IfStatement struct {
 }
 
 type InlineHtml struct {
-	CNode
+	CNode `json:"-"`
 	ScriptSectionEndTag   *lexer.Token
 	Text                  *lexer.Token
 	ScriptSectionStartTag *lexer.Token
 }
 
 type NamedLabelStatement struct {
-	CNode
+	CNode `json:"-"`
 	Name      *lexer.Token
 	Colon     *lexer.Token
 	Statement Node
@@ -268,7 +291,7 @@ type NamedLabelStatement struct {
 // expressions
 
 type UnaryOpExpression struct {
-	CNode
+	CNode `json:"-"`
 	Operator *lexer.Token
 	Operand  Node
 }
@@ -292,19 +315,19 @@ type PrefixUpdateExpression struct {
 }
 
 type PostfixUpdateExpression struct {
-	CNode
+	CNode `json:"-"`
 	IncrementOrDecrementOperator *lexer.Token
 	Operand                      Node
 }
 
 type CloneExpression struct {
-	CNode
+	CNode `json:"-"`
 	CloneKeyword *lexer.Token
 	Expression   Node
 }
 
 type EmptyIntrinsicExpression struct {
-	CNode
+	CNode `json:"-"`
 	EmptyKeyword *lexer.Token
 	OpenParen    *lexer.Token
 	CloseParen   *lexer.Token
@@ -312,14 +335,14 @@ type EmptyIntrinsicExpression struct {
 }
 
 type ParenthesizedExpression struct {
-	CNode
+	CNode `json:"-"`
 	OpenParen  *lexer.Token
 	CloseParen *lexer.Token
 	Expression Node
 }
 
 type CallExpression struct {
-	CNode
+	CNode `json:"-"`
 	OpenParen              *lexer.Token
 	CloseParen             *lexer.Token
 	CallableExpression     Node
@@ -327,14 +350,14 @@ type CallExpression struct {
 }
 
 type MemberAccessExpression struct {
-	CNode
+	CNode `json:"-"`
 	ArrowToken               *lexer.Token
 	MemberName               *lexer.Token
 	DereferencableExpression Node
 }
 
 type SubscriptExpression struct {
-	CNode
+	CNode `json:"-"`
 	OpenBracketOrBrace  *lexer.Token
 	CloseBracketOrBrace *lexer.Token
 	AccessExpression    Node
@@ -342,14 +365,14 @@ type SubscriptExpression struct {
 }
 
 type ScopedPropertyAccessExpression struct {
-	CNode
+	CNode `json:"-"`
 	ScopeResolutionQualifier *lexer.Token
 	DoubleColon              *lexer.Token
 	MemberName               Node
 }
 
 type ArrayCreationExpression struct {
-	CNode
+	CNode `json:"-"`
 	ArrayKeyword        *lexer.Token
 	OpenParenOrBracket  *lexer.Token
 	CloseParenOrBracket *lexer.Token
@@ -357,26 +380,26 @@ type ArrayCreationExpression struct {
 }
 
 type StringLiteral struct {
-	CNode
+	CNode `json:"-"`
 	StartQuote *lexer.Token
-	Children   Node
+	Children   *lexer.Token
 	EndQuote   *lexer.Token
 }
 
 type ScriptInclusionExpression struct {
-	CNode
+	CNode `json:"-"`
 	RequireOrIncludeKeyword *lexer.Token
 	Expression              Node
 }
 
 type Variable struct {
-	CNode
+	CNode `json:"-"`
 	Dollar *lexer.Token
 	Name   Node
 }
 
 type ObjectCreationExpression struct {
-	CNode
+	CNode `json:"-"`
 	NewKeword              *lexer.Token
 	ClassTypeDesignator    Node
 	OpenParen              *lexer.Token
@@ -388,14 +411,14 @@ type ObjectCreationExpression struct {
 }
 
 type BracedExpression struct {
-	CNode
+	CNode `json:"-"`
 	OpenBrace  *lexer.Token
 	Expression Node
 	CloseBrace *lexer.Token
 }
 
 type BinaryExpression struct {
-	CNode
+	CNode `json:"-"`
 	LeftOperand Node
 	Operator *lexer.Token
 	RightOperand Node
@@ -403,7 +426,7 @@ type BinaryExpression struct {
 }
 
 type EchoExpression struct {
-	CNode
+	CNode `json:"-"`
 	EchoKeyword *lexer.Token
 	Expressions Node
 }
@@ -412,7 +435,7 @@ type AssignmentExpression struct {
 	BinaryExpression
 }
 type TernaryExpression struct {
-	CNode
+	CNode `json:"-"`
 	Condition Node
 	IfExpression Node
 	ElseExpression Node

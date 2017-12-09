@@ -118,7 +118,7 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 					me[typeName][name] = s.serialize(value)
 				}
 			}
-			return me;
+			return me
 		}
 	default:
 		v := x.Interface()

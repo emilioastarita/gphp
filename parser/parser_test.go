@@ -11,7 +11,6 @@ import (
 	"path/filepath"
 	"io/ioutil"
 	"github.com/yudai/gojsondiff/formatter"
-	"fmt"
 	"os"
 )
 
@@ -65,14 +64,22 @@ func TestCases(t *testing.T) {
 				os.Exit(1)
 			}
 
+
+
 			if d.Modified() {
+
+				var aJson map[string]interface{}
+				json.Unmarshal(jsonSource, &aJson)
+
 				config := formatter.AsciiFormatterConfig{
 					ShowArrayIndex: true,
-					Coloring:       true,
+					Coloring:       false,
 				}
-				formatter := formatter.NewAsciiFormatter(resultCase, config)
+				formatter := formatter.NewAsciiFormatter(aJson, config)
 				diffString, _ := formatter.Format(d)
-				fmt.Print(diffString)
+				t.Log("START DIFF")
+				t.Error(diffString)
+				t.Log("END DIFF")
 			}
 
 		})

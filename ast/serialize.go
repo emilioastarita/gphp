@@ -4,6 +4,7 @@ import (
 	"reflect"
 	goast "go/ast"
 	"github.com/emilioastarita/gphp/lexer"
+	"unicode"
 )
 
 type serializer struct {
@@ -17,20 +18,23 @@ func Serialize(x interface {}) interface {} {
 	s := serializer{
 		tagName: "serialize",
 		ptrmap: make(map[interface{}]bool),
-		ignoredFields: []string{"CNode"},
 		typeOfToken: reflect.TypeOf(lexer.Token{}),
 	}
 	return s.serialize(reflect.ValueOf(x))
 }
 
+func (s *serializer) formatSubField(x reflect.StructField) string {
+	if tag := x.Tag.Get(s.tagName);  tag != "" {
+		return tag
+	}
+	r  := []rune(x.Name)
+	r[0] = unicode.ToLower(r[0])
+	return string(r)
+}
+
 func (s *serializer) isIgnoredField(x reflect.StructField) bool {
 	if tag := x.Tag.Get(s.tagName);  tag == "-" {
 		return true
-	}
-	for _, ignore := range s.ignoredFields {
-		if ignore == x.Name {
-			return true
-		}
 	}
 	return false
 }
@@ -110,7 +114,8 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 				// values cannot be accessed via reflection
 				if field := t.Field(i); goast.IsExported(field.Name) && !s.isIgnoredField(field) {
 					value := x.Field(i)
-					me[typeName][field.Name] = s.serialize(value)
+					name := s.formatSubField(field)
+					me[typeName][name] = s.serialize(value)
 				}
 			}
 			return me;

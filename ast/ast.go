@@ -21,8 +21,8 @@ type DelimitedList interface {
 }
 
 type ExpressionList struct {
-	CNode
-	Childs []Node
+	CNode `serialize:"-"`
+	Childs []Node `serialize:"children"`
 }
 
 func (e *ExpressionList) AddNode(node Node) {

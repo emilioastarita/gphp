@@ -31,14 +31,14 @@ const (
 	Count
 )
 
-func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFile {
+func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
 
 	p.nameOrKeywordOrReservedWordTokens = lexer.ReserverTokens()
 
 	p.stream.Source(source)
 	p.stream.CreateTokens()
 	p.reset()
-	sourceFile := ast.SourceFile{P: nil, FileContents: source, Uri: uri}
+	sourceFile := ast.SourceFileNode{P: nil, FileContents: source, Uri: uri}
 	if p.token.Kind != lexer.EndOfFileToken {
 		sourceFile.Add(p.parseInlineHtml(sourceFile))
 	}

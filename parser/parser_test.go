@@ -2,15 +2,21 @@ package parser
 
 import (
 	"testing"
-	"encoding/json"
+	//"encoding/json"
 	"bytes"
+
 	"github.com/emilioastarita/gphp/ast"
+	"encoding/json"
 )
 
 func TestParser(t *testing.T) {
 	p := Parser{}
 	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
-	jsonSource, err := json.Marshal(ast.Serializable(sourceFile))
+
+
+	//ast.Serialize(sourceFile)
+
+	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {
 		println(err)
 	} else {

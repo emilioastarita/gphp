@@ -1,0 +1,62 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "EchoExpression": {
+                            "echoKeyword": {
+                                "kind": "EchoKeyword",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 4
+                            },
+                            "expressions": {
+                                "ExpressionList": {
+                                    "children": [
+                                        {
+                                            "StringLiteral": {
+                                                "startQuote": null,
+                                                "children": {
+                                                    "kind": "StringLiteralToken",
+                                                    "fullStart": 10,
+                                                    "start": 11,
+                                                    "length": 7
+                                                },
+                                                "endQuote": null
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 17,
+                        "start": 17,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 18,
+            "start": 18,
+            "length": 0
+        }
+    }
+}

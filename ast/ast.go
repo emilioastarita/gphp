@@ -26,7 +26,7 @@ type ExpressionList struct {
 }
 
 func (e *ExpressionList) AddNode(node Node) {
-	if (node == nil) {
+	if node == nil {
 		return
 	}
 	e.Childs = append(e.Childs, node)

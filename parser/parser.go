@@ -16,7 +16,7 @@ type Parser struct {
 type ParseContext uint
 
 const (
-	SourceElements           = iota
+	SourceElements = iota
 	BlockStatements
 	ClassMembers
 	IfClause2Elements
@@ -44,6 +44,7 @@ func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
 	}
 	list := p.parseList(sourceFile, SourceElements)
 	sourceFile.Merge(list)
+	sourceFile.EndOfFileToken = p.eat1(lexer.EndOfFileToken)
 	return sourceFile
 }
 
@@ -76,7 +77,7 @@ func (p *Parser) eatOptional1(kind lexer.TokenKind) *lexer.Token {
 	return nil
 }
 
-func (p *Parser) eatOptional(kinds ... lexer.TokenKind) *lexer.Token {
+func (p *Parser) eatOptional(kinds ...lexer.TokenKind) *lexer.Token {
 	t := p.token
 	for _, kind := range kinds {
 		if t.Kind == kind {
@@ -244,13 +245,9 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 	for {
 		token := p.token
 
-		if token.Kind == lexer.EndOfFileToken {
-			break
-		}
-
 		newPrecedence, associativity := p.getBinaryOperatorPrecedenceAndAssociativity(token)
 		if prevAssociativity == ast.AssocNone && prevNewPrecedence == newPrecedence {
-			break;
+			break
 		}
 		shouldConsumeCurrentOperator := newPrecedence >= precedence
 		if associativity != ast.AssocRight {
@@ -264,11 +261,11 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 		shouldOperatorTakePrecedenceOverUnary := token.Kind == lexer.AsteriskAsteriskToken && isUnaryExpression
 
 		if shouldOperatorTakePrecedenceOverUnary {
-			leftOperand = unaryExpression.Operand;
+			leftOperand = unaryExpression.Operand
 		}
 		p.advanceToken()
 
-		var byRefToken *lexer.Token;
+		var byRefToken *lexer.Token
 		if token.Kind == lexer.EqualsToken {
 			byRefToken = p.eatOptional1(lexer.AmpersandToken)
 		}
@@ -290,7 +287,7 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 		prevNewPrecedence = newPrecedence
 		prevAssociativity = associativity
 	}
-	return leftOperand;
+	return leftOperand
 }
 
 func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
@@ -754,14 +751,14 @@ func (p *Parser) parsePostfixExpressionRest(expression ast.Node, allowUpdateExpr
 	retExpr := true
 	switch expression.(type) {
 	case ast.Variable,
-	ast.ParenthesizedExpression,
-	ast.QualifiedName,
-	ast.CallExpression,
-	ast.MemberAccessExpression,
-	ast.SubscriptExpression,
-	ast.ScopedPropertyAccessExpression,
-	ast.StringLiteral,
-	ast.ArrayCreationExpression:
+		ast.ParenthesizedExpression,
+		ast.QualifiedName,
+		ast.CallExpression,
+		ast.MemberAccessExpression,
+		ast.SubscriptExpression,
+		ast.ScopedPropertyAccessExpression,
+		ast.StringLiteral,
+		ast.ArrayCreationExpression:
 		retExpr = false
 	}
 	if retExpr {
@@ -975,38 +972,37 @@ func (p *Parser) parseExpressionList(parentNode ast.Node) ast.Node {
 	return p.parseDelimitedList(expressionList, lexer.CommaToken, p.isExpressionStartFn(), p.parseExpressionFn(), parentNode, false)
 }
 
-type ElementStartFn func(*lexer.Token) bool;
+type ElementStartFn func(*lexer.Token) bool
 
-type ParseElementFn func(ast.Node) ast.Node;
+type ParseElementFn func(ast.Node) ast.Node
 
 func (p *Parser) parseDelimitedList(node ast.DelimitedList, delimiter lexer.TokenKind, isElementStartFn ElementStartFn, parseElementFn ParseElementFn, parentNode ast.Node, allowEmptyElements bool) ast.DelimitedList {
 	// TODO consider allowing empty delimiter to be more tolerant
-	token := p.token;
+	token := p.token
 	for {
 		if isElementStartFn(&token) {
 			r := parseElementFn(node)
-			node.AddNode(r);
+			node.AddNode(r)
 		} else if !allowEmptyElements || (allowEmptyElements && !p.checkToken(delimiter)) {
 			break
 		}
-		delimeterToken := p.eatOptional(delimiter);
+		delimeterToken := p.eatOptional(delimiter)
 		if delimeterToken != nil {
 			tokNod := ast.TokenNode{Token: delimeterToken}
-			node.AddNode(tokNod);
-
+			node.AddNode(tokNod)
 		}
-		token = p.token;
+		token = p.token
 		// TODO ERROR CASE - no delimeter, but a param follows
 		if delimeterToken == nil {
-			break;
+			break
 		}
 	}
 
-	node.SetParent(parentNode);
-	if (node.Children() == nil) {
-		return nil;
+	node.SetParent(parentNode)
+	if node.Children() == nil {
+		return nil
 	}
-	return node;
+	return node
 }
 
 func (p *Parser) parseTraitUseClause(parentNode ast.Node) ast.Node {
@@ -1395,11 +1391,11 @@ func (p *Parser) parseNumericLiteralExpression(node ast.Node) ast.Node {
 }
 func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 	// TODO validate input token
-	expression := ast.StringLiteral{};
-	expression.P = parentNode;
-	expression.Children = &p.token; // TODO - merge string types
-	p.advanceToken();
-	return expression;
+	expression := ast.StringLiteral{}
+	expression.P = parentNode
+	expression.Children = p.token // TODO - merge string types
+	p.advanceToken()
+	return expression
 }
 func (p *Parser) parseAnonymousFunctionCreationExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
@@ -1418,11 +1414,11 @@ func (p *Parser) parseArrayCreationExpression(node ast.Node) ast.Node {
 }
 
 func (p *Parser) parseEchoExpression(parentNode ast.Node) ast.Node {
-	echoExpression := ast.EchoExpression{};
-	echoExpression.P = parentNode;
-	echoExpression.EchoKeyword = p.eat1(lexer.EchoKeyword);
-	echoExpression.Expressions = p.parseExpressionList(echoExpression);
-	return echoExpression;
+	echoExpression := ast.EchoExpression{}
+	echoExpression.P = parentNode
+	echoExpression.EchoKeyword = p.eat1(lexer.EchoKeyword)
+	echoExpression.Expressions = p.parseExpressionList(echoExpression)
+	return echoExpression
 }
 
 func (p *Parser) parseListIntrinsicExpression(node ast.Node) ast.Node {
@@ -1623,39 +1619,39 @@ func (p *Parser) isInterfaceMemberDeclarationStart(token lexer.Token) bool {
 
 func (p *Parser) getBinaryOperatorPrecedenceAndAssociativity(token lexer.Token) (int, ast.Assocciativity) {
 	val, ok := ast.OPERATOR_PRECEDENCE_AND_ASSOCIATIVITY[token.Kind]
-	if (ok) {
+	if ok {
 		return val.Precedence, val.Assocc
 	}
 	return -1, ast.AssocUnknown
 }
 func (p *Parser) parseTernaryExpression(leftOperand ast.Node, questionToken lexer.Token) ast.Node {
-	ternaryExpression := ast.TernaryExpression{};
-	ternaryExpression.P = leftOperand.Parent();
-	leftOperand.SetParent(ternaryExpression);
-	ternaryExpression.Condition = leftOperand;
-	ternaryExpression.QuestionToken = &questionToken;
+	ternaryExpression := ast.TernaryExpression{}
+	ternaryExpression.P = leftOperand.Parent()
+	leftOperand.SetParent(ternaryExpression)
+	ternaryExpression.Condition = leftOperand
+	ternaryExpression.QuestionToken = &questionToken
 	ternaryExpression.IfExpression = nil
 	if p.isExpressionStart(p.token) {
 		ternaryExpression.IfExpression = p.parseExpression(ternaryExpression, false)
 	}
-	ternaryExpression.ColonToken = p.eat1(lexer.ColonToken);
-	ternaryExpression.ElseExpression = p.parseBinaryExpressionOrHigher(9, ternaryExpression);
-	leftOperand = ternaryExpression;
-	return leftOperand;
+	ternaryExpression.ColonToken = p.eat1(lexer.ColonToken)
+	ternaryExpression.ElseExpression = p.parseBinaryExpressionOrHigher(9, ternaryExpression)
+	leftOperand = ternaryExpression
+	return leftOperand
 }
 
 func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorToken lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
 	binaryExpression := ast.AssignmentExpression{}
-	binaryExpression.P = parentNode;
-	leftOperand.SetParent(binaryExpression);
-	rightOperand.SetParent(binaryExpression);
-	binaryExpression.LeftOperand = leftOperand;
-	binaryExpression.Operator = &operatorToken;
+	binaryExpression.P = parentNode
+	leftOperand.SetParent(binaryExpression)
+	rightOperand.SetParent(binaryExpression)
+	binaryExpression.LeftOperand = leftOperand
+	binaryExpression.Operator = &operatorToken
 	if byRefToken != nil {
-		binaryExpression.ByRef = byRefToken;
+		binaryExpression.ByRef = byRefToken
 	}
-	binaryExpression.RightOperand = rightOperand;
-	return binaryExpression;
+	binaryExpression.RightOperand = rightOperand
+	return binaryExpression
 }
 
 func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
@@ -1669,5 +1665,5 @@ func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken lexer.
 		binaryExpression.ByRef = byRefToken
 	}
 	binaryExpression.RightOperand = rightOperand
-	return binaryExpression;
+	return binaryExpression
 }

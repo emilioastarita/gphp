@@ -5,39 +5,34 @@ import (
 	//"encoding/json"
 	"bytes"
 
-	"github.com/emilioastarita/gphp/ast"
 	"encoding/json"
+	"github.com/emilioastarita/gphp/ast"
 	diff "github.com/yudai/gojsondiff"
-	"path/filepath"
-	"io/ioutil"
 	"github.com/yudai/gojsondiff/formatter"
+	"io/ioutil"
 	"os"
+	"path/filepath"
 )
 
-//func TestParser(t *testing.T) {
-//	p := Parser{}
-//	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
-//
-//	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
-//	if err != nil {
-//		println(err)
-//	} else {
-//		pretty, _ := prettyPrintJSON(jsonSource)
-//		println(string((pretty)))
-//	}
-//
-//}
+func TestParser(t *testing.T) {
+	p := Parser{}
+	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
 
+	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
+	if err != nil {
+		println(err)
+	} else {
+		pretty, _ := prettyPrintJSON(jsonSource)
+		println(string((pretty)))
+	}
 
-
+}
 
 func TestCases(t *testing.T) {
 	suffix := ".tree"
 	tokensLen := len(suffix)
 
-	skipFiles := map[string]bool{
-
-	}
+	skipFiles := map[string]bool{}
 	resultFiles, _ := filepath.Glob("cases/*.php" + suffix)
 
 	for _, resultFile := range resultFiles {
@@ -64,8 +59,6 @@ func TestCases(t *testing.T) {
 				os.Exit(1)
 			}
 
-
-
 			if d.Modified() {
 
 				var aJson map[string]interface{}
@@ -86,9 +79,6 @@ func TestCases(t *testing.T) {
 
 	}
 }
-
-
-
 
 func prettyPrintJSON(b []byte) ([]byte, error) {
 	var out bytes.Buffer

@@ -276,7 +276,7 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 		} else if token.Kind == lexer.EqualsToken {
 			leftOperand = p.makeBinaryAssignmentExpression(leftOperand, token, byRefToken, p.parseBinaryExpressionOrHigher(newPrecedence, nil), parentNode)
 		} else {
-			leftOperand = p.makeBinaryExpression(leftOperand, token, byRefToken, p.parseBinaryExpressionOrHigher(newPrecedence, nil), parentNode)
+			leftOperand = p.makeBinaryExpression(leftOperand, token, p.parseBinaryExpressionOrHigher(newPrecedence, nil), parentNode)
 		}
 
 		if shouldOperatorTakePrecedenceOverUnary {
@@ -1655,16 +1655,13 @@ func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorTo
 	return binaryExpression
 }
 
-func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken *lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
+func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
 	binaryExpression := ast.BinaryExpression{}
 	binaryExpression.P = parentNode
 	leftOperand.SetParent(binaryExpression)
 	rightOperand.SetParent(binaryExpression)
 	binaryExpression.LeftOperand = leftOperand
 	binaryExpression.Operator = operatorToken
-	if byRefToken != nil {
-		binaryExpression.ByRef = byRefToken
-	}
 	binaryExpression.RightOperand = rightOperand
 	return binaryExpression
 }

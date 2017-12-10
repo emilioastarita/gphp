@@ -422,7 +422,7 @@ type BinaryExpression struct {
 	LeftOperand  Node
 	Operator     *lexer.Token
 	RightOperand Node
-	ByRef        *lexer.Token
+
 }
 
 type EchoExpression struct {
@@ -433,6 +433,7 @@ type EchoExpression struct {
 
 type AssignmentExpression struct {
 	BinaryExpression
+	ByRef        *lexer.Token
 }
 type TernaryExpression struct {
 	CNode          `serialize:"-"`

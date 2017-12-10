@@ -7,7 +7,7 @@ import (
 
 type Parser struct {
 	stream                            lexer.TokensStream
-	token                             lexer.Token
+	token                             *lexer.Token
 	currentParseContext               ParseContext
 	isParsingObjectCreationExpression bool
 	nameOrKeywordOrReservedWordTokens []lexer.TokenKind
@@ -53,7 +53,8 @@ func (p *Parser) reset() {
 	p.currentParseContext = 0
 }
 func (p *Parser) advanceToken() {
-	p.token = p.stream.ScanNext()
+	c := p.stream.ScanNext()
+	p.token = &c
 }
 
 func (p *Parser) parseInlineHtml(source ast.Node) ast.Node {
@@ -72,7 +73,7 @@ func (p *Parser) eatOptional1(kind lexer.TokenKind) *lexer.Token {
 	t := p.token
 	if t.Kind == kind {
 		p.advanceToken()
-		return &t
+		return t
 	}
 	return nil
 }
@@ -82,7 +83,7 @@ func (p *Parser) eatOptional(kinds ...lexer.TokenKind) *lexer.Token {
 	for _, kind := range kinds {
 		if t.Kind == kind {
 			p.advanceToken()
-			return &t
+			return t
 		}
 	}
 	return nil
@@ -145,8 +146,8 @@ func (p *Parser) parseExpressionFn() func(ast.Node) ast.Node {
 	}
 }
 
-func (p *Parser) parseModifiers() []lexer.Token {
-	var modifiers []lexer.Token
+func (p *Parser) parseModifiers() []*lexer.Token {
+	var modifiers []*lexer.Token
 	token := p.token
 	for p.isModifier(token) {
 		modifiers = append(modifiers, token)
@@ -668,7 +669,7 @@ func (p *Parser) eat1(kind lexer.TokenKind) *lexer.Token {
 	token := p.token
 	if token.Kind == kind {
 		p.advanceToken()
-		return &token
+		return token
 	}
 	t := &lexer.Token{Kind: kind, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 	return t
@@ -709,7 +710,7 @@ func (p *Parser) eat(kinds ...lexer.TokenKind) *lexer.Token {
 	for _, k := range kinds {
 		if token.Kind == k {
 			p.advanceToken()
-			return &token
+			return token
 		}
 	}
 	t := &lexer.Token{Kind: kinds[0], FullStart: token.FullStart, Start: token.FullStart, Missing: true}
@@ -915,7 +916,7 @@ func (p *Parser) parseSimpleVariable(variable ast.Node) ast.Node {
 	fn := p.parseSimpleVariableFn()
 	return fn(variable)
 }
-func (p *Parser) isModifier(token lexer.Token) bool {
+func (p *Parser) isModifier(token *lexer.Token) bool {
 	switch token.Kind {
 	// class-modifier
 	case lexer.AbstractKeyword,
@@ -932,7 +933,7 @@ func (p *Parser) isModifier(token lexer.Token) bool {
 	}
 	return false
 }
-func (p *Parser) parseClassConstDeclaration(parentNode ast.Node, modifiers []lexer.Token) ast.Node {
+func (p *Parser) parseClassConstDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
 	classConstDeclaration := ast.ClassConstDeclaration{}
 	classConstDeclaration.P = parentNode
 	classConstDeclaration.Modifiers = modifiers
@@ -946,7 +947,7 @@ func (p *Parser) parseConstElements(parentNode ast.Node) ast.Node {
 	panic("Not implemented parseConstElements")
 }
 
-func (p *Parser) parseMethodDeclaration(parentNode ast.Node, modifiers []lexer.Token) ast.Node {
+func (p *Parser) parseMethodDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
 	methodDeclaration := ast.MethodDeclaration{}
 	methodDeclaration.Modifiers = modifiers
 	p.parseFunctionType(methodDeclaration, true)
@@ -958,7 +959,7 @@ func (p *Parser) parseFunctionType(parent ast.MethodDeclaration, b bool) {
 	panic("Not implemented parseFunctionType")
 }
 
-func (p *Parser) parsePropertyDeclaration(parentNode ast.Node, modifiers []lexer.Token) ast.Node {
+func (p *Parser) parsePropertyDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
 	propertyDeclaration := ast.PropertyDeclaration{}
 	propertyDeclaration.P = parentNode
 	propertyDeclaration.Modifiers = modifiers
@@ -980,7 +981,7 @@ func (p *Parser) parseDelimitedList(node ast.DelimitedList, delimiter lexer.Toke
 	// TODO consider allowing empty delimiter to be more tolerant
 	token := p.token
 	for {
-		if isElementStartFn(&token) {
+		if isElementStartFn(token) {
 			r := parseElementFn(node)
 			node.AddNode(r)
 		} else if !allowEmptyElements || (allowEmptyElements && !p.checkToken(delimiter)) {
@@ -1290,9 +1291,9 @@ func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
 	foreachValue.Expression = p.parseExpression(foreachValue, false)
 	return foreachValue
 }
-func (p *Parser) isExpressionStart(token lexer.Token) bool {
+func (p *Parser) isExpressionStart(token *lexer.Token) bool {
 	fn := p.isExpressionStartFn()
-	return fn(&token)
+	return fn(token)
 }
 
 func (p *Parser) parseEmptyIntrinsicExpression(parentNode ast.Node) ast.Node {
@@ -1485,7 +1486,7 @@ func (p *Parser) isListTerminator(context ParseContext) bool {
 	// TODO warn about unhandled parse context
 	return false
 }
-func (p *Parser) isValidListElement(context ParseContext, token lexer.Token) bool {
+func (p *Parser) isValidListElement(context ParseContext, token *lexer.Token) bool {
 	// TODO
 	switch context {
 	case SourceElements,
@@ -1512,7 +1513,7 @@ func (p *Parser) isValidListElement(context ParseContext, token lexer.Token) boo
 	}
 	return false
 }
-func (p *Parser) isStatementStart(token lexer.Token) bool {
+func (p *Parser) isStatementStart(token *lexer.Token) bool {
 	// https://github.com/php/php-langspec/blob/master/spec/19-grammar.md#statements
 	switch token.Kind {
 	// Compound Statements
@@ -1566,7 +1567,7 @@ func (p *Parser) isStatementStart(token lexer.Token) bool {
 	return p.isExpressionStart(token)
 }
 
-func (p *Parser) isClassMemberDeclarationStart(token lexer.Token) bool {
+func (p *Parser) isClassMemberDeclarationStart(token *lexer.Token) bool {
 	switch token.Kind {
 	// const-modifier
 	case lexer.ConstKeyword,
@@ -1610,26 +1611,26 @@ func (p *Parser) isCurrentTokenValidInEnclosingContexts() bool {
 func (p *Parser) isInParseContext(context ParseContext) bool {
 	return (p.currentParseContext & (1 << context)) == 0
 }
-func (p *Parser) isTraitMemberDeclarationStart(token lexer.Token) bool {
+func (p *Parser) isTraitMemberDeclarationStart(token *lexer.Token) bool {
 	panic("Not implemented")
 }
-func (p *Parser) isInterfaceMemberDeclarationStart(token lexer.Token) bool {
+func (p *Parser) isInterfaceMemberDeclarationStart(token *lexer.Token) bool {
 	panic("Not implemented")
 }
 
-func (p *Parser) getBinaryOperatorPrecedenceAndAssociativity(token lexer.Token) (int, ast.Assocciativity) {
+func (p *Parser) getBinaryOperatorPrecedenceAndAssociativity(token *lexer.Token) (int, ast.Assocciativity) {
 	val, ok := ast.OPERATOR_PRECEDENCE_AND_ASSOCIATIVITY[token.Kind]
 	if ok {
 		return val.Precedence, val.Assocc
 	}
 	return -1, ast.AssocUnknown
 }
-func (p *Parser) parseTernaryExpression(leftOperand ast.Node, questionToken lexer.Token) ast.Node {
+func (p *Parser) parseTernaryExpression(leftOperand ast.Node, questionToken *lexer.Token) ast.Node {
 	ternaryExpression := ast.TernaryExpression{}
 	ternaryExpression.P = leftOperand.Parent()
 	leftOperand.SetParent(ternaryExpression)
 	ternaryExpression.Condition = leftOperand
-	ternaryExpression.QuestionToken = &questionToken
+	ternaryExpression.QuestionToken = questionToken
 	ternaryExpression.IfExpression = nil
 	if p.isExpressionStart(p.token) {
 		ternaryExpression.IfExpression = p.parseExpression(ternaryExpression, false)
@@ -1640,13 +1641,13 @@ func (p *Parser) parseTernaryExpression(leftOperand ast.Node, questionToken lexe
 	return leftOperand
 }
 
-func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorToken lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
+func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorToken *lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
 	binaryExpression := ast.AssignmentExpression{}
 	binaryExpression.P = parentNode
 	leftOperand.SetParent(binaryExpression)
 	rightOperand.SetParent(binaryExpression)
 	binaryExpression.LeftOperand = leftOperand
-	binaryExpression.Operator = &operatorToken
+	binaryExpression.Operator = operatorToken
 	if byRefToken != nil {
 		binaryExpression.ByRef = byRefToken
 	}
@@ -1654,13 +1655,13 @@ func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorTo
 	return binaryExpression
 }
 
-func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
+func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken *lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
 	binaryExpression := ast.BinaryExpression{}
 	binaryExpression.P = parentNode
 	leftOperand.SetParent(binaryExpression)
 	rightOperand.SetParent(binaryExpression)
 	binaryExpression.LeftOperand = leftOperand
-	binaryExpression.Operator = &operatorToken
+	binaryExpression.Operator = operatorToken
 	if byRefToken != nil {
 		binaryExpression.ByRef = byRefToken
 	}

@@ -204,19 +204,19 @@ type CatchClause struct {
 
 type ClassConstDeclaration struct {
 	CNode         `serialize:"-"`
-	Modifiers     []lexer.Token
+	Modifiers     []*lexer.Token
 	ConstKeyword  *lexer.Token
 	Semicolon     *lexer.Token
 	ConstElements Node
 }
 type MethodDeclaration struct {
 	CNode     `serialize:"-"`
-	Modifiers []lexer.Token
+	Modifiers []*lexer.Token
 }
 
 type MissingMemberDeclaration struct {
 	CNode     `serialize:"-"`
-	Modifiers []lexer.Token
+	Modifiers []*lexer.Token
 }
 
 type QualifiedName struct {
@@ -227,7 +227,7 @@ type QualifiedName struct {
 
 type PropertyDeclaration struct {
 	CNode            `serialize:"-"`
-	Modifiers        []lexer.Token
+	Modifiers        []*lexer.Token
 	PropertyElements Node
 	Semicolon        *lexer.Token
 }
@@ -382,7 +382,7 @@ type ArrayCreationExpression struct {
 type StringLiteral struct {
 	CNode      `serialize:"-"`
 	StartQuote *lexer.Token
-	Children   lexer.Token
+	Children   *lexer.Token
 	EndQuote   *lexer.Token
 }
 

@@ -5,12 +5,15 @@ import (
 	goast "go/ast"
 	"github.com/emilioastarita/gphp/lexer"
 	"unicode"
+	"bytes"
+	"encoding/json"
 )
 
 type serializer struct {
 	ptrmap map[interface{}]bool // *T -> line number
 	ignoredFields []string
 	typeOfToken reflect.Type
+	typeOfTokenNode reflect.Type
 	tagName string
 }
 
@@ -19,12 +22,13 @@ func Serialize(x interface {}) interface {} {
 		tagName: "serialize",
 		ptrmap: make(map[interface{}]bool),
 		typeOfToken: reflect.TypeOf(lexer.Token{}),
+		typeOfTokenNode: reflect.TypeOf(TokenNode{}),
 	}
 	return s.serialize(reflect.ValueOf(x))
 }
 
 func (s *serializer) formatSubField(x reflect.StructField) string {
-	if tag := x.Tag.Get(s.tagName);  tag != "" {
+	if tag := x.Tag.Get(s.tagName);  tag != "" && tag[0] != '-' {
 		return tag
 	}
 	r  := []rune(x.Name)
@@ -38,6 +42,14 @@ func (s *serializer) isIgnoredField(x reflect.StructField) bool {
 	}
 	return false
 }
+
+func (s *serializer) isEmbedded(x reflect.StructField) bool {
+	if tag := x.Tag.Get(s.tagName);  tag == "-flat" {
+		return true
+	}
+	return false
+}
+
 
 func (s *serializer) serialize(x reflect.Value) interface{} {
 
@@ -106,6 +118,8 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 			me["start"] = s.serialize(x.FieldByName("Start"))
 			me["length"] = s.serialize(x.FieldByName("Length"))
 			return me
+		case s.typeOfTokenNode:
+			return s.serialize(x.FieldByName("Token"))
 		default:
 			me := make(map[string]map[string]interface{})
 			me[typeName] = make(map[string]interface{})
@@ -115,7 +129,19 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 				if field := t.Field(i); goast.IsExported(field.Name) && !s.isIgnoredField(field) {
 					value := x.Field(i)
 					name := s.formatSubField(field)
-					me[typeName][name] = s.serialize(value)
+
+					if s.isEmbedded(field) {
+						embedded := s.serialize(value)
+						m, ok := embedded.(map[string]map[string]interface{})
+						if ok {
+							for k, v := range m[field.Name] {
+								me[typeName][k] = v
+							}
+						}
+					} else {
+						me[typeName][name] = s.serialize(value)
+					}
+
 				}
 			}
 			return me
@@ -132,3 +158,8 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 	return nil
 }
 
+func PrettyPrintJSON(b []byte) ([]byte, error) {
+	var out bytes.Buffer
+	err := json.Indent(&out, b, "", "    ")
+	return out.Bytes(), err
+}

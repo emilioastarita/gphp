@@ -3,8 +3,6 @@ package parser
 import (
 	"testing"
 	//"encoding/json"
-	"bytes"
-
 	"encoding/json"
 	"github.com/emilioastarita/gphp/ast"
 	diff "github.com/yudai/gojsondiff"
@@ -16,13 +14,13 @@ import (
 
 func TestParser(t *testing.T) {
 	p := Parser{}
-	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
+	sourceFile := p.ParseSourceFile(`<?php $a = "test";`, "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {
 		println(err)
 	} else {
-		pretty, _ := prettyPrintJSON(jsonSource)
+		pretty, _ := ast.PrettyPrintJSON(jsonSource)
 		println(string((pretty)))
 	}
 
@@ -80,8 +78,3 @@ func TestCases(t *testing.T) {
 	}
 }
 
-func prettyPrintJSON(b []byte) ([]byte, error) {
-	var out bytes.Buffer
-	err := json.Indent(&out, b, "", "    ")
-	return out.Bytes(), err
-}

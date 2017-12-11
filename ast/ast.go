@@ -297,11 +297,11 @@ type UnaryOpExpression struct {
 }
 
 type ErrorControlExpression struct {
-	UnaryOpExpression
+	UnaryOpExpression `serialize:"-flat"`
 }
 
 type CastExpression struct {
-	UnaryOpExpression
+	UnaryOpExpression `serialize:"-flat"`
 	OpenParen  *lexer.Token
 	CastType   *lexer.Token
 	CloseParen *lexer.Token
@@ -309,7 +309,7 @@ type CastExpression struct {
 }
 
 type PrefixUpdateExpression struct {
-	UnaryOpExpression
+	UnaryOpExpression `serialize:"-flat"`
 	IncrementOrDecrementOperator *lexer.Token
 	Operand                      Node
 }
@@ -432,7 +432,7 @@ type EchoExpression struct {
 }
 
 type AssignmentExpression struct {
-	BinaryExpression
+	BinaryExpression `serialize:"-flat"`
 	ByRef        *lexer.Token
 }
 type TernaryExpression struct {

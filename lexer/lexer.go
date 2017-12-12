@@ -506,7 +506,7 @@ func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPo
 			continue
 		}
 
-		if t.Kind == Name {
+		if t.Kind == Name || IsKeywordOrReserverdWordToken(t.Kind) {
 			t.Kind = StringVarname
 		}
 		tokenMem = append(tokenMem, *t)

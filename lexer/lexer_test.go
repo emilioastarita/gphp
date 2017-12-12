@@ -19,9 +19,9 @@ func BenchmarkComplex(b *testing.B) {
 
 func TestEx(t *testing.T) {
 	stream := TokensStream{}
-	stream.Source(`<?php echo "test $var";`)
+	stream.Source(`<?php echo "test ${var}";`)
 	stream.CreateTokens()
-
+	stream.Debug()
 }
 
 func TestCases(t *testing.T) {

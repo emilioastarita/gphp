@@ -1,6 +1,5 @@
 package lexer
 
-
 var OPERATORS_AND_PUNCTUATORS = map[string]TokenKind{
 	"[":  OpenBracketToken,
 	"]":  CloseBracketToken,
@@ -166,10 +165,9 @@ var KEYWORDS = map[string]TokenKind{
 	"yield from":   YieldFromKeyword,
 }
 
-
 func valueInMap(v TokenKind, m map[string]TokenKind) bool {
 	for _, value := range m {
-		if (v == value) {
+		if v == value {
 			return true
 		}
 	}
@@ -179,11 +177,18 @@ func valueInMap(v TokenKind, m map[string]TokenKind) bool {
 func IsReserverdWordToken(v TokenKind) bool {
 	return valueInMap(v, RESERVED_WORDS)
 }
+func IsKeywordToken(v TokenKind) bool {
+	return valueInMap(v, KEYWORDS)
+}
+
+func IsKeywordOrReserverdWordToken(v TokenKind) bool {
+	return IsKeywordToken(v) || IsReserverdWordToken(v)
+}
 
 func ReserverTokens() []TokenKind {
-	var tokens []TokenKind;
+	var tokens []TokenKind
 	for _, value := range RESERVED_WORDS {
 		tokens = append(tokens, value)
 	}
-	return tokens;
+	return tokens
 }

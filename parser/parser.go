@@ -52,6 +52,7 @@ func (p *Parser) reset() {
 	p.advanceToken()
 	p.currentParseContext = 0
 }
+
 func (p *Parser) advanceToken() {
 	c := p.stream.ScanNext()
 	p.token = &c
@@ -692,6 +693,7 @@ func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 
 	return expression
 }
+
 func (p *Parser) checkToken(kind lexer.TokenKind) bool {
 	return p.token.Kind == kind
 }
@@ -912,10 +914,12 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 	missing.Token = &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
 	return missing
 }
+
 func (p *Parser) parseSimpleVariable(variable ast.Node) ast.Node {
 	fn := p.parseSimpleVariableFn()
 	return fn(variable)
 }
+
 func (p *Parser) isModifier(token *lexer.Token) bool {
 	switch token.Kind {
 	// class-modifier
@@ -933,6 +937,7 @@ func (p *Parser) isModifier(token *lexer.Token) bool {
 	}
 	return false
 }
+
 func (p *Parser) parseClassConstDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
 	classConstDeclaration := ast.ClassConstDeclaration{}
 	classConstDeclaration.P = parentNode
@@ -1096,6 +1101,7 @@ func (p *Parser) parseClassBaseClause(parentNode ast.Node) ast.Node {
 	classBaseClause.BaseClass = p.parseQualifiedName(classBaseClause)
 	return classBaseClause
 }
+
 func (p *Parser) parseQualifiedName(parentNode ast.Node) ast.Node {
 	panic("Not implemented parseQualifiedName")
 }
@@ -1265,6 +1271,7 @@ func (p *Parser) parseForeachStatement(parentNode ast.Node) ast.Node {
 	}
 	return foreachStatement
 }
+
 func (p *Parser) tryParseForeachKey(parentNode ast.Node) ast.Node {
 	if !p.isExpressionStart(p.token) {
 		return nil
@@ -1284,6 +1291,7 @@ func (p *Parser) tryParseForeachKey(parentNode ast.Node) ast.Node {
 	foreachKey.Arrow = p.eat1(lexer.DoubleArrowToken)
 	return foreachKey
 }
+
 func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
 	foreachValue := ast.ForeachValue{}
 	foreachValue.P = parentNode
@@ -1291,6 +1299,7 @@ func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
 	foreachValue.Expression = p.parseExpression(foreachValue, false)
 	return foreachValue
 }
+
 func (p *Parser) isExpressionStart(token *lexer.Token) bool {
 	fn := p.isExpressionStartFn()
 	return fn(token)
@@ -1305,12 +1314,15 @@ func (p *Parser) parseEmptyIntrinsicExpression(parentNode ast.Node) ast.Node {
 	emptyExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 	return emptyExpression
 }
+
 func (p *Parser) parseGotoStatement(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseBreakOrContinueStatement(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseReturnStatement(parentNode ast.Node) ast.Node {
 	returnStatement := ast.ReturnStatement{}
 	returnStatement.P = parentNode
@@ -1321,15 +1333,19 @@ func (p *Parser) parseReturnStatement(parentNode ast.Node) ast.Node {
 	returnStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 	return returnStatement
 }
+
 func (p *Parser) parseThrowStatement(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseTryStatement(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseDeclareStatement(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseFunctionDeclaration(node ast.Node) ast.Node {
 	panic("Not implemented")
 	//functionNode := ast.FunctionDeclaration{};
@@ -1337,33 +1353,42 @@ func (p *Parser) parseFunctionDeclaration(node ast.Node) ast.Node {
 	//functionNode.P = parentNode;
 	//return functionNode;
 }
+
 func (p *Parser) parseClassMembers(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseClassDeclaration(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseInterfaceDeclaration(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseNamespaceDefinition(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseNamespaceUseDeclaration(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseEmptyStatement(parentNode ast.Node) ast.Node {
 	emptyStatement := ast.EmptyStatement{}
 	emptyStatement.P = parentNode
 	emptyStatement.Semicolon = p.eat1(lexer.SemicolonToken)
 	return emptyStatement
 }
+
 func (p *Parser) parseTraitDeclaration(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseGlobalDeclaration(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseConstDeclaration(parentNode ast.Node) ast.Node {
 	constDeclaration := ast.ConstDeclaration{}
 	constDeclaration.P = parentNode
@@ -1372,24 +1397,50 @@ func (p *Parser) parseConstDeclaration(parentNode ast.Node) ast.Node {
 	constDeclaration.Semicolon = p.eatSemicolonOrAbortStatement()
 	return constDeclaration
 }
+
 func (p *Parser) parseFunctionStaticDeclaration(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseElseIfClause(statement ast.IfStatement) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseElseClause(statement ast.IfStatement) ast.Node {
 	panic("Not implemented")
 }
+
 func (p *Parser) parseScopedPropertyAccessExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (p *Parser) parseSubscriptExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+
+func (p *Parser) parseSubscriptExpression(expression ast.Node) ast.Node {
+	subscriptExpression := ast.SubscriptExpression{}
+	subscriptExpression.P = expression.Parent()
+	expression.SetParent(subscriptExpression)
+
+	subscriptExpression.PostfixExpression = expression
+	subscriptExpression.OpenBracketOrBrace = p.eat(lexer.OpenBracketToken, lexer.OpenBraceToken)
+	if p.isExpressionStart(p.token) {
+		subscriptExpression.AccessExpression = p.parseExpression(subscriptExpression, false)
+	}
+	if subscriptExpression.OpenBracketOrBrace.Kind == lexer.OpenBraceToken {
+		subscriptExpression.CloseBracketOrBrace = p.eat1(lexer.CloseBraceToken)
+	} else {
+		subscriptExpression.CloseBracketOrBrace = p.eat1(lexer.CloseBracketToken)
+	}
+
+	return subscriptExpression
 }
-func (p *Parser) parseNumericLiteralExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+
+func (p *Parser) parseNumericLiteralExpression(parentNode ast.Node) ast.Node {
+	numericLiteral := ast.NumericLiteral{}
+	numericLiteral.P = parentNode
+	numericLiteral.Children = p.token
+	p.advanceToken()
+	return numericLiteral
 }
+
 func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 	// TODO validate input token
 	expression := ast.StringLiteral{}
@@ -1724,6 +1775,7 @@ func (p *Parser) parseTemplateStringExpression(parentNode ast.StringLiteral) ast
 	}
 	return nil
 }
+
 func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.Node) ast.Node {
 	subscriptExpression := ast.SubscriptExpression{}
 	subscriptExpression.P = postfixExpression.Parent()
@@ -1746,8 +1798,8 @@ func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.No
 	}
 	subscriptExpression.CloseBracketOrBrace = p.eat1(lexer.CloseBracketToken)
 	return subscriptExpression
-
 }
+
 func (p *Parser) parseTemplateStringSubscriptStringLiteral(parentNode ast.SubscriptExpression) ast.Node {
 	expression := ast.StringLiteral{}
 	expression.P = parentNode

@@ -386,6 +386,11 @@ type StringLiteral struct {
 	EndQuote   *lexer.Token
 }
 
+type NumericLiteral struct {
+	CNode    `serialize:"-"`
+	Children *lexer.Token
+}
+
 type ScriptInclusionExpression struct {
 	CNode                   `serialize:"-"`
 	RequireOrIncludeKeyword *lexer.Token

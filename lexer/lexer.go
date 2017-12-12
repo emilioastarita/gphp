@@ -495,7 +495,7 @@ func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPo
 	*pos += openTokenLen
 	l.fullStart = *pos
 	l.start = *pos
-
+	isFirst := true
 	for *pos < l.eofPos {
 		t, tokenMemTmp := l.scan(nil)
 		l.fullStart = *pos
@@ -506,9 +506,14 @@ func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPo
 			continue
 		}
 
-		if t.Kind == Name || IsKeywordOrReserverdWordToken(t.Kind) {
+		if isFirst && (t.Kind == Name || IsKeywordOrReserverdWordToken(t.Kind)) {
 			t.Kind = StringVarname
+			isFirst = false
 		}
+		if t.Kind == VariableName {
+			isFirst = false
+		}
+
 		tokenMem = append(tokenMem, *t)
 		if t.Kind == ScriptSectionEndTag {
 			return true, tokenMem

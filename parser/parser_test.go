@@ -14,7 +14,7 @@ import (
 
 func TestParser(t *testing.T) {
 	p := Parser{}
-	sourceFile := p.ParseSourceFile(`<?php $a = "test";`, "")
+	sourceFile := p.ParseSourceFile(`<?php echo "test";`, "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {
@@ -77,4 +77,3 @@ func TestCases(t *testing.T) {
 
 	}
 }
-

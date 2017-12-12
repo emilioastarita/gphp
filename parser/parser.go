@@ -1394,7 +1394,8 @@ func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 	// TODO validate input token
 	expression := ast.StringLiteral{}
 	expression.P = parentNode
-	expression.Children = p.token // TODO - merge string types
+	t := ast.TokenNode{Token: p.token}
+	expression.Children = append(expression.Children, t)
 	p.advanceToken()
 	return expression
 }
@@ -1404,8 +1405,41 @@ func (p *Parser) parseAnonymousFunctionCreationExpression(node ast.Node) ast.Nod
 func (p *Parser) parseMemberAccessExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (p *Parser) parseStringLiteralExpression2(node ast.Node) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseStringLiteralExpression2(parentNode ast.Node) ast.Node {
+	// TODO validate input token
+	expression := ast.StringLiteral{}
+	expression.P = parentNode
+	expression.StartQuote = p.eat(lexer.SingleQuoteToken, lexer.DoubleQuoteToken, lexer.HeredocStart, lexer.BacktickToken)
+	for {
+		switch p.token.Kind {
+		case lexer.DollarOpenBraceToken,
+			lexer.OpenBraceDollarToken:
+			t1 := &ast.TokenNode{Token: p.eat(lexer.DollarOpenBraceToken, lexer.OpenBraceDollarToken)}
+			expression.Children = append(expression.Children, t1)
+			if p.token.Kind == lexer.StringVarname {
+				expression.Children = append(expression.Children, p.parseSimpleVariable(expression))
+			} else {
+				expression.Children = append(expression.Children, p.parseExpression(expression, false))
+			}
+			t2 := &ast.TokenNode{Token: p.eat1(lexer.CloseBraceToken)}
+			expression.Children = append(expression.Children, t2)
+			continue
+		case expression.StartQuote.Kind,
+			lexer.EndOfFileToken,
+			lexer.HeredocEnd:
+			expression.EndQuote = p.eat(expression.StartQuote.Kind, lexer.HeredocEnd)
+			return expression
+		case lexer.VariableName:
+			expression.Children = append(expression.Children, p.parseTemplateStringExpression(expression))
+			continue
+		default:
+			t := &ast.TokenNode{Token: p.token}
+			expression.Children = append(expression.Children, t)
+			p.advanceToken()
+			continue
+		}
+	}
+
 }
 func (p *Parser) parseCallExpressionRest(node ast.Node) ast.Node {
 	panic("Not implemented")
@@ -1664,4 +1698,62 @@ func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken *lexer
 	binaryExpression.Operator = operatorToken
 	binaryExpression.RightOperand = rightOperand
 	return binaryExpression
+}
+
+func (p *Parser) parseTemplateStringExpression(parentNode ast.StringLiteral) ast.Node {
+	token := p.token
+	if token.Kind == lexer.VariableName {
+		v := p.parseSimpleVariable(parentNode)
+		token = p.token
+		if token.Kind == lexer.OpenBracketToken {
+			return p.parseTemplateStringSubscriptExpression(v)
+		} else if token.Kind == lexer.ArrowToken {
+			return p.parseTemplateStringMemberAccessExpression(v)
+		} else {
+			return v
+		}
+	}
+	return nil
+}
+func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.Node) ast.Node {
+	subscriptExpression := ast.SubscriptExpression{}
+	subscriptExpression.P = postfixExpression.Parent()
+	postfixExpression.SetParent(subscriptExpression)
+
+	subscriptExpression.PostfixExpression = postfixExpression
+	subscriptExpression.OpenBracketOrBrace = p.eat1(lexer.OpenBracketToken) // Only [] syntax is supported, not {}
+	token := p.token
+	if token.Kind == lexer.VariableName {
+		subscriptExpression.AccessExpression = p.parseSimpleVariable(subscriptExpression)
+	} else if token.Kind == lexer.IntegerLiteralToken {
+		subscriptExpression.AccessExpression = p.parseNumericLiteralExpression(subscriptExpression)
+	} else if token.Kind == lexer.Name {
+		subscriptExpression.AccessExpression = p.parseTemplateStringSubscriptStringLiteral(subscriptExpression)
+	} else {
+		t := &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
+		missing := ast.Missing{}
+		missing.Token = t
+		subscriptExpression.AccessExpression = missing
+	}
+	subscriptExpression.CloseBracketOrBrace = p.eat1(lexer.CloseBracketToken)
+	return subscriptExpression
+
+}
+func (p *Parser) parseTemplateStringSubscriptStringLiteral(parentNode ast.SubscriptExpression) ast.Node {
+	expression := ast.StringLiteral{}
+	expression.P = parentNode
+	t := ast.TokenNode{Token: p.eat1(lexer.Name)}
+	expression.Children = append(expression.Children, t)
+	return expression
+}
+func (p *Parser) parseTemplateStringMemberAccessExpression(expression ast.Node) ast.Node {
+	memberAccessExpression := ast.MemberAccessExpression{}
+	memberAccessExpression.P = expression.Parent()
+	expression.SetParent(memberAccessExpression)
+
+	memberAccessExpression.DereferencableExpression = expression
+	memberAccessExpression.ArrowToken = p.eat1(lexer.ArrowToken)
+	memberAccessExpression.MemberName = p.eat1(lexer.Name)
+
+	return memberAccessExpression
 }

@@ -1,57 +1,62 @@
 package ast
 
 import (
-	"reflect"
-	goast "go/ast"
-	"github.com/emilioastarita/gphp/lexer"
-	"unicode"
 	"bytes"
 	"encoding/json"
+	"github.com/emilioastarita/gphp/lexer"
+	goast "go/ast"
+	"reflect"
+	"unicode"
 )
 
 type serializer struct {
-	ptrmap map[interface{}]bool // *T -> line number
-	ignoredFields []string
-	typeOfToken reflect.Type
+	ptrmap          map[interface{}]bool // *T -> line number
+	ignoredFields   []string
+	typeOfToken     reflect.Type
 	typeOfTokenNode reflect.Type
-	tagName string
+	tagName         string
 }
 
-func Serialize(x interface {}) interface {} {
+func Serialize(x interface{}) interface{} {
 	s := serializer{
-		tagName: "serialize",
-		ptrmap: make(map[interface{}]bool),
-		typeOfToken: reflect.TypeOf(lexer.Token{}),
+		tagName:         "serialize",
+		ptrmap:          make(map[interface{}]bool),
+		typeOfToken:     reflect.TypeOf(lexer.Token{}),
 		typeOfTokenNode: reflect.TypeOf(TokenNode{}),
 	}
-	return s.serialize(reflect.ValueOf(x))
+	return s.serialize(reflect.ValueOf(x), false)
 }
 
 func (s *serializer) formatSubField(x reflect.StructField) string {
-	if tag := x.Tag.Get(s.tagName);  tag != "" && tag[0] != '-' {
+	if tag := x.Tag.Get(s.tagName); tag != "" && tag[0] != '-' {
 		return tag
 	}
-	r  := []rune(x.Name)
+	r := []rune(x.Name)
 	r[0] = unicode.ToLower(r[0])
 	return string(r)
 }
 
 func (s *serializer) isIgnoredField(x reflect.StructField) bool {
-	if tag := x.Tag.Get(s.tagName);  tag == "-" {
+	if tag := x.Tag.Get(s.tagName); tag == "-" {
 		return true
 	}
 	return false
 }
 
 func (s *serializer) isEmbedded(x reflect.StructField) bool {
-	if tag := x.Tag.Get(s.tagName);  tag == "-flat" {
+	if tag := x.Tag.Get(s.tagName); tag == "-flat" {
+		return true
+	}
+	return false
+}
+func (s *serializer) isSingleChildren(x reflect.StructField) bool {
+	if tag := x.Tag.Get(s.tagName); tag == "-single" {
 		return true
 	}
 	return false
 }
 
-
-func (s *serializer) serialize(x reflect.Value) interface{} {
+func (s *serializer) serialize(x reflect.Value, singleChildren bool) interface{} {
 
 	if !goast.NotNilFilter("", x) {
 		return nil
@@ -59,20 +64,19 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 
 	typeName := x.Type().Name()
 
-
 	switch x.Kind() {
 	case reflect.Interface:
-		return s.serialize(x.Elem())
+		return s.serialize(x.Elem(), false)
 	case reflect.Map:
 
 		me := make(map[string]map[string]interface{})
 		me[typeName] = make(map[string]interface{})
 		if x.Len() > 0 {
 			for _, key := range x.MapKeys() {
-				me[typeName][key.String()] = s.serialize(x.MapIndex(key))
+				me[typeName][key.String()] = s.serialize(x.MapIndex(key), false)
 			}
 		}
-		return me;
+		return me
 
 	case reflect.Ptr:
 		// type-checked ASTs may contain cycles - use ptrmap
@@ -83,26 +87,40 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 			return nil
 		} else {
 			s.ptrmap[ptr] = exists
-			return s.serialize(x.Elem())
+			return s.serialize(x.Elem(), false)
 		}
 
 	case reflect.Array:
 		me := make([]interface{}, x.Len())
+
+		// some children nodes uses only one object
+		// instead an array
+		if x.Len() == 1 && singleChildren {
+			return s.serialize(x.Index(0), false)
+		}
+
 		if x.Len() > 0 {
 			for i, n := 0, x.Len(); i < n; i++ {
-				me[i] = s.serialize(x.Index(i))
+				me[i] = s.serialize(x.Index(i), false)
 			}
 		}
-		return me;
+		return me
 
 	case reflect.Slice:
 		if _, ok := x.Interface().([]byte); ok {
 			return nil
 		}
+
+		// some children nodes uses only one object
+		// instead an array
+		if x.Len() == 1 && singleChildren {
+			return s.serialize(x.Index(0), false)
+		}
+
 		me := make([]interface{}, x.Len())
 		if x.Len() > 0 {
 			for i, n := 0, x.Len(); i < n; i++ {
-				me[i] = s.serialize(x.Index(i))
+				me[i] = s.serialize(x.Index(i), false)
 			}
 		}
 		return me
@@ -113,13 +131,13 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 		switch t {
 		case s.typeOfToken:
 			me := make(map[string]interface{})
-			me["kind"] = s.serialize(x.FieldByName("Kind"))
-			me["fullStart"] = s.serialize(x.FieldByName("FullStart"))
-			me["start"] = s.serialize(x.FieldByName("Start"))
-			me["length"] = s.serialize(x.FieldByName("Length"))
+			me["kind"] = s.serialize(x.FieldByName("Kind"), false)
+			me["fullStart"] = s.serialize(x.FieldByName("FullStart"), false)
+			me["start"] = s.serialize(x.FieldByName("Start"), false)
+			me["length"] = s.serialize(x.FieldByName("Length"), false)
 			return me
 		case s.typeOfTokenNode:
-			return s.serialize(x.FieldByName("Token"))
+			return s.serialize(x.FieldByName("Token"), false)
 		default:
 			me := make(map[string]map[string]interface{})
 			me[typeName] = make(map[string]interface{})
@@ -131,7 +149,7 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 					name := s.formatSubField(field)
 
 					if s.isEmbedded(field) {
-						embedded := s.serialize(value)
+						embedded := s.serialize(value, false)
 						m, ok := embedded.(map[string]map[string]interface{})
 						if ok {
 							for k, v := range m[field.Name] {
@@ -139,7 +157,7 @@ func (s *serializer) serialize(x reflect.Value) interface{} {
 							}
 						}
 					} else {
-						me[typeName][name] = s.serialize(value)
+						me[typeName][name] = s.serialize(value, s.isSingleChildren(field))
 					}
 
 				}

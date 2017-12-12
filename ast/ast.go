@@ -302,14 +302,14 @@ type ErrorControlExpression struct {
 
 type CastExpression struct {
 	UnaryOpExpression `serialize:"-flat"`
-	OpenParen  *lexer.Token
-	CastType   *lexer.Token
-	CloseParen *lexer.Token
-	Operand    Node
+	OpenParen         *lexer.Token
+	CastType          *lexer.Token
+	CloseParen        *lexer.Token
+	Operand           Node
 }
 
 type PrefixUpdateExpression struct {
-	UnaryOpExpression `serialize:"-flat"`
+	UnaryOpExpression            `serialize:"-flat"`
 	IncrementOrDecrementOperator *lexer.Token
 	Operand                      Node
 }
@@ -382,7 +382,7 @@ type ArrayCreationExpression struct {
 type StringLiteral struct {
 	CNode      `serialize:"-"`
 	StartQuote *lexer.Token
-	Children   *lexer.Token
+	Children   []Node `serialize:"-single"`
 	EndQuote   *lexer.Token
 }
 
@@ -422,7 +422,6 @@ type BinaryExpression struct {
 	LeftOperand  Node
 	Operator     *lexer.Token
 	RightOperand Node
-
 }
 
 type EchoExpression struct {
@@ -433,7 +432,7 @@ type EchoExpression struct {
 
 type AssignmentExpression struct {
 	BinaryExpression `serialize:"-flat"`
-	ByRef        *lexer.Token
+	ByRef            *lexer.Token
 }
 type TernaryExpression struct {
 	CNode          `serialize:"-"`

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
-	"fmt"
-	"io/ioutil"
 	"encoding/json"
-	"github.com/emilioastarita/gphp/parser"
+	"fmt"
 	"github.com/emilioastarita/gphp/ast"
-	"path/filepath"
 	"github.com/emilioastarita/gphp/lexer"
+	"github.com/emilioastarita/gphp/parser"
+	"io/ioutil"
+	"os"
+	"path/filepath"
 )
 
 func printUsage() {
@@ -22,16 +22,14 @@ func main() {
 	}
 
 	if os.Args[1] == "scan" {
-		lexerWalk(os.Args[2])
+		printTokensFromFile(os.Args[2])
 	} else if os.Args[1] == "parse" {
 		printAstFromFile(os.Args[2])
 	} else {
 		printUsage()
 	}
 
-
 }
-
 
 func printAstFromFile(filename string) {
 	data, err := ioutil.ReadFile(filename)
@@ -43,7 +41,20 @@ func printAstFromFile(filename string) {
 	printAst(content)
 }
 
+func printTokensFromFile(filename string) {
+	data, err := ioutil.ReadFile(filename)
+	if err != nil {
+		fmt.Println("Can't read file:", filename)
+		panic(err)
+	}
+	content := string(data)
 
+	stream := lexer.TokensStream{}
+	stream.Source(content)
+	stream.CreateTokens()
+	stream.Debug()
+
+}
 
 func printAst(content string) {
 	p := parser.Parser{}
@@ -58,8 +69,6 @@ func printAst(content string) {
 		println(string((pretty)))
 	}
 }
-
-
 
 func lexerWalk(filename string) {
 	list, _ := filesOfDir(filename)
@@ -100,4 +109,3 @@ func getTokens(file string) {
 	//	fmt.Println(key, token)
 	//}
 }
-

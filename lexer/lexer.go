@@ -72,7 +72,7 @@ func (s *TokensStream) ScanNext() Token {
 
 func (s *TokensStream) Debug() {
 	for _, token := range s.Tokens {
-		b, _ := json.MarshalIndent(token.getShortForm([]rune(s.lexer.content)), "", "    ")
+		b, _ := json.MarshalIndent(token.getFullForm([]rune(s.lexer.content)), "", "    ")
 		os.Stdout.Write(b)
 		println("")
 	}
@@ -405,9 +405,9 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		if char == '$' {
 			if isNameStart(fileContent, *pos+1, eofPos) {
 				if len(tokenMem) == 0 {
-					tokenMem = l.addToMemInPlace(DoubleQuoteToken, startPosition, 1, tokenMem)
+					tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, false})
 					l.start++
-					l.fullStart++
+					l.fullStart = l.start
 				}
 				if *pos-startPosition > 2 {
 					tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
@@ -478,28 +478,28 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 	return tokenMem
 }
 
-func saveCurlyExpression(lexer *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []Token) (bool, []Token) {
+func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []Token) (bool, []Token) {
 	if len(tokenMem) == 0 {
-		tokenMem = lexer.addToMemInPlace(DoubleQuoteToken, startPosition, 1, tokenMem)
-		lexer.start++
-		lexer.fullStart++
+		tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, false})
+		l.start++
+		l.fullStart = l.start
 	}
-	if *pos-lexer.start > 2 {
-		tokenMem = lexer.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
+	if *pos-l.start > 2 {
+		tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 	}
 	openTokenLen := 1
 	if openToken == DollarOpenBraceToken {
 		openTokenLen = 2
 	}
-	tokenMem = lexer.addToMemInPlace(openToken, *pos, openTokenLen, tokenMem)
+	tokenMem = l.addToMemInPlace(openToken, *pos, openTokenLen, tokenMem)
 	*pos += openTokenLen
-	lexer.fullStart = *pos
-	lexer.start = *pos
+	l.fullStart = *pos
+	l.start = *pos
 
-	for *pos < lexer.eofPos {
-		t, tokenMemTmp := lexer.scan(nil)
-		lexer.fullStart = *pos
-		lexer.start = *pos
+	for *pos < l.eofPos {
+		t, tokenMemTmp := l.scan(nil)
+		l.fullStart = *pos
+		l.start = *pos
 
 		if t.Kind == -1 {
 			tokenMem = append(tokenMem, tokenMemTmp...)

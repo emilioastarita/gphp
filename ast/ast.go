@@ -352,7 +352,7 @@ type CallExpression struct {
 type MemberAccessExpression struct {
 	CNode                    `serialize:"-"`
 	ArrowToken               *lexer.Token
-	MemberName               *lexer.Token
+	MemberName               Node
 	DereferencableExpression Node
 }
 

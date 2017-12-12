@@ -185,10 +185,23 @@ func IsKeywordOrReserverdWordToken(v TokenKind) bool {
 	return IsKeywordToken(v) || IsReserverdWordToken(v)
 }
 
-func ReserverTokens() []TokenKind {
+func IsNameOrKeywordOrReservedWordTokens(v TokenKind) bool {
+	for _, value := range GetNameOrKeywordOrReservedWordTokens() {
+		if v == value {
+			return true
+		}
+	}
+	return false
+}
+
+func GetNameOrKeywordOrReservedWordTokens() []TokenKind {
 	var tokens []TokenKind
 	for _, value := range RESERVED_WORDS {
 		tokens = append(tokens, value)
 	}
+	for _, value := range KEYWORDS {
+		tokens = append(tokens, value)
+	}
+	tokens = append(tokens, Name)
 	return tokens
 }

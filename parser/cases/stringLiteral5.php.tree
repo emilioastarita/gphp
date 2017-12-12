@@ -1,0 +1,145 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 7,
+                                        "length": 3
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 9,
+                                "start": 10,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "StringLiteral": {
+                                    "startQuote": {
+                                        "kind": "DoubleQuoteToken",
+                                        "fullStart": 11,
+                                        "start": 12,
+                                        "length": 2
+                                    },
+                                    "children": [
+                                        {
+                                            "kind": "EncapsedAndWhitespace",
+                                            "fullStart": 13,
+                                            "start": 13,
+                                            "length": 5
+                                        },
+                                        {
+                                            "kind": "DollarOpenBraceToken",
+                                            "fullStart": 18,
+                                            "start": 18,
+                                            "length": 2
+                                        },
+                                        {
+                                            "SubscriptExpression": {
+                                                "postfixExpression": {
+                                                    "MemberAccessExpression": {
+                                                        "dereferencableExpression": {
+                                                            "Variable": {
+                                                                "dollar": null,
+                                                                "name": {
+                                                                    "kind": "VariableName",
+                                                                    "fullStart": 20,
+                                                                    "start": 20,
+                                                                    "length": 4
+                                                                }
+                                                            }
+                                                        },
+                                                        "arrowToken": {
+                                                            "kind": "ArrowToken",
+                                                            "fullStart": 24,
+                                                            "start": 24,
+                                                            "length": 2
+                                                        },
+                                                        "memberName": {
+                                                            "kind": "Name",
+                                                            "fullStart": 26,
+                                                            "start": 26,
+                                                            "length": 3
+                                                        }
+                                                    }
+                                                },
+                                                "openBracketOrBrace": {
+                                                    "kind": "OpenBracketToken",
+                                                    "fullStart": 29,
+                                                    "start": 29,
+                                                    "length": 1
+                                                },
+                                                "accessExpression": {
+                                                    "NumericLiteral": {
+                                                        "children": {
+                                                            "kind": "IntegerLiteralToken",
+                                                            "fullStart": 30,
+                                                            "start": 30,
+                                                            "length": 1
+                                                        }
+                                                    }
+                                                },
+                                                "closeBracketOrBrace": {
+                                                    "kind": "CloseBracketToken",
+                                                    "fullStart": 31,
+                                                    "start": 31,
+                                                    "length": 1
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CloseBraceToken",
+                                            "fullStart": 32,
+                                            "start": 32,
+                                            "length": 1
+                                        }
+                                    ],
+                                    "endQuote": {
+                                        "kind": "DoubleQuoteToken",
+                                        "fullStart": 33,
+                                        "start": 33,
+                                        "length": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 34,
+                        "start": 34,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 35,
+            "start": 35,
+            "length": 0
+        }
+    }
+}

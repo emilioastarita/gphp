@@ -33,7 +33,7 @@ const (
 
 func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
 
-	p.nameOrKeywordOrReservedWordTokens = lexer.ReserverTokens()
+	p.nameOrKeywordOrReservedWordTokens = lexer.GetNameOrKeywordOrReservedWordTokens()
 
 	p.stream.Source(source)
 	p.stream.CreateTokens()
@@ -1402,8 +1402,17 @@ func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 func (p *Parser) parseAnonymousFunctionCreationExpression(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (p *Parser) parseMemberAccessExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseMemberAccessExpression(expression ast.Node) ast.Node {
+	memberAccessExpression := ast.MemberAccessExpression{}
+	memberAccessExpression.SetParent(expression.Parent())
+	expression.SetParent(memberAccessExpression)
+
+	memberAccessExpression.DereferencableExpression = expression
+	memberAccessExpression.ArrowToken = p.eat1(lexer.ArrowToken)
+	memberAccessExpression.MemberName = p.parseMemberName(memberAccessExpression)
+
+	return memberAccessExpression
+
 }
 func (p *Parser) parseStringLiteralExpression2(parentNode ast.Node) ast.Node {
 	// TODO validate input token
@@ -1753,7 +1762,36 @@ func (p *Parser) parseTemplateStringMemberAccessExpression(expression ast.Node) 
 
 	memberAccessExpression.DereferencableExpression = expression
 	memberAccessExpression.ArrowToken = p.eat1(lexer.ArrowToken)
-	memberAccessExpression.MemberName = p.eat1(lexer.Name)
+	t := ast.TokenNode{Token: p.eat1(lexer.Name)}
+	memberAccessExpression.MemberName = t
 
 	return memberAccessExpression
+}
+func (p *Parser) parseMemberName(parentNode ast.MemberAccessExpression) ast.Node {
+	token := p.token
+	switch token.Kind {
+	case lexer.Name:
+		p.advanceToken() // TODO all names should be Nodes
+		tokNode := ast.TokenNode{}
+		tokNode.Token = token
+		return tokNode
+	case lexer.VariableName:
+	case lexer.DollarToken:
+		return p.parseSimpleVariable(parentNode) // TODO should be simple-variable
+	case lexer.OpenBraceToken:
+		return p.parseBracedExpression(parentNode)
+
+	default:
+		if lexer.IsNameOrKeywordOrReservedWordTokens(token.Kind) {
+			p.advanceToken()
+			token.Kind = lexer.Name
+			tokNode := ast.TokenNode{}
+			tokNode.Token = token
+			return tokNode
+		}
+	}
+	t := &lexer.Token{Kind: lexer.MemberName, FullStart: p.token.FullStart, Start: p.token.FullStart, Missing: true}
+	tokNode := ast.Missing{Token: t}
+	return tokNode
+
 }

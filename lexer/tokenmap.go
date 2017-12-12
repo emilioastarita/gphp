@@ -205,3 +205,11 @@ func GetNameOrKeywordOrReservedWordTokens() []TokenKind {
 	tokens = append(tokens, Name)
 	return tokens
 }
+func GetNameOrReservedWordTokens() []TokenKind {
+	var tokens []TokenKind
+	for _, value := range RESERVED_WORDS {
+		tokens = append(tokens, value)
+	}
+	tokens = append(tokens, Name)
+	return tokens
+}

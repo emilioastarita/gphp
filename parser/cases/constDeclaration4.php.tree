@@ -1,0 +1,70 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ConstDeclaration": {
+                    "constKeyword": {
+                        "kind": "ConstKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 6
+                    },
+                    "constElements": {
+                        "ConstElementList": {
+                            "children": [
+                                {
+                                    "ConstElement": {
+                                        "name": {
+                                            "kind": "Name",
+                                            "fullStart": 12,
+                                            "start": 13,
+                                            "length": 2
+                                        },
+                                        "equalsToken": {
+                                            "kind": "EqualsToken",
+                                            "fullStart": 14,
+                                            "start": 15,
+                                            "length": 2
+                                        },
+                                        "assignment": {
+                                            "error": "MissingToken",
+                                            "kind": "Expression",
+                                            "fullStart": 16,
+                                            "start": 16,
+                                            "length": 0
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 16,
+                        "start": 16,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 16,
+            "start": 16,
+            "length": 0
+        }
+    }
+}

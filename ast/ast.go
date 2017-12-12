@@ -10,6 +10,12 @@ type Node interface {
 	SetParent(p Node)
 }
 
+type NodeWithToken interface {
+	Node
+	SetToken(*lexer.Token)
+	GetToken() *lexer.Token
+}
+
 type DelimitedList interface {
 	Node
 	AddNode(n Node)
@@ -17,6 +23,21 @@ type DelimitedList interface {
 }
 
 type ExpressionList struct {
+	CNode  `serialize:"-"`
+	Childs []Node `serialize:"children"`
+}
+
+type ConstElementList struct {
+	CNode  `serialize:"-"`
+	Childs []Node `serialize:"children"`
+}
+
+type ParameterDeclarationList struct {
+	CNode  `serialize:"-"`
+	Childs []Node `serialize:"children"`
+}
+
+type UseVariableNameList struct {
 	CNode  `serialize:"-"`
 	Childs []Node `serialize:"children"`
 }
@@ -32,8 +53,58 @@ func (e *ExpressionList) Children() []Node {
 	return e.Childs
 }
 
+func (e *ConstElementList) AddNode(node Node) {
+	if node == nil {
+		return
+	}
+	e.Childs = append(e.Childs, node)
+}
+
+func (e *ConstElementList) Children() []Node {
+	return e.Childs
+}
+
+func (e *ParameterDeclarationList) AddNode(node Node) {
+	if node == nil {
+		return
+	}
+	e.Childs = append(e.Childs, node)
+}
+
+func (e *ParameterDeclarationList) Children() []Node {
+	return e.Childs
+}
+
+func (e *UseVariableNameList) AddNode(node Node) {
+	if node == nil {
+		return
+	}
+	e.Childs = append(e.Childs, node)
+}
+
+func (e *UseVariableNameList) Children() []Node {
+	return e.Childs
+}
+
 type CNode struct {
 	P Node `serialize:"-"`
+}
+
+type Parameter struct {
+	CNode
+	QuestionToken   *lexer.Token
+	TypeDeclaration Node
+	ByRefToken      *lexer.Token
+	DotDotDotToken  *lexer.Token
+	VariableName    *lexer.Token
+	EqualsToken     *lexer.Token
+	Default         Node
+}
+
+type UseVariableName struct {
+	CNode
+	ByRef        *lexer.Token
+	VariableName *lexer.Token
 }
 
 type SourceFileNode struct {
@@ -61,6 +132,37 @@ type Missing struct {
 type SkippedNode struct {
 	CNode `serialize:"-"`
 	Token *lexer.Token
+}
+
+func (n *SkippedNode) SetToken(t *lexer.Token) {
+	n.Token = t
+}
+
+func (n *SkippedNode) GetToken() *lexer.Token {
+	return n.Token
+}
+
+func (n *TokenNode) SetToken(t *lexer.Token) {
+	n.Token = t
+}
+
+func (n *TokenNode) GetToken() *lexer.Token {
+	return n.Token
+}
+
+func (n *Missing) SetToken(t *lexer.Token) {
+	n.Token = t
+}
+
+func (n *Missing) GetToken() *lexer.Token {
+	return n.Token
+}
+
+type ClassMembersNode struct {
+	CNode                   `serialize:"-"`
+	OpenBrace               *lexer.Token
+	ClassMemberDeclarations []Node
+	CloseBrace              *lexer.Token
 }
 
 type TokenNode struct {
@@ -96,6 +198,13 @@ type ArrayElement struct {
 	ElementValue Node
 }
 
+type ConstElement struct {
+	CNode       `serialize:"-"`
+	Name        *lexer.Token
+	EqualsToken *lexer.Token
+	Assignment  Node
+}
+
 type CaseStatement struct {
 	CNode                  `serialize:"-"`
 	CaseKeyword            *lexer.Token
@@ -120,6 +229,16 @@ type ConstDeclaration struct {
 	ConstKeyword  *lexer.Token
 	ConstElements Node
 	Semicolon     *lexer.Token
+}
+
+type ClassDeclaration struct {
+	CNode                   `serialize:"-"`
+	AbstractOrFinalModifier *lexer.Token
+	ClassKeyword            *lexer.Token
+	Name                    *lexer.Token
+	ClassBaseClause         Node
+	ClassInterfaceClause    Node
+	ClassMembers            Node
 }
 
 type SwitchStatement struct {
@@ -209,9 +328,21 @@ type ClassConstDeclaration struct {
 	Semicolon     *lexer.Token
 	ConstElements Node
 }
+
 type MethodDeclaration struct {
-	CNode     `serialize:"-"`
-	Modifiers []*lexer.Token
+	CNode                        `serialize:"-"`
+	Modifiers                    []*lexer.Token
+	Parameters                   Node
+	FunctionKeyword              *lexer.Token
+	ByRefToken                   *lexer.Token
+	Name                         NodeWithToken
+	OpenParen                    *lexer.Token
+	CloseParen                   *lexer.Token
+	ColonToken                   *lexer.Token
+	QuestionToken                *lexer.Token
+	CompoundStatementOrSemicolon Node
+	ReturnType                   Node
+	AnonymousFunctionUseClause   Node
 }
 
 type MissingMemberDeclaration struct {

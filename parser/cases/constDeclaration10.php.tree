@@ -1,0 +1,83 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "PublicKeyword",
+                "fullStart": 6,
+                "start": 7,
+                "length": 7
+            },
+            {
+                "ConstDeclaration": {
+                    "constKeyword": {
+                        "kind": "ConstKeyword",
+                        "fullStart": 13,
+                        "start": 14,
+                        "length": 6
+                    },
+                    "constElements": {
+                        "ConstElementList": {
+                            "children": [
+                                {
+                                    "ConstElement": {
+                                        "name": {
+                                            "kind": "Name",
+                                            "fullStart": 19,
+                                            "start": 20,
+                                            "length": 2
+                                        },
+                                        "equalsToken": {
+                                            "kind": "EqualsToken",
+                                            "fullStart": 21,
+                                            "start": 22,
+                                            "length": 2
+                                        },
+                                        "assignment": {
+                                            "QualifiedName": {
+                                                "globalSpecifier": null,
+                                                "relativeSpecifier": null,
+                                                "nameParts": [
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 23,
+                                                        "start": 24,
+                                                        "length": 2
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 25,
+                        "start": 25,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 26,
+            "start": 26,
+            "length": 0
+        }
+    }
+}

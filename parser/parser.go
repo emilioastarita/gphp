@@ -6,11 +6,14 @@ import (
 )
 
 type Parser struct {
-	stream                            lexer.TokensStream
+	stream                            *lexer.TokensStream
 	token                             *lexer.Token
 	currentParseContext               ParseContext
 	isParsingObjectCreationExpression bool
 	nameOrKeywordOrReservedWordTokens []lexer.TokenKind
+	nameOrReservedWordTokens          []lexer.TokenKind
+	parameterTypeDeclarationTokens    []lexer.TokenKind
+	returnTypeDeclarationTokens       []lexer.TokenKind
 }
 
 type ParseContext uint
@@ -33,8 +36,17 @@ const (
 
 func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
 
-	p.nameOrKeywordOrReservedWordTokens = lexer.GetNameOrKeywordOrReservedWordTokens()
+	typeDeclaration := []lexer.TokenKind{lexer.ArrayKeyword, lexer.CallableKeyword, lexer.BoolReservedWord,
+		lexer.FloatReservedWord, lexer.IntReservedWord, lexer.StringReservedWord,
+		lexer.ObjectReservedWord}
 
+	p.returnTypeDeclarationTokens = []lexer.TokenKind{lexer.VoidReservedWord}
+	p.returnTypeDeclarationTokens = append(p.returnTypeDeclarationTokens, typeDeclaration...)
+
+	p.parameterTypeDeclarationTokens = typeDeclaration
+	p.nameOrKeywordOrReservedWordTokens = lexer.GetNameOrKeywordOrReservedWordTokens()
+	p.nameOrReservedWordTokens = lexer.GetNameOrReservedWordTokens()
+	p.stream = &lexer.TokensStream{}
 	p.stream.Source(source)
 	p.stream.CreateTokens()
 	p.reset()
@@ -949,19 +961,80 @@ func (p *Parser) parseClassConstDeclaration(parentNode ast.Node, modifiers []*le
 }
 
 func (p *Parser) parseConstElements(parentNode ast.Node) ast.Node {
-	panic("Not implemented parseConstElements")
+	constList := &ast.ConstElementList{}
+	fn := func(token *lexer.Token) bool {
+		return lexer.IsNameOrKeywordOrReservedWordTokens(token.Kind)
+	}
+	return p.parseDelimitedList(
+		constList,
+		lexer.CommaToken,
+		fn,
+		p.parseConstElementFn(),
+		parentNode,
+		false,
+	)
 }
 
 func (p *Parser) parseMethodDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
 	methodDeclaration := ast.MethodDeclaration{}
 	methodDeclaration.Modifiers = modifiers
-	p.parseFunctionType(methodDeclaration, true)
+	p.parseFunctionType(methodDeclaration, true, false)
 	methodDeclaration.P = parentNode
 	return methodDeclaration
 }
 
-func (p *Parser) parseFunctionType(parent ast.MethodDeclaration, b bool) {
-	panic("Not implemented parseFunctionType")
+func (p *Parser) parseFunctionType(functionDeclaration ast.MethodDeclaration, canBeAbstract bool, isAnonymous bool) {
+	functionDeclaration.FunctionKeyword = p.eat1(lexer.FunctionKeyword)
+	functionDeclaration.ByRefToken = p.eatOptional1(lexer.AmpersandToken)
+
+	if isAnonymous {
+		t := &ast.TokenNode{Token: p.eatOptional(p.nameOrKeywordOrReservedWordTokens...)}
+		functionDeclaration.Name = t
+	} else {
+		t := &ast.TokenNode{Token: p.eat(p.nameOrKeywordOrReservedWordTokens...)}
+		functionDeclaration.Name = t
+	}
+
+	if functionDeclaration.Name != nil {
+		functionDeclaration.Name.GetToken().Kind = lexer.Name
+	}
+
+	if isAnonymous && functionDeclaration.Name != nil {
+		// Anonymous functions should not have names
+		skipped := &ast.SkippedNode{}
+		skipped.Token = functionDeclaration.Name.GetToken()
+		functionDeclaration.Name = skipped // TODO instaed handle this during post-walk
+	}
+
+	functionDeclaration.OpenParen = p.eat1(lexer.OpenParenToken)
+	parameterDeclaration := &ast.ParameterDeclarationList{}
+	functionDeclaration.Parameters = p.parseDelimitedList(
+		parameterDeclaration,
+		lexer.CommaToken,
+		p.isParameterStartFn(),
+		p.parseParameterFn(),
+		functionDeclaration, false)
+	functionDeclaration.CloseParen = p.eat1(lexer.CloseParenToken)
+
+	if isAnonymous {
+		functionDeclaration.AnonymousFunctionUseClause = p.parseAnonymousFunctionUseClause(functionDeclaration)
+	}
+
+	if p.checkToken(lexer.ColonToken) {
+		functionDeclaration.ColonToken = p.eat1(lexer.ColonToken)
+		functionDeclaration.QuestionToken = p.eatOptional1(lexer.QuestionToken)
+		functionDeclaration.ReturnType = p.parseReturnTypeDeclaration(functionDeclaration)
+	}
+
+	var tokNode ast.TokenNode
+	if canBeAbstract {
+		tokNode = ast.TokenNode{Token: p.eatOptional1(lexer.SemicolonToken)}
+		functionDeclaration.CompoundStatementOrSemicolon = tokNode
+	}
+
+	if tokNode.Token == nil {
+		functionDeclaration.CompoundStatementOrSemicolon = p.parseCompoundStatement(functionDeclaration)
+	}
 }
 
 func (p *Parser) parsePropertyDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
@@ -1355,11 +1428,26 @@ func (p *Parser) parseFunctionDeclaration(node ast.Node) ast.Node {
 }
 
 func (p *Parser) parseClassMembers(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	classMembers := ast.ClassMembersNode{}
+	classMembers.OpenBrace = p.eat1(lexer.OpenBraceToken)
+	classMembers.ClassMemberDeclarations = p.parseList(classMembers, ClassMembers)
+	classMembers.CloseBrace = p.eat1(lexer.CloseBraceToken)
+	classMembers.P = parentNode
+	return classMembers
 }
 
 func (p *Parser) parseClassDeclaration(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	classNode := ast.ClassDeclaration{} // TODO verify not nested
+	classNode.P = parentNode
+	classNode.AbstractOrFinalModifier = p.eatOptional(lexer.AbstractKeyword, lexer.FinalKeyword)
+	classNode.ClassKeyword = p.eat1(lexer.ClassKeyword)
+	classNode.Name = p.eat(p.nameOrReservedWordTokens...) // TODO should be any
+	classNode.Name.Kind = lexer.Name
+	classNode.ClassBaseClause = p.parseClassBaseClause(classNode)
+	classNode.ClassInterfaceClause = p.parseClassInterfaceClause(classNode)
+	classNode.ClassMembers = p.parseClassMembers(classNode)
+	return classNode
+
 }
 
 func (p *Parser) parseInterfaceDeclaration(parentNode ast.Node) ast.Node {
@@ -1846,4 +1934,123 @@ func (p *Parser) parseMemberName(parentNode ast.MemberAccessExpression) ast.Node
 	tokNode := ast.Missing{Token: t}
 	return tokNode
 
+}
+func (p *Parser) parseConstElementFn() ParseElementFn {
+	return func(parentNode ast.Node) ast.Node {
+		constElement := &ast.ConstElement{}
+		constElement.P = parentNode
+		constElement.Name = p.token
+		p.advanceToken()
+		constElement.Name.Kind = lexer.Name // to support keyword names
+		constElement.EqualsToken = p.eat1(lexer.EqualsToken)
+		// TODO add post-parse rule that checks for invalid assignments
+		constElement.Assignment = p.parseExpression(constElement, false)
+		return constElement
+	}
+}
+func (p *Parser) isParameterStartFn() ElementStartFn {
+	return func(token *lexer.Token) bool {
+		switch token.Kind {
+		case lexer.DotDotDotToken:
+
+		// qualified-name
+		case lexer.Name: // http://php.net/manual/en/language.namespaces.rules.php
+		case lexer.BackslashToken:
+		case lexer.NamespaceKeyword:
+
+		case lexer.AmpersandToken:
+
+		case lexer.VariableName:
+			return true
+
+		// nullable-type
+		case lexer.QuestionToken:
+			return true
+		}
+
+		// scalar-type
+		return p.isTokenMember(token.Kind, p.parameterTypeDeclarationTokens)
+	}
+}
+
+func (p *Parser) parseParameterFn() ParseElementFn {
+	return func(parentNode ast.Node) ast.Node {
+		parameter := ast.Parameter{}
+		parameter.P = parentNode
+		parameter.QuestionToken = p.eatOptional1(lexer.QuestionToken)
+		parameter.TypeDeclaration = p.tryParseParameterTypeDeclaration(parameter)
+		parameter.ByRefToken = p.eatOptional1(lexer.AmpersandToken)
+		// TODO add post-parse rule that prevents assignment
+		// TODO add post-parse rule that requires only last parameter be variadic
+		parameter.DotDotDotToken = p.eatOptional1(lexer.DotDotDotToken)
+		parameter.VariableName = p.eat1(lexer.VariableName)
+		parameter.EqualsToken = p.eatOptional1(lexer.EqualsToken)
+		if parameter.EqualsToken != nil {
+			// TODO add post-parse rule that checks for invalid assignments
+			parameter.Default = p.parseExpression(parameter, false)
+		}
+		return parameter
+	}
+}
+
+func (p *Parser) isTokenMember(tok lexer.TokenKind, tokens []lexer.TokenKind) bool {
+	for _, t := range tokens {
+		if t == tok {
+			return true
+		}
+	}
+	return false
+}
+
+func (p *Parser) tryParseParameterTypeDeclaration(parentNode ast.Parameter) ast.Node {
+	var parameterTypeDeclaration ast.Node
+	tn := &ast.TokenNode{Token: p.eatOptional(p.parameterTypeDeclarationTokens...)}
+	parameterTypeDeclaration = tn
+	if tn.Token == nil {
+		parameterTypeDeclaration = p.parseQualifiedName(parentNode)
+	}
+	return parameterTypeDeclaration
+}
+
+func (p *Parser) parseAnonymousFunctionUseClause(parentNode ast.MethodDeclaration) ast.Node {
+	anonymousFunctionUseClause := ast.AnonymousFunctionUseClause{}
+	anonymousFunctionUseClause.P = parentNode
+
+	anonymousFunctionUseClause.UseKeyword = p.eatOptional1(lexer.UseKeyword)
+	if anonymousFunctionUseClause.UseKeyword == nil {
+		return nil
+	}
+	anonymousFunctionUseClause.OpenParen = p.eat1(lexer.OpenParenToken)
+	fnName := func(token *lexer.Token) bool {
+		return token.Kind == lexer.AmpersandToken || token.Kind == lexer.VariableName
+	}
+	useVariableNameList := &ast.UseVariableNameList{}
+	anonymousFunctionUseClause.UseVariableNameList = p.parseDelimitedList(
+		useVariableNameList,
+		lexer.CommaToken,
+		fnName,
+		func(parentNode ast.Node) ast.Node {
+			useVariableName := ast.UseVariableName{}
+			useVariableName.P = parentNode
+			useVariableName.ByRef = p.eatOptional1(lexer.AmpersandToken)
+			useVariableName.VariableName = p.eat1(lexer.VariableName)
+			return useVariableName
+		},
+		anonymousFunctionUseClause, false)
+	anonymousFunctionUseClause.CloseParen = p.eat1(lexer.CloseParenToken)
+
+	return anonymousFunctionUseClause
+}
+
+func (p *Parser) parseReturnTypeDeclaration(parentNode ast.MethodDeclaration) ast.Node {
+	tokNode := ast.TokenNode{Token: p.eatOptional(p.returnTypeDeclarationTokens...)}
+	var returnTypeDeclaration ast.Node = tokNode
+	if tokNode.Token == nil {
+		returnTypeDeclaration = p.parseQualifiedName(parentNode)
+	}
+
+	if returnTypeDeclaration == nil {
+		returnTypeDeclaration = ast.Missing{Token: &lexer.Token{Kind: lexer.ReturnType, FullStart: p.token.FullStart}}
+	}
+	return returnTypeDeclaration
 }

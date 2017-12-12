@@ -8,7 +8,6 @@ import (
 	diff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
 	"io/ioutil"
-	"os"
 	"path/filepath"
 )
 
@@ -38,7 +37,7 @@ func TestCases(t *testing.T) {
 	for _, resultFile := range resultFiles {
 
 		t.Run(resultFile, func(t *testing.T) {
-
+			//t.Parallel()
 			if _, skipTest := skipFiles[resultFile]; skipTest {
 				return
 			}
@@ -55,8 +54,11 @@ func TestCases(t *testing.T) {
 			d, err := differ.Compare(jsonSource, resultCase)
 
 			if err != nil {
-				println(err)
-				os.Exit(1)
+				t.Log("Log comparing json sources:")
+				t.Log(err)
+				ast.PrettyPrintJSON(jsonSource)
+				t.Error("Test fail.")
+				return
 			}
 
 			if d.Modified() {

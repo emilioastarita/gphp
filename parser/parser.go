@@ -1791,7 +1791,7 @@ func (p *Parser) isCurrentTokenValidInEnclosingContexts() bool {
 }
 
 func (p *Parser) isInParseContext(context ParseContext) bool {
-	return (p.currentParseContext & (1 << context)) == 0
+	return (p.currentParseContext & (1 << context)) != 0
 }
 func (p *Parser) isTraitMemberDeclarationStart(token *lexer.Token) bool {
 	panic("Not implemented")

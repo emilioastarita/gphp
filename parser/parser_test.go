@@ -15,7 +15,7 @@ func TestParser(t *testing.T) {
 	p := Parser{}
 	sourceFile := p.ParseSourceFile(`<?php
 
-$a = "test ${var}";`, "")
+public const a = c;`, "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {

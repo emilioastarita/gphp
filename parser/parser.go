@@ -112,7 +112,7 @@ func (p *Parser) parseList(parentNode ast.Node, listParseContext ParseContext) [
 	savedParseContext := p.currentParseContext
 	p.currentParseContext |= 1 << listParseContext
 	parseListElementFn := p.getParseListElementFn(listParseContext)
-	var nodes []ast.Node
+	nodes := make([]ast.Node, 0)
 	for p.isListTerminator(listParseContext) == false {
 		if p.isValidListElement(listParseContext, p.token) {
 			element := parseListElementFn(parentNode)
@@ -636,7 +636,7 @@ func (p *Parser) parseNamedLabelStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseCompoundStatement(parentNode ast.Node) ast.Node {
-	st := ast.CompoundStatement{}
+	st := ast.CompoundStatementNode{}
 	st.P = parentNode
 	st.OpenBrace = p.eat1(lexer.OpenBraceToken)
 	st.Statements = p.parseList(st, BlockStatements)
@@ -964,62 +964,64 @@ func (p *Parser) parseConstElements(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseMethodDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
-	methodDeclaration := ast.MethodDeclaration{}
+	methodDeclaration := &ast.MethodDeclaration{}
 	methodDeclaration.Modifiers = modifiers
 	p.parseFunctionType(methodDeclaration, true, false)
 	methodDeclaration.P = parentNode
 	return methodDeclaration
 }
 
-func (p *Parser) parseFunctionType(functionDeclaration ast.MethodDeclaration, canBeAbstract bool, isAnonymous bool) {
-	functionDeclaration.FunctionKeyword = p.eat1(lexer.FunctionKeyword)
-	functionDeclaration.ByRefToken = p.eatOptional1(lexer.AmpersandToken)
+func (p *Parser) parseFunctionType(functionDeclaration ast.FunctionInterface, canBeAbstract bool, isAnonymous bool) {
+	functionDeclaration.SetFunctionKeyword(p.eat1(lexer.FunctionKeyword))
+	functionDeclaration.SetByRefToken(p.eatOptional1(lexer.AmpersandToken))
 
 	if isAnonymous {
 		t := &ast.TokenNode{Token: p.eatOptional(p.nameOrKeywordOrReservedWordTokens...)}
-		functionDeclaration.Name = t
+		functionDeclaration.SetName(t)
 	} else {
 		t := &ast.TokenNode{Token: p.eat(p.nameOrKeywordOrReservedWordTokens...)}
-		functionDeclaration.Name = t
+		functionDeclaration.SetName(t)
 	}
 
-	if functionDeclaration.Name != nil {
-		functionDeclaration.Name.GetToken().Kind = lexer.Name
+	if functionDeclaration.GetName() != nil {
+		functionDeclaration.GetName().GetToken().Kind = lexer.Name
 	}
 
-	if isAnonymous && functionDeclaration.Name != nil {
+	if isAnonymous && functionDeclaration.GetName() != nil {
 		// Anonymous functions should not have names
-		functionDeclaration.Name = ast.NewSkippedNode(functionDeclaration.Name.GetToken()) // TODO instaed handle this during post-walk
+		functionDeclaration.SetName(ast.NewSkippedNode(functionDeclaration.GetName().GetToken())) // TODO instaed handle this during post-walk
 	}
 
-	functionDeclaration.OpenParen = p.eat1(lexer.OpenParenToken)
+	functionDeclaration.SetOpenParen(p.eat1(lexer.OpenParenToken))
 	parameterDeclaration := &ast.ParameterDeclarationList{}
-	functionDeclaration.Parameters = p.parseDelimitedList(
+	functionDeclaration.SetParameters(p.parseDelimitedList(
 		parameterDeclaration,
 		lexer.CommaToken,
 		p.isParameterStartFn(),
 		p.parseParameterFn(),
-		functionDeclaration, false)
-	functionDeclaration.CloseParen = p.eat1(lexer.CloseParenToken)
+		functionDeclaration, false))
+
+	functionDeclaration.SetCloseParen(p.eat1(lexer.CloseParenToken))
 
 	if isAnonymous {
-		functionDeclaration.AnonymousFunctionUseClause = p.parseAnonymousFunctionUseClause(functionDeclaration)
+		panic("Impements anonymous interface")
+		//functionDeclaration.AnonymousFunctionUseClause = p.parseAnonymousFunctionUseClause(functionDeclaration)
 	}
 
 	if p.checkToken(lexer.ColonToken) {
-		functionDeclaration.ColonToken = p.eat1(lexer.ColonToken)
-		functionDeclaration.QuestionToken = p.eatOptional1(lexer.QuestionToken)
-		functionDeclaration.ReturnType = p.parseReturnTypeDeclaration(functionDeclaration)
+		functionDeclaration.SetColonToken(p.eat1(lexer.ColonToken))
+		functionDeclaration.SetQuestionToken(p.eatOptional1(lexer.QuestionToken))
+		functionDeclaration.SetReturnType(p.parseReturnTypeDeclaration(functionDeclaration))
 	}
 
 	var tokNode ast.TokenNode
 	if canBeAbstract {
 		tokNode = ast.TokenNode{Token: p.eatOptional1(lexer.SemicolonToken)}
-		functionDeclaration.CompoundStatementOrSemicolon = tokNode
+		functionDeclaration.SetCompoundStatementOrSemicolon(tokNode)
 	}
 
 	if tokNode.Token == nil {
-		functionDeclaration.CompoundStatementOrSemicolon = p.parseCompoundStatement(functionDeclaration)
+		functionDeclaration.SetCompoundStatementOrSemicolon(p.parseCompoundStatement(functionDeclaration))
 	}
 }
 
@@ -1993,7 +1995,7 @@ func (p *Parser) tryParseParameterTypeDeclaration(parentNode ast.Parameter) ast.
 	return parameterTypeDeclaration
 }
 
-func (p *Parser) parseAnonymousFunctionUseClause(parentNode ast.MethodDeclaration) ast.Node {
+func (p *Parser) parseAnonymousFunctionUseClause(parentNode *ast.MethodDeclaration) ast.Node {
 	anonymousFunctionUseClause := ast.AnonymousFunctionUseClause{}
 	anonymousFunctionUseClause.P = parentNode
 
@@ -2023,7 +2025,7 @@ func (p *Parser) parseAnonymousFunctionUseClause(parentNode ast.MethodDeclaratio
 	return anonymousFunctionUseClause
 }
 
-func (p *Parser) parseReturnTypeDeclaration(parentNode ast.MethodDeclaration) ast.Node {
+func (p *Parser) parseReturnTypeDeclaration(parentNode ast.FunctionInterface) ast.Node {
 	tokNode := ast.TokenNode{Token: p.eatOptional(p.returnTypeDeclarationTokens...)}
 	var returnTypeDeclaration ast.Node = tokNode
 	if tokNode.Token == nil {

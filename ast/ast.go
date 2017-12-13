@@ -73,14 +73,6 @@ type ForeachValue struct {
 	Ampersand  *lexer.Token
 }
 
-type AnonymousFunctionUseClause struct {
-	CNode               `serialize:"-"`
-	UseKeyword          *lexer.Token
-	OpenParen           *lexer.Token
-	CloseParen          *lexer.Token
-	UseVariableNameList Node
-}
-
 type ArrayElement struct {
 	CNode        `serialize:"-"`
 	ByRef        *lexer.Token
@@ -220,22 +212,6 @@ type ClassConstDeclaration struct {
 	ConstElements Node
 }
 
-type MethodDeclaration struct {
-	CNode                        `serialize:"-"`
-	Modifiers                    []*lexer.Token
-	Parameters                   Node
-	FunctionKeyword              *lexer.Token
-	ByRefToken                   *lexer.Token
-	Name                         NodeWithToken
-	OpenParen                    *lexer.Token
-	CloseParen                   *lexer.Token
-	ColonToken                   *lexer.Token
-	QuestionToken                *lexer.Token
-	CompoundStatementOrSemicolon Node
-	ReturnType                   Node
-	AnonymousFunctionUseClause   Node
-}
-
 type MissingMemberDeclaration struct {
 	CNode     `serialize:"-"`
 	Modifiers []*lexer.Token
@@ -275,7 +251,7 @@ type ClassInterfaceClause struct {
 
 // statements
 
-type CompoundStatement struct {
+type CompoundStatementNode struct {
 	CNode      `serialize:"-"`
 	OpenBrace  *lexer.Token
 	Statements []Node

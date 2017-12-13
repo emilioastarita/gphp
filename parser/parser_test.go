@@ -14,8 +14,10 @@ import (
 func TestParser(t *testing.T) {
 	p := Parser{}
 	sourceFile := p.ParseSourceFile(`<?php
-
-public const a = c;`, "")
+class A {
+    public function & __construct() {
+    }
+}`, "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {

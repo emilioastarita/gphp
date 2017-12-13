@@ -3,6 +3,8 @@ package parser
 import (
 	"github.com/emilioastarita/gphp/ast"
 	"github.com/emilioastarita/gphp/lexer"
+	"go/token"
+	"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
 type Parser struct {
@@ -10,10 +12,12 @@ type Parser struct {
 	token                             *lexer.Token
 	currentParseContext               ParseContext
 	isParsingObjectCreationExpression bool
+	reservedWordTokens                []lexer.TokenKind
 	nameOrKeywordOrReservedWordTokens []lexer.TokenKind
 	nameOrReservedWordTokens          []lexer.TokenKind
 	parameterTypeDeclarationTokens    []lexer.TokenKind
 	returnTypeDeclarationTokens       []lexer.TokenKind
+	nameOrStaticOrReservedWordTokens  []lexer.TokenKind
 }
 
 type ParseContext uint
@@ -42,6 +46,10 @@ func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
 
 	p.returnTypeDeclarationTokens = []lexer.TokenKind{lexer.VoidReservedWord}
 	p.returnTypeDeclarationTokens = append(p.returnTypeDeclarationTokens, typeDeclaration...)
+
+	p.reservedWordTokens = lexer.GetReservedWords()
+	p.nameOrStaticOrReservedWordTokens = []lexer.TokenKind{lexer.Name, lexer.StaticKeyword}
+	p.nameOrStaticOrReservedWordTokens = append(p.nameOrStaticOrReservedWordTokens, p.reservedWordTokens...)
 
 	p.parameterTypeDeclarationTokens = typeDeclaration
 	p.nameOrKeywordOrReservedWordTokens = lexer.GetNameOrKeywordOrReservedWordTokens()
@@ -442,7 +450,7 @@ func (p *Parser) isExpressionStartFn() func(*lexer.Token) bool {
 			lexer.FunctionKeyword:
 			return true
 		}
-		return lexer.IsReserverdWordToken(token.Kind)
+		return lexer.IsReservedWordToken(token.Kind)
 	}
 }
 
@@ -917,7 +925,7 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 		return p.parseReservedWordExpression(parentNode)
 	}
 
-	if lexer.IsReserverdWordToken(token.Kind) {
+	if lexer.IsReservedWordToken(token.Kind) {
 		return p.parseQualifiedName(parentNode)
 	}
 
@@ -1176,7 +1184,7 @@ func (p *Parser) parseClassBaseClause(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseQualifiedName(parentNode ast.Node) ast.Node {
-	panic("Not implemented parseQualifiedName")
+	return (p.parseQualifiedNameFn())(parentNode)
 }
 
 func (p *Parser) parseClassInterfaceClause(parentNode ast.Node) ast.Node {
@@ -2053,4 +2061,67 @@ func (p *Parser) parseReturnTypeDeclaration(parentNode ast.MethodDeclaration) as
 		returnTypeDeclaration = ast.Missing{Token: &lexer.Token{Kind: lexer.ReturnType, FullStart: p.token.FullStart}}
 	}
 	return returnTypeDeclaration
+}
+func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
+	return func(parentNode ast.Node) ast.Node {
+		node := ast.QualifiedName{}
+		node.P = parentNode
+		node.RelativeSpecifier = p.parseRelativeSpecifier(node)
+		if node.RelativeSpecifier == nil {
+			node.GlobalSpecifier = p.eatOptional1(lexer.BackslashToken)
+		}
+		qualifiedNameParts := &ast.QualifiedNameParts{}
+		nameParts :=
+			p.parseDelimitedList(
+				qualifiedNameParts,
+				lexer.BackslashToken,
+				func(token *lexer.Token) bool {
+					// a\static() <- VALID
+					// a\static\b <- INVALID
+					// a\function <- INVALID
+					// a\true\b <-VALID
+					// a\b\true <-VALID
+					// a\static::b <-VALID
+					// TODO more tests
+
+					if p.lookahead(lexer.BackslashToken) {
+						return p.isTokenMember(token.Kind, p.nameOrReservedWordTokens)
+					}
+					return p.isTokenMember(token.Kind, p.nameOrStaticOrReservedWordTokens)
+				},
+				func(parentNode ast.Node) ast.Node {
+					var name *lexer.Token
+					if p.lookahead(lexer.BackslashToken) {
+						name = p.eat(p.nameOrReservedWordTokens...)
+					} else {
+						name = p.eat(p.nameOrStaticOrReservedWordTokens...) // TODO support keyword name
+					}
+					name.Kind = lexer.Name // bool/true/null/static should not be treated as keywords in this case
+					return &ast.TokenNode{Token: name}
+				}, node, false)
+
+			//@todo check nameParts.Token == nil
+		if nameParts == nil && node.GlobalSpecifier == nil && node.RelativeSpecifier == nil {
+			return nil
+		}
+
+		if nameParts != nil {
+			node.NameParts = nameParts.Children
+		}
+
+		return node
+	}
+
+}
+func (p *Parser) parseRelativeSpecifier(parentNode ast.Node) ast.Node {
+	node := ast.RelativeSpecifier{}
+	node.P = parentNode
+	node.NamespaceKeyword = p.eatOptional1(lexer.NamespaceKeyword)
+	if node.NamespaceKeyword != nil {
+		node.Backslash = p.eat1(lexer.BackslashToken)
+	}
+	if node.Backslash != nil {
+		return node
+	}
+	return nil
 }

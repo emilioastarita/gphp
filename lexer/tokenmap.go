@@ -174,7 +174,15 @@ func valueInMap(v TokenKind, m map[string]TokenKind) bool {
 	return false
 }
 
-func IsReserverdWordToken(v TokenKind) bool {
+func GetReservedWords() []TokenKind {
+	var kinds []TokenKind
+	for _, v := range RESERVED_WORDS {
+		kinds = append(kinds, v)
+	}
+	return kinds
+}
+
+func IsReservedWordToken(v TokenKind) bool {
 	return valueInMap(v, RESERVED_WORDS)
 }
 func IsKeywordToken(v TokenKind) bool {
@@ -182,7 +190,7 @@ func IsKeywordToken(v TokenKind) bool {
 }
 
 func IsKeywordOrReserverdWordToken(v TokenKind) bool {
-	return IsKeywordToken(v) || IsReserverdWordToken(v)
+	return IsKeywordToken(v) || IsReservedWordToken(v)
 }
 
 func IsNameOrKeywordOrReservedWordTokens(v TokenKind) bool {
@@ -205,6 +213,7 @@ func GetNameOrKeywordOrReservedWordTokens() []TokenKind {
 	tokens = append(tokens, Name)
 	return tokens
 }
+
 func GetNameOrReservedWordTokens() []TokenKind {
 	var tokens []TokenKind
 	for _, value := range RESERVED_WORDS {

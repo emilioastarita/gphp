@@ -54,50 +54,11 @@ func (s *SourceFileNode) Merge(nodes []Node) {
 	s.StatementList = append(s.StatementList, nodes...)
 }
 
-type Missing struct {
-	CNode `serialize:"-"`
-	Token *lexer.Token
-}
-
-type SkippedNode struct {
-	CNode `serialize:"-"`
-	Token *lexer.Token
-}
-
-func (n *SkippedNode) SetToken(t *lexer.Token) {
-	n.Token = t
-}
-
-func (n *SkippedNode) GetToken() *lexer.Token {
-	return n.Token
-}
-
-func (n *TokenNode) SetToken(t *lexer.Token) {
-	n.Token = t
-}
-
-func (n *TokenNode) GetToken() *lexer.Token {
-	return n.Token
-}
-
-func (n *Missing) SetToken(t *lexer.Token) {
-	n.Token = t
-}
-
-func (n *Missing) GetToken() *lexer.Token {
-	return n.Token
-}
-
 type ClassMembersNode struct {
 	CNode                   `serialize:"-"`
 	OpenBrace               *lexer.Token
 	ClassMemberDeclarations []Node
 	CloseBrace              *lexer.Token
-}
-
-type TokenNode struct {
-	CNode `serialize:"-"`
-	Token *lexer.Token
 }
 
 type ForeachKey struct {
@@ -284,6 +245,7 @@ type QualifiedName struct {
 	CNode             `serialize:"-"`
 	GlobalSpecifier   *lexer.Token
 	RelativeSpecifier Node
+	NameParts         []Node
 }
 
 type PropertyDeclaration struct {

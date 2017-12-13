@@ -10,19 +10,21 @@ import (
 )
 
 type serializer struct {
-	ptrmap          map[interface{}]bool // *T -> line number
-	ignoredFields   []string
-	typeOfToken     reflect.Type
-	typeOfTokenNode reflect.Type
-	tagName         string
+	ptrmap            map[interface{}]bool // *T -> line number
+	ignoredFields     []string
+	typeOfToken       reflect.Type
+	typeOfTokenNode   reflect.Type
+	typeOfSkippedNode reflect.Type
+	tagName           string
 }
 
 func Serialize(x interface{}) interface{} {
 	s := serializer{
-		tagName:         "serialize",
-		ptrmap:          make(map[interface{}]bool),
-		typeOfToken:     reflect.TypeOf(lexer.Token{}),
-		typeOfTokenNode: reflect.TypeOf(TokenNode{}),
+		tagName:           "serialize",
+		ptrmap:            make(map[interface{}]bool),
+		typeOfToken:       reflect.TypeOf(lexer.Token{}),
+		typeOfTokenNode:   reflect.TypeOf(TokenNode{}),
+		typeOfSkippedNode: reflect.TypeOf(SkippedNode{}),
 	}
 	return s.serialize(reflect.ValueOf(x), false)
 }
@@ -135,6 +137,11 @@ func (s *serializer) serialize(x reflect.Value, singleChildren bool) interface{}
 			me["fullStart"] = s.serialize(x.FieldByName("FullStart"), false)
 			me["start"] = s.serialize(x.FieldByName("Start"), false)
 			me["length"] = s.serialize(x.FieldByName("Length"), false)
+			return me
+		case s.typeOfSkippedNode:
+			serializedToken := s.serialize(x.FieldByName("Token"), false)
+			me, _ := serializedToken.(map[string]interface{})
+			me["error"] = "SkippedToken"
 			return me
 		case s.typeOfTokenNode:
 			return s.serialize(x.FieldByName("Token"), false)

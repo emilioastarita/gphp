@@ -3,8 +3,6 @@ package parser
 import (
 	"github.com/emilioastarita/gphp/ast"
 	"github.com/emilioastarita/gphp/lexer"
-	"go/token"
-	"golang.org/x/tools/go/gcimporter15/testdata"
 )
 
 type Parser struct {
@@ -125,11 +123,7 @@ func (p *Parser) parseList(parentNode ast.Node, listParseContext ParseContext) [
 		if p.isCurrentTokenValidInEnclosingContexts() {
 			break
 		}
-
-		t := &lexer.Token{Kind: p.token.Kind, FullStart: p.token.FullStart, Start: p.token.FullStart, Missing: true}
-		skipped := &ast.SkippedNode{}
-		skipped.Token = t
-		nodes = append(nodes, skipped)
+		nodes = append(nodes, ast.NewSkippedNode(p.token))
 		p.advanceToken()
 	}
 	p.currentParseContext = savedParseContext
@@ -544,10 +538,7 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 		case lexer.AbstractKeyword:
 			if !p.lookahead(lexer.ClassKeyword) {
 				p.advanceToken()
-				t := &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
-				skipped := &ast.SkippedNode{}
-				skipped.Token = t
-				return skipped
+				return ast.NewSkippedNode(token)
 			}
 		case lexer.ClassKeyword:
 			return p.parseClassDeclaration(parentNode)
@@ -1009,9 +1000,7 @@ func (p *Parser) parseFunctionType(functionDeclaration ast.MethodDeclaration, ca
 
 	if isAnonymous && functionDeclaration.Name != nil {
 		// Anonymous functions should not have names
-		skipped := &ast.SkippedNode{}
-		skipped.Token = functionDeclaration.Name.GetToken()
-		functionDeclaration.Name = skipped // TODO instaed handle this during post-walk
+		functionDeclaration.Name = ast.NewSkippedNode(functionDeclaration.Name.GetToken()) // TODO instaed handle this during post-walk
 	}
 
 	functionDeclaration.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -2071,48 +2060,47 @@ func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
 			node.GlobalSpecifier = p.eatOptional1(lexer.BackslashToken)
 		}
 		qualifiedNameParts := &ast.QualifiedNameParts{}
-		nameParts :=
-			p.parseDelimitedList(
-				qualifiedNameParts,
-				lexer.BackslashToken,
-				func(token *lexer.Token) bool {
-					// a\static() <- VALID
-					// a\static\b <- INVALID
-					// a\function <- INVALID
-					// a\true\b <-VALID
-					// a\b\true <-VALID
-					// a\static::b <-VALID
-					// TODO more tests
+		nameParts := p.parseDelimitedList(
+			qualifiedNameParts,
+			lexer.BackslashToken,
+			func(token *lexer.Token) bool {
+				// a\static() <- VALID
+				// a\static\b <- INVALID
+				// a\function <- INVALID
+				// a\true\b <-VALID
+				// a\b\true <-VALID
+				// a\static::b <-VALID
+				// TODO more tests
 
-					if p.lookahead(lexer.BackslashToken) {
-						return p.isTokenMember(token.Kind, p.nameOrReservedWordTokens)
-					}
-					return p.isTokenMember(token.Kind, p.nameOrStaticOrReservedWordTokens)
-				},
-				func(parentNode ast.Node) ast.Node {
-					var name *lexer.Token
-					if p.lookahead(lexer.BackslashToken) {
-						name = p.eat(p.nameOrReservedWordTokens...)
-					} else {
-						name = p.eat(p.nameOrStaticOrReservedWordTokens...) // TODO support keyword name
-					}
-					name.Kind = lexer.Name // bool/true/null/static should not be treated as keywords in this case
-					return &ast.TokenNode{Token: name}
-				}, node, false)
+				if p.lookahead(lexer.BackslashToken) {
+					return p.isTokenMember(token.Kind, p.nameOrReservedWordTokens)
+				}
+				return p.isTokenMember(token.Kind, p.nameOrStaticOrReservedWordTokens)
+			},
+			func(parentNode ast.Node) ast.Node {
+				var name *lexer.Token
+				if p.lookahead(lexer.BackslashToken) {
+					name = p.eat(p.nameOrReservedWordTokens...)
+				} else {
+					name = p.eat(p.nameOrStaticOrReservedWordTokens...) // TODO support keyword name
+				}
+				name.Kind = lexer.Name // bool/true/null/static should not be treated as keywords in this case
+				return &ast.TokenNode{Token: name}
+			}, node, false)
 
-			//@todo check nameParts.Token == nil
+		//@todo check nameParts.Token == nil
 		if nameParts == nil && node.GlobalSpecifier == nil && node.RelativeSpecifier == nil {
 			return nil
 		}
 
 		if nameParts != nil {
-			node.NameParts = nameParts.Children
+			node.NameParts = nameParts.Children()
 		}
-
 		return node
 	}
 
 }
+
 func (p *Parser) parseRelativeSpecifier(parentNode ast.Node) ast.Node {
 	node := ast.RelativeSpecifier{}
 	node.P = parentNode

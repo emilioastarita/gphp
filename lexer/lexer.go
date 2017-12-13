@@ -79,19 +79,19 @@ func (s *TokensStream) Debug() {
 }
 
 func (l *LexerScanner) addToMem(kind TokenKind, pos int, tokenMem []Token) []Token {
-	tokenMem = append(tokenMem, Token{kind, l.fullStart, l.start, pos - l.fullStart, false})
+	tokenMem = append(tokenMem, Token{kind, l.fullStart, l.start, pos - l.fullStart, TokenCatNormal})
 	l.fullStart = pos
 	l.start = pos
 	return tokenMem
 }
 
 func (l *LexerScanner) addToMemInPlace(kind TokenKind, pos int, length int, tokenMem []Token) []Token {
-	tokenMem = append(tokenMem, Token{kind, pos, pos, length, false})
+	tokenMem = append(tokenMem, Token{kind, pos, pos, length, TokenCatNormal})
 	return tokenMem
 }
 
 func (l *LexerScanner) createToken(kind TokenKind) *Token {
-	return &Token{kind, l.fullStart, l.start, l.pos - l.fullStart, false}
+	return &Token{kind, l.fullStart, l.start, l.pos - l.fullStart, TokenCatNormal}
 }
 
 func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
@@ -105,7 +105,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 			if l.state != LexStateHtmlSection {
 				current = l.createToken(EndOfFileToken)
 			} else {
-				current = &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart, false}
+				current = &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart, TokenCatNormal}
 			}
 			l.state = LexStateScriptSection
 			if current.Kind == InlineHtml && l.pos-l.fullStart == 0 {
@@ -125,7 +125,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 			if l.pos-l.fullStart == 0 {
 				continue
 			}
-			return &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart, false}, tokenMem
+			return &Token{InlineHtml, l.fullStart, l.fullStart, l.pos - l.fullStart, TokenCatNormal}, tokenMem
 		}
 
 		charCode := l.content[l.pos]
@@ -374,9 +374,9 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		if *pos >= eofPos {
 			// UNTERMINATED, report error
 			if len(tokenMem) == 0 {
-				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, false})
+				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
 				l.fullStart = l.start
-				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, false})
+				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, TokenCatNormal})
 				return tokenMem
 			} else {
 				return tokenMem
@@ -405,7 +405,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		if char == '$' {
 			if isNameStart(fileContent, *pos+1, eofPos) {
 				if len(tokenMem) == 0 {
-					tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, false})
+					tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
 					l.start++
 					l.fullStart = l.start
 				}
@@ -480,7 +480,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 
 func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []Token) (bool, []Token) {
 	if len(tokenMem) == 0 {
-		tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, false})
+		tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
 		l.start++
 		l.fullStart = l.start
 	}

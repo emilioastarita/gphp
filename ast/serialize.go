@@ -15,6 +15,7 @@ type serializer struct {
 	typeOfToken       reflect.Type
 	typeOfTokenNode   reflect.Type
 	typeOfSkippedNode reflect.Type
+	typeOfMissing     reflect.Type
 	tagName           string
 }
 
@@ -25,6 +26,7 @@ func Serialize(x interface{}) interface{} {
 		typeOfToken:       reflect.TypeOf(lexer.Token{}),
 		typeOfTokenNode:   reflect.TypeOf(TokenNode{}),
 		typeOfSkippedNode: reflect.TypeOf(SkippedNode{}),
+		typeOfMissing:     reflect.TypeOf(Missing{}),
 	}
 	return s.serialize(reflect.ValueOf(x), false)
 }
@@ -137,14 +139,21 @@ func (s *serializer) serialize(x reflect.Value, singleChildren bool) interface{}
 			me["fullStart"] = s.serialize(x.FieldByName("FullStart"), false)
 			me["start"] = s.serialize(x.FieldByName("Start"), false)
 			me["length"] = s.serialize(x.FieldByName("Length"), false)
+			serializedCat := s.serialize(x.FieldByName("Cat"), false)
+			cat, _ := serializedCat.(lexer.TokenCategory)
+			switch cat {
+			case lexer.TokenCatMissing:
+				me["error"] = "MissingToken"
+			case lexer.TokenCatSkipped:
+				me["error"] = "SkippedToken"
+			}
 			return me
-		case s.typeOfSkippedNode:
-			serializedToken := s.serialize(x.FieldByName("Token"), false)
-			me, _ := serializedToken.(map[string]interface{})
-			me["error"] = "SkippedToken"
-			return me
-		case s.typeOfTokenNode:
+
+		case s.typeOfSkippedNode,
+			s.typeOfMissing,
+			s.typeOfTokenNode:
 			return s.serialize(x.FieldByName("Token"), false)
+
 		default:
 			me := make(map[string]map[string]interface{})
 			me[typeName] = make(map[string]interface{})

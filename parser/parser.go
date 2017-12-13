@@ -328,10 +328,7 @@ func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
 			tokNode.Token = tokName
 			variable.Name = tokNode
 		} else {
-			t := &lexer.Token{Kind: lexer.VariableName, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
-			missing := ast.Missing{}
-			missing.Token = t
-			variable.Name = missing
+			variable.Name = ast.NewMissingToken(lexer.VariableName, token.FullStart, nil)
 		}
 
 		return variable
@@ -683,18 +680,14 @@ func (p *Parser) eat1(kind lexer.TokenKind) *lexer.Token {
 		p.advanceToken()
 		return token
 	}
-	t := &lexer.Token{Kind: kind, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
+	t := &lexer.Token{Kind: kind, FullStart: token.FullStart, Start: token.FullStart, Cat: lexer.TokenCatMissing}
 	return t
 }
 
 func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 	token := p.token
 	if token.Kind == lexer.EndOfFileToken {
-		t := &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
-		missing := &ast.Missing{}
-		missing.P = parentNode
-		missing.Token = t
-		return missing
+		return ast.NewMissingToken(lexer.Expression, token.FullStart, parentNode)
 	}
 	fnExpression := p.parseExpressionFn()
 	expression := fnExpression(parentNode)
@@ -726,7 +719,7 @@ func (p *Parser) eat(kinds ...lexer.TokenKind) *lexer.Token {
 			return token
 		}
 	}
-	t := &lexer.Token{Kind: kinds[0], FullStart: token.FullStart, Start: token.FullStart, Missing: true}
+	t := &lexer.Token{Kind: kinds[0], FullStart: token.FullStart, Start: token.FullStart, Cat: lexer.TokenCatMissing}
 	return t
 }
 
@@ -919,11 +912,7 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 	if lexer.IsReservedWordToken(token.Kind) {
 		return p.parseQualifiedName(parentNode)
 	}
-
-	missing := &ast.Missing{}
-	missing.P = parentNode
-	missing.Token = &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
-	return missing
+	return ast.NewMissingToken(lexer.Expression, token.FullStart, parentNode)
 }
 
 func (p *Parser) parseSimpleVariable(variable ast.Node) ast.Node {
@@ -1876,10 +1865,7 @@ func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.No
 	} else if token.Kind == lexer.Name {
 		subscriptExpression.AccessExpression = p.parseTemplateStringSubscriptStringLiteral(subscriptExpression)
 	} else {
-		t := &lexer.Token{Kind: lexer.Expression, FullStart: token.FullStart, Start: token.FullStart, Missing: true}
-		missing := ast.Missing{}
-		missing.Token = t
-		subscriptExpression.AccessExpression = missing
+		subscriptExpression.AccessExpression = ast.NewMissingToken(lexer.Expression, token.FullStart, nil)
 	}
 	subscriptExpression.CloseBracketOrBrace = p.eat1(lexer.CloseBracketToken)
 	return subscriptExpression
@@ -1927,11 +1913,9 @@ func (p *Parser) parseMemberName(parentNode ast.MemberAccessExpression) ast.Node
 			return tokNode
 		}
 	}
-	t := &lexer.Token{Kind: lexer.MemberName, FullStart: p.token.FullStart, Start: p.token.FullStart, Missing: true}
-	tokNode := ast.Missing{Token: t}
-	return tokNode
-
+	return ast.NewMissingToken(lexer.MemberName, p.token.FullStart, nil)
 }
+
 func (p *Parser) parseConstElementFn() ParseElementFn {
 	return func(parentNode ast.Node) ast.Node {
 		constElement := &ast.ConstElement{}
@@ -2047,10 +2031,11 @@ func (p *Parser) parseReturnTypeDeclaration(parentNode ast.MethodDeclaration) as
 	}
 
 	if returnTypeDeclaration == nil {
-		returnTypeDeclaration = ast.Missing{Token: &lexer.Token{Kind: lexer.ReturnType, FullStart: p.token.FullStart}}
+		returnTypeDeclaration = ast.NewMissingToken(lexer.ReturnType, p.token.FullStart, nil)
 	}
 	return returnTypeDeclaration
 }
+
 func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
 	return func(parentNode ast.Node) ast.Node {
 		node := ast.QualifiedName{}

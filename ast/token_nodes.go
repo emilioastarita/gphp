@@ -44,8 +44,16 @@ func (n *Missing) GetToken() *lexer.Token {
 }
 
 func NewSkippedNode(from *lexer.Token) *SkippedNode {
-	t := &lexer.Token{Kind: from.Kind, FullStart: from.FullStart, Start: from.Start, Length: from.Length, Missing: true}
+	t := &lexer.Token{Kind: from.Kind, FullStart: from.FullStart, Start: from.Start, Length: from.Length, Cat: lexer.TokenCatSkipped}
 	skipped := &SkippedNode{}
 	skipped.Token = t
 	return skipped
+}
+
+func NewMissingToken(kind lexer.TokenKind, fullStart int, parentNode Node) *Missing {
+	t := &lexer.Token{Kind: kind, FullStart: fullStart, Start: fullStart, Cat: lexer.TokenCatMissing}
+	missing := &Missing{}
+	missing.P = parentNode
+	missing.Token = t
+	return missing
 }

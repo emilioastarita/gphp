@@ -1,11 +1,19 @@
 package lexer
 
+type TokenCategory int
+
+const (
+	TokenCatNormal TokenCategory = iota
+	TokenCatSkipped
+	TokenCatMissing
+)
+
 type Token struct {
 	Kind      TokenKind
 	FullStart int
 	Start     int
 	Length    int
-	Missing   bool
+	Cat       TokenCategory
 }
 
 type TokenShortForm struct {

@@ -537,6 +537,7 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 				p.advanceToken()
 				return ast.NewSkippedNode(token)
 			}
+			return p.parseClassDeclaration(parentNode)
 		case lexer.ClassKeyword:
 			return p.parseClassDeclaration(parentNode)
 
@@ -582,7 +583,18 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 
 		expressionStatement := ast.ExpressionStatement{}
 		expressionStatement.P = parentNode
-		expressionStatement.Expression = p.parseExpression(expressionStatement, true)
+
+		ret := p.parseExpression(expressionStatement, true)
+
+		_, isMissing := ret.(*ast.Missing)
+
+		if isMissing == false {
+			expressionStatement.Expression = []ast.Node{ret}
+		} else {
+			expressionStatement.Expression = []ast.Node{ret, ast.NewSkippedNode(p.token)}
+			p.advanceToken()
+		}
+
 		expressionStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 		return expressionStatement
 	}
@@ -690,10 +702,8 @@ func (p *Parser) parseExpression(parentNode ast.Node, force bool) ast.Node {
 		return ast.NewMissingToken(lexer.Expression, token.FullStart, parentNode)
 	}
 	fnExpression := p.parseExpressionFn()
-	expression := fnExpression(parentNode)
 
-	// @todo this not make sense
-	// if (force && expression)
+	expression := fnExpression(parentNode)
 
 	return expression
 }
@@ -1407,12 +1417,11 @@ func (p *Parser) parseDeclareStatement(parentNode ast.Node) ast.Node {
 	panic("Not implemented")
 }
 
-func (p *Parser) parseFunctionDeclaration(node ast.Node) ast.Node {
-	panic("Not implemented")
-	//functionNode := ast.FunctionDeclaration{};
-	//p.parseFunctionType(functionNode);
-	//functionNode.P = parentNode;
-	//return functionNode;
+func (p *Parser) parseFunctionDeclaration(parentNode ast.Node) ast.Node {
+	functionNode := &ast.FunctionDeclaration{}
+	p.parseFunctionType(functionNode, false, false)
+	functionNode.P = parentNode
+	return functionNode
 }
 
 func (p *Parser) parseClassMembers(parentNode ast.Node) ast.Node {

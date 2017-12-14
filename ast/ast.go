@@ -98,7 +98,7 @@ type CaseStatement struct {
 
 type ExpressionStatement struct {
 	CNode      `serialize:"-"`
-	Expression Node
+	Expression []Node `serialize:"-single"`
 	Semicolon  *lexer.Token
 }
 

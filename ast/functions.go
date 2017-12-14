@@ -103,3 +103,10 @@ type MethodDeclaration struct {
 	FunctionBody       `serialize:"-flat"`
 	Modifiers          []*lexer.Token
 }
+
+type FunctionDeclaration struct {
+	CNode              `serialize:"-"`
+	FunctionHeader     `serialize:"-flat"`
+	FunctionReturnType `serialize:"-flat"`
+	FunctionBody       `serialize:"-flat"`
+}

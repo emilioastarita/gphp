@@ -162,7 +162,7 @@ func (p *Parser) parseExpressionFn() func(ast.Node) ast.Node {
 }
 
 func (p *Parser) parseModifiers() []*lexer.Token {
-	var modifiers []*lexer.Token
+	modifiers := make([]*lexer.Token, 0)
 	token := p.token
 	for p.isModifier(token) {
 		modifiers = append(modifiers, token)
@@ -531,8 +531,8 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 			break
 
 			// class-declaration
-		case lexer.FinalKeyword:
-		case lexer.AbstractKeyword:
+		case lexer.FinalKeyword,
+			lexer.AbstractKeyword:
 			if !p.lookahead(lexer.ClassKeyword) {
 				p.advanceToken()
 				return ast.NewSkippedNode(token)
@@ -909,9 +909,9 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 	case lexer.FunctionKeyword:
 		return p.parseAnonymousFunctionCreationExpression(parentNode)
 
-	case lexer.TrueReservedWord:
-	case lexer.FalseReservedWord:
-	case lexer.NullReservedWord:
+	case lexer.TrueReservedWord,
+		lexer.FalseReservedWord,
+		lexer.NullReservedWord:
 		// handle `true::`, `true(`, `true\`
 		if p.lookahead([]lexer.TokenKind{lexer.BackslashToken, lexer.ColonColonToken, lexer.OpenParenToken}) {
 			return p.parseQualifiedName(parentNode)
@@ -1699,8 +1699,8 @@ func (p *Parser) isStatementStart(token *lexer.Token) bool {
 	case lexer.OpenBraceToken,
 		//Labeled Statements
 		lexer.Name,
-		//case lexer.CaseKeyword: // TODO update spec
-		//case lexer.DefaultKeyword:
+		//lexer.CaseKeyword: // TODO update spec
+		//lexer.DefaultKeyword:
 		// Expression Statements
 		lexer.SemicolonToken,
 		lexer.IfKeyword,

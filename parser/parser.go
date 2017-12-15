@@ -902,10 +902,11 @@ func (p *Parser) parsePrimaryExpression(parentNode ast.Node) ast.Node {
 		// anonymous-function-creation-expression
 	case lexer.StaticKeyword:
 		// handle `static::`, `static(`
-		if p.lookahead([]lexer.TokenKind{lexer.ColonColonToken, lexer.OpenParenToken}) {
+		if p.lookahead([]lexer.TokenKind{lexer.ColonColonToken, lexer.OpenParenToken}) || (!p.lookahead(lexer.FunctionKeyword)) {
 			return p.parseQualifiedName(parentNode)
 		}
 		// Could be `static function` anonymous function creation expression, so flow through
+		return p.parseAnonymousFunctionCreationExpression(parentNode)
 	case lexer.FunctionKeyword:
 		return p.parseAnonymousFunctionCreationExpression(parentNode)
 

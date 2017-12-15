@@ -114,5 +114,4 @@ type AnonymousFunctionCreationExpression struct {
 	FunctionBody       `serialize:"-flat"`
 	FunctionUseClause  `serialize:"-flat"`
 	StaticModifier     *lexer.Token
-	Modifiers          []*lexer.Token
 }

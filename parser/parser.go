@@ -36,7 +36,7 @@ const (
 	Count
 )
 
-func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
+func (p *Parser) ParseSourceFile(source string, uri string) *ast.SourceFileNode {
 
 	typeDeclaration := []lexer.TokenKind{lexer.ArrayKeyword, lexer.CallableKeyword, lexer.BoolReservedWord,
 		lexer.FloatReservedWord, lexer.IntReservedWord, lexer.StringReservedWord,
@@ -56,7 +56,7 @@ func (p *Parser) ParseSourceFile(source string, uri string) ast.SourceFileNode {
 	p.stream.Source(source)
 	p.stream.CreateTokens()
 	p.reset()
-	sourceFile := ast.SourceFileNode{P: nil, FileContents: source, Uri: uri}
+	sourceFile := &ast.SourceFileNode{P: nil, FileContents: source, Uri: uri}
 	if p.token.Kind != lexer.EndOfFileToken {
 		sourceFile.Add(p.parseInlineHtml(sourceFile))
 	}
@@ -80,7 +80,7 @@ func (p *Parser) parseInlineHtml(source ast.Node) ast.Node {
 	end := p.eatOptional1(lexer.ScriptSectionEndTag)
 	text := p.eatOptional1(lexer.InlineHtml)
 	start := p.eatOptional1(lexer.ScriptSectionStartTag)
-	n := ast.InlineHtml{}
+	n := &ast.InlineHtml{}
 	n.P = source
 	n.ScriptSectionEndTag = end
 	n.ScriptSectionStartTag = start
@@ -148,7 +148,7 @@ func (p *Parser) parseClassElementFn() func(ast.Node) ast.Node {
 			return p.parseTraitUseClause(parentNode)
 
 		default:
-			missingClassMemberDeclaration := ast.MissingMemberDeclaration{}
+			missingClassMemberDeclaration := &ast.MissingMemberDeclaration{}
 			missingClassMemberDeclaration.P = parentNode
 			missingClassMemberDeclaration.Modifiers = modifiers
 			return missingClassMemberDeclaration
@@ -309,7 +309,7 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
 	return func(parentNode ast.Node) ast.Node {
 		token := p.token
-		variable := ast.Variable{}
+		variable := &ast.Variable{}
 		variable.P = parentNode
 		if token.Kind == lexer.DollarToken {
 			variable.Dollar = p.eat1(lexer.DollarToken)
@@ -324,7 +324,7 @@ func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
 			// TODO consider splitting into dollar and name.
 			// StringVarname is the variable name without , used in a template string e.g. `"{foo}"`
 			tokName := p.eat(lexer.VariableName, lexer.StringVarname)
-			tokNode := ast.TokenNode{}
+			tokNode := &ast.TokenNode{}
 			tokNode.Token = tokName
 			variable.Name = tokNode
 		} else {
@@ -336,7 +336,7 @@ func (p *Parser) parseSimpleVariableFn() func(ast.Node) ast.Node {
 }
 
 func (p *Parser) parseBracedExpression(parentNode ast.Node) ast.Node {
-	bracedExpression := ast.BracedExpression{}
+	bracedExpression := &ast.BracedExpression{}
 	bracedExpression.P = parentNode
 	bracedExpression.OpenBrace = p.eat1(lexer.OpenBraceToken)
 	bracedExpression.Expression = p.parseExpression(bracedExpression, false)
@@ -581,7 +581,7 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 			return p.parseInlineHtml(parentNode)
 		}
 
-		expressionStatement := ast.ExpressionStatement{}
+		expressionStatement := &ast.ExpressionStatement{}
 		expressionStatement.P = parentNode
 
 		ret := p.parseExpression(expressionStatement, true)
@@ -607,7 +607,7 @@ func (p *Parser) parseStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
-	st := ast.IfStatement{}
+	st := &ast.IfStatement{}
 	st.P = parentNode
 	st.IfKeyword = p.eat1(lexer.IfKeyword)
 	st.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -639,7 +639,7 @@ func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseNamedLabelStatement(parentNode ast.Node) ast.Node {
-	st := ast.NamedLabelStatement{}
+	st := &ast.NamedLabelStatement{}
 	st.P = parentNode
 	st.Name = p.eat1(lexer.Name)
 	st.Colon = p.eat1(lexer.ColonToken)
@@ -648,7 +648,7 @@ func (p *Parser) parseNamedLabelStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseCompoundStatement(parentNode ast.Node) ast.Node {
-	st := ast.CompoundStatementNode{}
+	st := &ast.CompoundStatementNode{}
 	st.P = parentNode
 	st.OpenBrace = p.eat1(lexer.OpenBraceToken)
 	st.Statements = p.parseList(st, BlockStatements)
@@ -713,7 +713,7 @@ func (p *Parser) checkToken(kind lexer.TokenKind) bool {
 }
 
 func (p *Parser) parseUnaryOpExpression(parent ast.Node) ast.Node {
-	st := ast.UnaryOpExpression{}
+	st := &ast.UnaryOpExpression{}
 	st.P = parent
 	st.Operator = p.eat(lexer.PlusToken, lexer.MinusToken, lexer.ExclamationToken, lexer.TildeToken)
 	operand := p.parseUnaryExpressionOrHigher(st)
@@ -734,7 +734,7 @@ func (p *Parser) eat(kinds ...lexer.TokenKind) *lexer.Token {
 }
 
 func (p *Parser) parseErrorControlExpression(parent ast.Node) ast.Node {
-	errorExpr := ast.ErrorControlExpression{}
+	errorExpr := &ast.ErrorControlExpression{}
 	errorExpr.P = parent
 	errorExpr.Operator = p.eat1(lexer.AtSymbolToken)
 	operand := p.parseUnaryExpressionOrHigher(errorExpr)
@@ -743,7 +743,7 @@ func (p *Parser) parseErrorControlExpression(parent ast.Node) ast.Node {
 }
 
 func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
-	n := ast.PrefixUpdateExpression{}
+	n := &ast.PrefixUpdateExpression{}
 	n.P = parent
 	n.IncrementOrDecrementOperator = p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken)
 	op := p.parsePrimaryExpression(n)
@@ -950,7 +950,7 @@ func (p *Parser) isModifier(token *lexer.Token) bool {
 }
 
 func (p *Parser) parseClassConstDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
-	classConstDeclaration := ast.ClassConstDeclaration{}
+	classConstDeclaration := &ast.ClassConstDeclaration{}
 	classConstDeclaration.P = parentNode
 	classConstDeclaration.Modifiers = modifiers
 	classConstDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword)
@@ -1041,7 +1041,7 @@ func (p *Parser) parseFunctionType(functionDeclaration ast.FunctionInterface, ca
 }
 
 func (p *Parser) parsePropertyDeclaration(parentNode ast.Node, modifiers []*lexer.Token) ast.Node {
-	propertyDeclaration := ast.PropertyDeclaration{}
+	propertyDeclaration := &ast.PropertyDeclaration{}
 	propertyDeclaration.P = parentNode
 	propertyDeclaration.Modifiers = modifiers
 	propertyDeclaration.PropertyElements = p.parseExpressionList(propertyDeclaration)
@@ -1049,7 +1049,7 @@ func (p *Parser) parsePropertyDeclaration(parentNode ast.Node, modifiers []*lexe
 	return propertyDeclaration
 }
 
-func (p *Parser) parseExpressionList(parentNode ast.Node) ast.Node {
+func (p *Parser) parseExpressionList(parentNode ast.Node) ast.DelimitedList {
 	expressionList := &ast.ExpressionList{}
 	return p.parseDelimitedList(expressionList, lexer.CommaToken, p.isExpressionStartFn(), p.parseExpressionFn(), parentNode, false)
 }
@@ -1070,7 +1070,7 @@ func (p *Parser) parseDelimitedList(node ast.DelimitedList, delimiter lexer.Toke
 		}
 		delimeterToken := p.eatOptional(delimiter)
 		if delimeterToken != nil {
-			tokNod := ast.TokenNode{Token: delimeterToken}
+			tokNod := &ast.TokenNode{Token: delimeterToken}
 			node.AddNode(tokNod)
 		}
 		token = p.token
@@ -1088,11 +1088,21 @@ func (p *Parser) parseDelimitedList(node ast.DelimitedList, delimiter lexer.Toke
 }
 
 func (p *Parser) parseTraitUseClause(parentNode ast.Node) ast.Node {
-	panic("Not implemented parseTraitUseClause")
+	traitUseClause := &ast.TraitUseClause{}
+	traitUseClause.P = parentNode
+	traitUseClause.UseKeyword = p.eat1(lexer.UseKeyword)
+	traitUseClause.TraitNameList = p.parseQualifiedNameList(traitUseClause)
+	traitUseClause.SemicolonOrOpenBrace = p.eat(lexer.OpenBraceToken, lexer.SemicolonToken)
+	if traitUseClause.SemicolonOrOpenBrace.Kind == lexer.OpenBraceToken {
+		traitUseClause.TraitSelectAndAliasClauses = p.parseTraitSelectAndAliasClauseList(traitUseClause)
+		traitUseClause.CloseBrace = p.eat1(lexer.CloseBraceToken)
+	}
+
+	return traitUseClause
 }
 
 func (p *Parser) parseCastExpression(parentNode ast.Node) ast.Node {
-	castExpression := ast.CastExpression{}
+	castExpression := &ast.CastExpression{}
 	castExpression.P = parentNode
 	castExpression.CastType = p.eat(
 		lexer.ArrayCastToken,
@@ -1107,7 +1117,7 @@ func (p *Parser) parseCastExpression(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseCastExpressionGranular(parentNode ast.Node) ast.Node {
-	castExpression := ast.CastExpression{}
+	castExpression := &ast.CastExpression{}
 	castExpression.P = parentNode
 	castExpression.OpenParen = p.eat1(lexer.OpenParenToken)
 	castExpression.CastType = p.eat(
@@ -1129,17 +1139,17 @@ func (p *Parser) parseCastExpressionGranular(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
-	objectCreationExpression := ast.ObjectCreationExpression{}
+	objectCreationExpression := &ast.ObjectCreationExpression{}
 	objectCreationExpression.P = parentNode
 	objectCreationExpression.NewKeword = p.eat1(lexer.NewKeyword)
 	// TODO - add tests for this scenario
 	p.isParsingObjectCreationExpression = true
 	if r := p.eatOptional1(lexer.ClassKeyword); r != nil {
-		tokNode := ast.TokenNode{}
+		tokNode := &ast.TokenNode{}
 		tokNode.Token = r
 		objectCreationExpression.ClassTypeDesignator = tokNode
 	} else if r := p.eatOptional1(lexer.StaticKeyword); r != nil {
-		tokNode := ast.TokenNode{}
+		tokNode := &ast.TokenNode{}
 		tokNode.Token = r
 		objectCreationExpression.ClassTypeDesignator = tokNode
 	} else {
@@ -1168,7 +1178,7 @@ func (p *Parser) parseArgumentExpressionList(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseClassBaseClause(parentNode ast.Node) ast.Node {
-	classBaseClause := ast.ClassBaseClause{}
+	classBaseClause := &ast.ClassBaseClause{}
 	classBaseClause.P = parentNode
 	classBaseClause.ExtendsKeyword = p.eatOptional1(lexer.ExtendsKeyword)
 	if classBaseClause.ExtendsKeyword == nil {
@@ -1183,7 +1193,7 @@ func (p *Parser) parseQualifiedName(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseClassInterfaceClause(parentNode ast.Node) ast.Node {
-	classInterfaceClause := ast.ClassInterfaceClause{}
+	classInterfaceClause := &ast.ClassInterfaceClause{}
 	classInterfaceClause.P = parentNode
 	classInterfaceClause.ImplementsKeyword = p.eatOptional1(lexer.ImplementsKeyword)
 	if classInterfaceClause.ImplementsKeyword == nil {
@@ -1199,7 +1209,7 @@ func (p *Parser) parseQualifiedNameList(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseCloneExpression(parentNode ast.Node) ast.Node {
-	cloneExpression := ast.CloneExpression{}
+	cloneExpression := &ast.CloneExpression{}
 	cloneExpression.P = parentNode
 	cloneExpression.CloneKeyword = p.eat1(lexer.CloneKeyword)
 	cloneExpression.Expression = p.parseUnaryExpressionOrHigher(cloneExpression)
@@ -1211,7 +1221,7 @@ func (p *Parser) parseYieldExpression(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseScriptInclusionExpression(parentNode ast.Node) ast.Node {
-	scriptInclusionExpression := ast.ScriptInclusionExpression{}
+	scriptInclusionExpression := &ast.ScriptInclusionExpression{}
 	scriptInclusionExpression.P = parentNode
 	scriptInclusionExpression.RequireOrIncludeKeyword = p.eat(
 		lexer.RequireKeyword, lexer.RequireOnceKeyword,
@@ -1230,7 +1240,7 @@ func (p *Parser) parseInterfaceElementFn() func(ast.Node) ast.Node {
 
 func (p *Parser) parseCaseOrDefaultStatement() func(ast.Node) ast.Node {
 	return func(parentNode ast.Node) ast.Node {
-		caseStatement := ast.CaseStatement{}
+		caseStatement := &ast.CaseStatement{}
 		caseStatement.P = parentNode
 		// TODO add error checking
 		caseStatement.CaseKeyword = p.eat(lexer.CaseKeyword, lexer.DefaultKeyword)
@@ -1244,7 +1254,7 @@ func (p *Parser) parseCaseOrDefaultStatement() func(ast.Node) ast.Node {
 	}
 }
 func (p *Parser) parseSwitchStatement(parentNode ast.Node) ast.Node {
-	switchStatement := ast.SwitchStatement{}
+	switchStatement := &ast.SwitchStatement{}
 	switchStatement.P = parentNode
 	switchStatement.SwitchKeyword = p.eat1(lexer.SwitchKeyword)
 	switchStatement.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -1272,7 +1282,7 @@ func (p *Parser) eatSemicolonOrAbortStatement() *lexer.Token {
 }
 
 func (p *Parser) parseWhileStatement(parentNode ast.Node) ast.Node {
-	whileStatement := ast.WhileStatement{}
+	whileStatement := &ast.WhileStatement{}
 	whileStatement.P = parentNode
 	whileStatement.WhileToken = p.eat1(lexer.WhileKeyword)
 	whileStatement.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -1291,7 +1301,7 @@ func (p *Parser) parseWhileStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseDoStatement(parentNode ast.Node) ast.Node {
-	doStatement := ast.DoStatement{}
+	doStatement := &ast.DoStatement{}
 	doStatement.P = parentNode
 	doStatement.Do = p.eat1(lexer.DoKeyword)
 	doStatement.Statement = p.parseStatement(doStatement)
@@ -1305,7 +1315,7 @@ func (p *Parser) parseDoStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseForStatement(parentNode ast.Node) ast.Node {
-	forStatement := ast.ForStatement{}
+	forStatement := &ast.ForStatement{}
 	forStatement.P = parentNode
 	forStatement.For = p.eat1(lexer.ForKeyword)
 	forStatement.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -1327,7 +1337,7 @@ func (p *Parser) parseForStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseForeachStatement(parentNode ast.Node) ast.Node {
-	foreachStatement := ast.ForeachStatement{}
+	foreachStatement := &ast.ForeachStatement{}
 	foreachStatement.P = parentNode
 	foreachStatement.Foreach = p.eat1(lexer.ForeachKeyword)
 	foreachStatement.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -1355,7 +1365,7 @@ func (p *Parser) tryParseForeachKey(parentNode ast.Node) ast.Node {
 
 	startPos := p.stream.Pos
 	startToken := p.token
-	foreachKey := ast.ForeachKey{}
+	foreachKey := &ast.ForeachKey{}
 	foreachKey.P = parentNode
 	foreachKey.Expression = p.parseExpression(foreachKey, false)
 	if !p.checkToken(lexer.DoubleArrowToken) {
@@ -1369,7 +1379,7 @@ func (p *Parser) tryParseForeachKey(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseForeachValue(parentNode ast.Node) ast.Node {
-	foreachValue := ast.ForeachValue{}
+	foreachValue := &ast.ForeachValue{}
 	foreachValue.P = parentNode
 	foreachValue.Ampersand = p.eatOptional1(lexer.AmpersandToken)
 	foreachValue.Expression = p.parseExpression(foreachValue, false)
@@ -1382,7 +1392,7 @@ func (p *Parser) isExpressionStart(token *lexer.Token) bool {
 }
 
 func (p *Parser) parseEmptyIntrinsicExpression(parentNode ast.Node) ast.Node {
-	emptyExpression := ast.EmptyIntrinsicExpression{}
+	emptyExpression := &ast.EmptyIntrinsicExpression{}
 	emptyExpression.P = parentNode
 	emptyExpression.EmptyKeyword = p.eat1(lexer.EmptyKeyword)
 	emptyExpression.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -1396,11 +1406,23 @@ func (p *Parser) parseGotoStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseBreakOrContinueStatement(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	// TODO should be error checking if on top level
+	continueStatement := &ast.BreakOrContinueStatement{}
+	continueStatement.P = parentNode
+	continueStatement.BreakOrContinueKeyword = p.eat(lexer.ContinueKeyword, lexer.BreakKeyword)
+
+	if p.isExpressionStart(p.token) {
+		continueStatement.BreakoutLevel = p.parseExpression(continueStatement, false)
+	}
+
+	continueStatement.Semicolon = p.eatSemicolonOrAbortStatement()
+
+	return continueStatement
+
 }
 
 func (p *Parser) parseReturnStatement(parentNode ast.Node) ast.Node {
-	returnStatement := ast.ReturnStatement{}
+	returnStatement := &ast.ReturnStatement{}
 	returnStatement.P = parentNode
 	returnStatement.ReturnKeyword = p.eat1(lexer.ReturnKeyword)
 	if p.isExpressionStart(p.token) {
@@ -1411,15 +1433,55 @@ func (p *Parser) parseReturnStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseThrowStatement(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	throwStatement := &ast.ThrowStatement{}
+	throwStatement.P = parentNode
+	throwStatement.ThrowKeyword = p.eat1(lexer.ThrowKeyword)
+	// TODO error for failures to parse expressions when not optional
+	throwStatement.Expression = p.parseExpression(throwStatement, false)
+	throwStatement.Semicolon = p.eatSemicolonOrAbortStatement()
+
+	return throwStatement
 }
 
 func (p *Parser) parseTryStatement(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	tryStatement := &ast.TryStatement{}
+	tryStatement.P = parentNode
+	tryStatement.TryKeyword = p.eat1(lexer.TryKeyword)
+	tryStatement.CompoundStatement = p.parseCompoundStatement(tryStatement) // TODO verifiy this is only compound
+
+	tryStatement.CatchClauses = make([]ast.Node, 0) // TODO - should be some standard for empty arrays vs. null?
+	for p.checkToken(lexer.CatchKeyword) {
+		tryStatement.CatchClauses = append(tryStatement.CatchClauses, p.parseCatchClause(tryStatement))
+	}
+
+	if p.checkToken(lexer.FinallyKeyword) {
+		tryStatement.FinallyClause = p.parseFinallyClause(tryStatement)
+	}
+
+	return tryStatement
 }
 
 func (p *Parser) parseDeclareStatement(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	declareStatement := &ast.DeclareStatement{}
+	declareStatement.P = parentNode
+	declareStatement.DeclareKeyword = p.eat1(lexer.DeclareKeyword)
+	declareStatement.OpenParen = p.eat1(lexer.OpenParenToken)
+	declareStatement.DeclareDirective = p.parseDeclareDirective(declareStatement)
+	declareStatement.CloseParen = p.eat1(lexer.CloseParenToken)
+
+	if p.checkToken(lexer.SemicolonToken) {
+		declareStatement.Semicolon = p.eatSemicolonOrAbortStatement()
+	} else if p.checkToken(lexer.ColonToken) {
+		declareStatement.Colon = p.eat1(lexer.ColonToken)
+		declareStatement.Statements = p.parseList(declareStatement, DeclareStatementElements)
+		declareStatement.EnddeclareKeyword = p.eat1(lexer.EndDeclareKeyword)
+		declareStatement.Semicolon = p.eatSemicolonOrAbortStatement()
+	} else {
+		declareStatement.Statements = []ast.Node{p.parseStatement(declareStatement)}
+	}
+
+	return declareStatement
+
 }
 
 func (p *Parser) parseFunctionDeclaration(parentNode ast.Node) ast.Node {
@@ -1430,7 +1492,7 @@ func (p *Parser) parseFunctionDeclaration(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseClassMembers(parentNode ast.Node) ast.Node {
-	classMembers := ast.ClassMembersNode{}
+	classMembers := &ast.ClassMembersNode{}
 	classMembers.OpenBrace = p.eat1(lexer.OpenBraceToken)
 	classMembers.ClassMemberDeclarations = p.parseList(classMembers, ClassMembers)
 	classMembers.CloseBrace = p.eat1(lexer.CloseBraceToken)
@@ -1439,7 +1501,7 @@ func (p *Parser) parseClassMembers(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseClassDeclaration(parentNode ast.Node) ast.Node {
-	classNode := ast.ClassDeclaration{} // TODO verify not nested
+	classNode := &ast.ClassDeclaration{} // TODO verify not nested
 	classNode.P = parentNode
 	classNode.AbstractOrFinalModifier = p.eatOptional(lexer.AbstractKeyword, lexer.FinalKeyword)
 	classNode.ClassKeyword = p.eat1(lexer.ClassKeyword)
@@ -1453,34 +1515,86 @@ func (p *Parser) parseClassDeclaration(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseInterfaceDeclaration(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	interfaceDeclaration := &ast.InterfaceDeclaration{} // TODO verify not nested
+	interfaceDeclaration.P = parentNode
+	interfaceDeclaration.InterfaceKeyword = p.eat1(lexer.InterfaceKeyword)
+	interfaceDeclaration.Name = p.eat1(lexer.Name)
+	interfaceDeclaration.InterfaceBaseClause = p.parseInterfaceBaseClause(interfaceDeclaration)
+	interfaceDeclaration.InterfaceMembers = p.parseInterfaceMembers(interfaceDeclaration)
+	return interfaceDeclaration
+
 }
 
 func (p *Parser) parseNamespaceDefinition(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	namespaceDefinition := &ast.NamespaceDefinition{}
+	namespaceDefinition.P = parentNode
+
+	namespaceDefinition.NamespaceKeyword = p.eat1(lexer.NamespaceKeyword)
+	if !p.checkToken(lexer.NamespaceKeyword) {
+		namespaceDefinition.Name = p.parseQualifiedName(namespaceDefinition) // TODO only optional with compound statement block
+	}
+
+	if p.checkToken(lexer.OpenBraceToken) {
+		namespaceDefinition.CompoundStatementOrSemicolon = p.parseCompoundStatement(namespaceDefinition)
+	} else {
+		t := &ast.TokenNode{Token: p.eatSemicolonOrAbortStatement()}
+		namespaceDefinition.CompoundStatementOrSemicolon = t
+	}
+
+	return namespaceDefinition
+
 }
 
 func (p *Parser) parseNamespaceUseDeclaration(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	namespaceUseDeclaration := &ast.NamespaceUseDeclaration{}
+	namespaceUseDeclaration.P = parentNode
+	namespaceUseDeclaration.UseKeyword = p.eat1(lexer.UseKeyword)
+	namespaceUseDeclaration.FunctionOrConst = p.eatOptional(lexer.FunctionKeyword, lexer.ConstKeyword)
+	namespaceUseDeclaration.UseClauses = p.parseNamespaceUseClauseList(namespaceUseDeclaration)
+	namespaceUseDeclaration.Semicolon = p.eatSemicolonOrAbortStatement()
+	return namespaceUseDeclaration
 }
 
 func (p *Parser) parseEmptyStatement(parentNode ast.Node) ast.Node {
-	emptyStatement := ast.EmptyStatement{}
+	emptyStatement := &ast.EmptyStatement{}
 	emptyStatement.P = parentNode
 	emptyStatement.Semicolon = p.eat1(lexer.SemicolonToken)
 	return emptyStatement
 }
 
 func (p *Parser) parseTraitDeclaration(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	traitDeclaration := &ast.TraitDeclaration{}
+	traitDeclaration.P = parentNode
+
+	traitDeclaration.TraitKeyword = p.eat1(lexer.TraitKeyword)
+	traitDeclaration.Name = p.eat1(lexer.Name)
+
+	traitDeclaration.TraitMembers = p.parseTraitMembers(traitDeclaration)
+
+	return traitDeclaration
 }
 
 func (p *Parser) parseGlobalDeclaration(parentNode ast.Node) ast.Node {
-	panic("Not implemented")
+	globalDeclaration := &ast.GlobalDeclaration{}
+	globalDeclaration.P = parentNode
+
+	globalDeclaration.GlobalKeyword = p.eat1(lexer.GlobalKeyword)
+	variableNameList := &ast.VariableNameList{}
+	globalDeclaration.VariableNameList = p.parseDelimitedList(
+		variableNameList,
+		lexer.CommaToken,
+		p.isVariableNameStartFn(),
+		p.parseSimpleVariableFn(),
+		globalDeclaration,
+		false,
+	)
+
+	globalDeclaration.Semicolon = p.eatSemicolonOrAbortStatement()
+	return globalDeclaration
 }
 
 func (p *Parser) parseConstDeclaration(parentNode ast.Node) ast.Node {
-	constDeclaration := ast.ConstDeclaration{}
+	constDeclaration := &ast.ConstDeclaration{}
 	constDeclaration.P = parentNode
 	constDeclaration.ConstKeyword = p.eat1(lexer.ConstKeyword)
 	constDeclaration.ConstElements = p.parseConstElements(constDeclaration)
@@ -1488,24 +1602,70 @@ func (p *Parser) parseConstDeclaration(parentNode ast.Node) ast.Node {
 	return constDeclaration
 }
 
-func (p *Parser) parseFunctionStaticDeclaration(node ast.Node) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseFunctionStaticDeclaration(parentNode ast.Node) ast.Node {
+	functionStaticDeclaration := &ast.FunctionStaticDeclaration{}
+	functionStaticDeclaration.P = parentNode
+
+	functionStaticDeclaration.StaticKeyword = p.eat1(lexer.StaticKeyword)
+	staticVariableNameList := &ast.StaticVariableNameList{}
+	functionStaticDeclaration.StaticVariableNameList = p.parseDelimitedList(
+		staticVariableNameList,
+		lexer.CommaToken,
+		func(token *lexer.Token) bool {
+			return token.Kind == lexer.VariableName
+		},
+		p.parseStaticVariableDeclarationFn(),
+		functionStaticDeclaration,
+		false,
+	)
+	functionStaticDeclaration.Semicolon = p.eatSemicolonOrAbortStatement()
+	return functionStaticDeclaration
 }
 
-func (p *Parser) parseElseIfClause(statement ast.IfStatement) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseElseIfClause(parentNode *ast.IfStatement) ast.Node {
+	elseIfClause := &ast.ElseIfClauseNode{}
+	elseIfClause.P = parentNode
+	elseIfClause.ElseIfKeyword = p.eat1(lexer.ElseIfKeyword)
+	elseIfClause.OpenParen = p.eat1(lexer.OpenParenToken)
+	elseIfClause.Expression = p.parseExpression(elseIfClause, false)
+	elseIfClause.CloseParen = p.eat1(lexer.CloseParenToken)
+	if p.checkToken(lexer.ColonToken) {
+		elseIfClause.Colon = p.eat1(lexer.ColonToken)
+		elseIfClause.Statements = p.parseList(elseIfClause, IfClause2Elements)
+	} else {
+		elseIfClause.Statements = []ast.Node{p.parseStatement(elseIfClause)}
+	}
+	return elseIfClause
+
 }
 
-func (p *Parser) parseElseClause(statement ast.IfStatement) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseElseClause(parentNode *ast.IfStatement) ast.Node {
+	elseClause := &ast.ElseClauseNode{}
+	elseClause.P = parentNode
+	elseClause.ElseKeyword = p.eat1(lexer.ElseKeyword)
+	if p.checkToken(lexer.ColonToken) {
+		elseClause.Colon = p.eat1(lexer.ColonToken)
+		elseClause.Statements = p.parseList(elseClause, IfClause2Elements)
+	} else {
+		elseClause.Statements = []ast.Node{p.parseStatement(elseClause)}
+	}
+	return elseClause
+
 }
 
-func (p *Parser) parseScopedPropertyAccessExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseScopedPropertyAccessExpression(expression ast.Node) ast.Node {
+	scopedPropertyAccessExpression := &ast.ScopedPropertyAccessExpression{}
+	scopedPropertyAccessExpression.P = expression.Parent()
+	expression.SetParent(scopedPropertyAccessExpression)
+
+	scopedPropertyAccessExpression.ScopeResolutionQualifier = expression // TODO ensure always a Node
+	scopedPropertyAccessExpression.DoubleColon = p.eat1(lexer.ColonColonToken)
+	scopedPropertyAccessExpression.MemberName = p.parseMemberName(scopedPropertyAccessExpression)
+	return scopedPropertyAccessExpression
 }
 
 func (p *Parser) parseSubscriptExpression(expression ast.Node) ast.Node {
-	subscriptExpression := ast.SubscriptExpression{}
+	subscriptExpression := &ast.SubscriptExpression{}
 	subscriptExpression.P = expression.Parent()
 	expression.SetParent(subscriptExpression)
 
@@ -1524,7 +1684,7 @@ func (p *Parser) parseSubscriptExpression(expression ast.Node) ast.Node {
 }
 
 func (p *Parser) parseNumericLiteralExpression(parentNode ast.Node) ast.Node {
-	numericLiteral := ast.NumericLiteral{}
+	numericLiteral := &ast.NumericLiteral{}
 	numericLiteral.P = parentNode
 	numericLiteral.Children = p.token
 	p.advanceToken()
@@ -1533,9 +1693,9 @@ func (p *Parser) parseNumericLiteralExpression(parentNode ast.Node) ast.Node {
 
 func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 	// TODO validate input token
-	expression := ast.StringLiteral{}
+	expression := &ast.StringLiteral{}
 	expression.P = parentNode
-	t := ast.TokenNode{Token: p.token}
+	t := &ast.TokenNode{Token: p.token}
 	expression.Children = append(expression.Children, t)
 	p.advanceToken()
 	return expression
@@ -1552,7 +1712,7 @@ func (p *Parser) parseAnonymousFunctionCreationExpression(parentNode ast.Node) a
 
 }
 func (p *Parser) parseMemberAccessExpression(expression ast.Node) ast.Node {
-	memberAccessExpression := ast.MemberAccessExpression{}
+	memberAccessExpression := &ast.MemberAccessExpression{}
 	memberAccessExpression.SetParent(expression.Parent())
 	expression.SetParent(memberAccessExpression)
 
@@ -1565,7 +1725,7 @@ func (p *Parser) parseMemberAccessExpression(expression ast.Node) ast.Node {
 }
 func (p *Parser) parseStringLiteralExpression2(parentNode ast.Node) ast.Node {
 	// TODO validate input token
-	expression := ast.StringLiteral{}
+	expression := &ast.StringLiteral{}
 	expression.P = parentNode
 	expression.StartQuote = p.eat(lexer.SingleQuoteToken, lexer.DoubleQuoteToken, lexer.HeredocStart, lexer.BacktickToken)
 	for {
@@ -1599,9 +1759,19 @@ func (p *Parser) parseStringLiteralExpression2(parentNode ast.Node) ast.Node {
 	}
 
 }
-func (p *Parser) parseCallExpressionRest(node ast.Node) ast.Node {
-	panic("Not implemented")
+
+func (p *Parser) parseCallExpressionRest(expression ast.Node) ast.Node {
+	callExpression := &ast.CallExpression{}
+	callExpression.P = expression.Parent()
+	expression.SetParent(callExpression)
+	callExpression.CallableExpression = expression
+	callExpression.OpenParen = p.eat1(lexer.OpenParenToken)
+	callExpression.ArgumentExpressionList =
+		p.parseArgumentExpressionList(callExpression)
+	callExpression.CloseParen = p.eat1(lexer.CloseParenToken)
+	return callExpression
 }
+
 func (p *Parser) parseArrayCreationExpression(parentNode ast.Node) ast.Node {
 	arrayExpression := &ast.ArrayCreationExpression{}
 	arrayExpression.P = parentNode
@@ -1628,108 +1798,107 @@ func (p *Parser) parseArrayCreationExpression(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseEchoExpression(parentNode ast.Node) ast.Node {
-	echoExpression := ast.EchoExpression{}
+	echoExpression := &ast.EchoExpression{}
 	echoExpression.P = parentNode
 	echoExpression.EchoKeyword = p.eat1(lexer.EchoKeyword)
 	echoExpression.Expressions = p.parseExpressionList(echoExpression)
 	return echoExpression
 }
 
-func (p *Parser) parseListIntrinsicExpression(node ast.Node) ast.Node {
-	listExpression := ast.ListIntrinsicExpression();
-	listExpression.P = parentNode;
-	listExpression.listKeyword = p.eat1(lexer.ListKeyword);
-	listExpression.openParen = p.eat1(lexer.OpenParenToken);
+func (p *Parser) parseListIntrinsicExpression(parentNode ast.Node) ast.Node {
+	listExpression := &ast.ListIntrinsicExpression{}
+	listExpression.P = parentNode
+	listExpression.ListKeyword = p.eat1(lexer.ListKeyword)
+	listExpression.OpenParen = p.eat1(lexer.OpenParenToken)
 	// TODO - parse loosely as ArrayElementList, and validate parse tree later
-	listExpression.listElements =
-		p.parseArrayElementList(listExpression, DelimitedList\ListExpressionList::class);
-	listExpression.closeParen = p.eat1(lexer.CloseParenToken);
+	listExpressionList := &ast.ListExpressionList{}
+	listExpression.ListElements =
+		p.parseArrayElementList(listExpression, listExpressionList)
+	listExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 
-	return listExpression;
+	return listExpression
 
 }
 
-func (p *Parser) parseUnsetIntrinsicExpression(node ast.Node) ast.Node {
-	unsetExpression := ast.UnsetIntrinsicExpression()
+func (p *Parser) parseUnsetIntrinsicExpression(parentNode ast.Node) ast.Node {
+	unsetExpression := &ast.UnsetIntrinsicExpression{}
 	unsetExpression.P = parentNode
 
-	unsetExpression.unsetKeyword = p.eat1(lexer.UnsetKeyword)
-	unsetExpression.openParen = p.eat1(lexer.OpenParenToken)
-	unsetExpression.expressions = p.parseExpressionList(unsetExpression)
-	unsetExpression.closeParen = p.eat1(lexer.CloseParenToken)
+	unsetExpression.UnsetKeyword = p.eat1(lexer.UnsetKeyword)
+	unsetExpression.OpenParen = p.eat1(lexer.OpenParenToken)
+	unsetExpression.Expressions = p.parseExpressionList(unsetExpression)
+	unsetExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 
 	return unsetExpression
 
 }
 
-func (p *Parser) parseEvalIntrinsicExpression(node ast.Node) ast.Node {
-	evalExpression := ast.EvalIntrinsicExpression()
+func (p *Parser) parseEvalIntrinsicExpression(parentNode ast.Node) ast.Node {
+	evalExpression := &ast.EvalIntrinsicExpression{}
 	evalExpression.P = parentNode
 
-	evalExpression.evalKeyword = p.eat1(lexer.EvalKeyword)
-	evalExpression.openParen = p.eat1(lexer.OpenParenToken)
-	evalExpression.expression = p.parseExpression(evalExpression)
-	evalExpression.closeParen = p.eat1(lexer.CloseParenToken)
+	evalExpression.EvalKeyword = p.eat1(lexer.EvalKeyword)
+	evalExpression.OpenParen = p.eat1(lexer.OpenParenToken)
+	evalExpression.Expression = p.parseExpression(evalExpression, false)
+	evalExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 
 	return evalExpression
 
 }
 
-func (p *Parser) parseExitIntrinsicExpression(node ast.Node) ast.Node {
-	exitExpression := ast.ExitIntrinsicExpression()
+func (p *Parser) parseExitIntrinsicExpression(parentNode ast.Node) ast.Node {
+	exitExpression := &ast.ExitIntrinsicExpression{}
 	exitExpression.P = parentNode
 
-	exitExpression.exitOrDieKeyword = p.eat(lexer.ExitKeyword, lexer.DieKeyword)
-	exitExpression.openParen = p.eatOptional1(lexer.OpenParenToken)
-	if exitExpression.openParen != null {
+	exitExpression.ExitOrDieKeyword = p.eat(lexer.ExitKeyword, lexer.DieKeyword)
+	exitExpression.OpenParen = p.eatOptional1(lexer.OpenParenToken)
+	if exitExpression.OpenParen != nil {
 		if p.isExpressionStart(p.token) {
-			exitExpression.expression = p.parseExpression(exitExpression)
+			exitExpression.Expression = p.parseExpression(exitExpression, false)
 		}
-		exitExpression.closeParen = p.eat1(lexer.CloseParenToken)
+		exitExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 	}
 
 	return exitExpression
 
 }
 
-func (p *Parser) parseIssetIntrinsicExpression(node ast.Node) ast.Node {
-	issetExpression := ast.IssetIntrinsicExpression()
+func (p *Parser) parseIssetIntrinsicExpression(parentNode ast.Node) ast.Node {
+	issetExpression := &ast.IssetIntrinsicExpression{}
 	issetExpression.P = parentNode
 
-	issetExpression.issetKeyword = p.eat1(lexer.IsSetKeyword)
-	issetExpression.openParen = p.eat1(lexer.OpenParenToken)
-	issetExpression.expressions = p.parseExpressionList(issetExpression)
-	issetExpression.closeParen = p.eat1(lexer.CloseParenToken)
+	issetExpression.IssetKeyword = p.eat1(lexer.IsSetKeyword)
+	issetExpression.OpenParen = p.eat1(lexer.OpenParenToken)
+	issetExpression.Expressions = p.parseExpressionList(issetExpression)
+	issetExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 
 	return issetExpression
 }
 
-func (p *Parser) parsePrintIntrinsicExpression(node ast.Node) ast.Node {
-	printExpression := ast.PrintIntrinsicExpression()
+func (p *Parser) parsePrintIntrinsicExpression(parentNode ast.Node) ast.Node {
+	printExpression := &ast.PrintIntrinsicExpression{}
 	printExpression.P = parentNode
 
-	printExpression.printKeyword = p.eat1(lexer.PrintKeyword)
-	printExpression.expression = p.parseExpression(printExpression)
+	printExpression.PrintKeyword = p.eat1(lexer.PrintKeyword)
+	printExpression.Expression = p.parseExpression(printExpression, false)
 
 	return printExpression
 }
 
-func (p *Parser) parseReservedWordExpression(node ast.Node) ast.Node {
-	reservedWord := ast.ReservedWord()
+func (p *Parser) parseReservedWordExpression(parentNode ast.Node) ast.Node {
+	reservedWord := &ast.ReservedWord{}
 	reservedWord.P = parentNode
-	reservedWord.children = p.token
+	reservedWord.Children = p.token
 	p.advanceToken()
 	return reservedWord
 }
 
-func (p *Parser) parseParenthesizedExpression(node ast.Node) ast.Node {
-	parenthesizedExpression := ast.ParenthesizedExpression{}
+func (p *Parser) parseParenthesizedExpression(parentNode ast.Node) ast.Node {
+	parenthesizedExpression := &ast.ParenthesizedExpression{}
 	parenthesizedExpression.P = parentNode
-
-	parenthesizedExpression.openParen = p.eat1(lexer.OpenParenToken)
-	parenthesizedExpression.expression = p.parseExpression(parenthesizedExpression)
-	parenthesizedExpression.closeParen = p.eat1(lexer.CloseParenToken)
-
+	parenthesizedExpression.OpenParen = p.eat1(lexer.OpenParenToken)
+	parenthesizedExpression.Expression = p.parseExpression(parenthesizedExpression, false)
+	parenthesizedExpression.CloseParen = p.eat1(lexer.CloseParenToken)
 	return parenthesizedExpression
 }
 
@@ -1913,7 +2082,7 @@ func (p *Parser) getBinaryOperatorPrecedenceAndAssociativity(token *lexer.Token)
 	return -1, ast.AssocUnknown
 }
 func (p *Parser) parseTernaryExpression(leftOperand ast.Node, questionToken *lexer.Token) ast.Node {
-	ternaryExpression := ast.TernaryExpression{}
+	ternaryExpression := &ast.TernaryExpression{}
 	ternaryExpression.P = leftOperand.Parent()
 	leftOperand.SetParent(ternaryExpression)
 	ternaryExpression.Condition = leftOperand
@@ -1929,7 +2098,7 @@ func (p *Parser) parseTernaryExpression(leftOperand ast.Node, questionToken *lex
 }
 
 func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorToken *lexer.Token, byRefToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
-	binaryExpression := ast.AssignmentExpression{}
+	binaryExpression := &ast.AssignmentExpression{}
 	binaryExpression.P = parentNode
 	leftOperand.SetParent(binaryExpression)
 	rightOperand.SetParent(binaryExpression)
@@ -1943,7 +2112,7 @@ func (p *Parser) makeBinaryAssignmentExpression(leftOperand ast.Node, operatorTo
 }
 
 func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken *lexer.Token, rightOperand ast.Node, parentNode ast.Node) ast.Node {
-	binaryExpression := ast.BinaryExpression{}
+	binaryExpression := &ast.BinaryExpression{}
 	binaryExpression.P = parentNode
 	leftOperand.SetParent(binaryExpression)
 	rightOperand.SetParent(binaryExpression)
@@ -1953,7 +2122,7 @@ func (p *Parser) makeBinaryExpression(leftOperand ast.Node, operatorToken *lexer
 	return binaryExpression
 }
 
-func (p *Parser) parseTemplateStringExpression(parentNode ast.StringLiteral) ast.Node {
+func (p *Parser) parseTemplateStringExpression(parentNode *ast.StringLiteral) ast.Node {
 	token := p.token
 	if token.Kind == lexer.VariableName {
 		v := p.parseSimpleVariable(parentNode)
@@ -1970,7 +2139,7 @@ func (p *Parser) parseTemplateStringExpression(parentNode ast.StringLiteral) ast
 }
 
 func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.Node) ast.Node {
-	subscriptExpression := ast.SubscriptExpression{}
+	subscriptExpression := &ast.SubscriptExpression{}
 	subscriptExpression.P = postfixExpression.Parent()
 	postfixExpression.SetParent(subscriptExpression)
 
@@ -1990,31 +2159,33 @@ func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.No
 	return subscriptExpression
 }
 
-func (p *Parser) parseTemplateStringSubscriptStringLiteral(parentNode ast.SubscriptExpression) ast.Node {
-	expression := ast.StringLiteral{}
+func (p *Parser) parseTemplateStringSubscriptStringLiteral(parentNode *ast.SubscriptExpression) ast.Node {
+	expression := &ast.StringLiteral{}
 	expression.P = parentNode
-	t := ast.TokenNode{Token: p.eat1(lexer.Name)}
+	t := &ast.TokenNode{Token: p.eat1(lexer.Name)}
 	expression.Children = append(expression.Children, t)
 	return expression
 }
+
 func (p *Parser) parseTemplateStringMemberAccessExpression(expression ast.Node) ast.Node {
-	memberAccessExpression := ast.MemberAccessExpression{}
+	memberAccessExpression := &ast.MemberAccessExpression{}
 	memberAccessExpression.P = expression.Parent()
 	expression.SetParent(memberAccessExpression)
 
 	memberAccessExpression.DereferencableExpression = expression
 	memberAccessExpression.ArrowToken = p.eat1(lexer.ArrowToken)
-	t := ast.TokenNode{Token: p.eat1(lexer.Name)}
+	t := &ast.TokenNode{Token: p.eat1(lexer.Name)}
 	memberAccessExpression.MemberName = t
 
 	return memberAccessExpression
 }
-func (p *Parser) parseMemberName(parentNode ast.MemberAccessExpression) ast.Node {
+
+func (p *Parser) parseMemberName(parentNode ast.Node) ast.Node {
 	token := p.token
 	switch token.Kind {
 	case lexer.Name:
 		p.advanceToken() // TODO all names should be Nodes
-		tokNode := ast.TokenNode{}
+		tokNode := &ast.TokenNode{}
 		tokNode.Token = token
 		return tokNode
 	case lexer.VariableName:
@@ -2027,7 +2198,7 @@ func (p *Parser) parseMemberName(parentNode ast.MemberAccessExpression) ast.Node
 		if lexer.IsNameOrKeywordOrReservedWordTokens(token.Kind) {
 			p.advanceToken()
 			token.Kind = lexer.Name
-			tokNode := ast.TokenNode{}
+			tokNode := &ast.TokenNode{}
 			tokNode.Token = token
 			return tokNode
 		}
@@ -2075,7 +2246,7 @@ func (p *Parser) isParameterStartFn() ElementStartFn {
 
 func (p *Parser) parseParameterFn() ParseElementFn {
 	return func(parentNode ast.Node) ast.Node {
-		parameter := ast.Parameter{}
+		parameter := &ast.Parameter{}
 		parameter.P = parentNode
 		parameter.QuestionToken = p.eatOptional1(lexer.QuestionToken)
 		parameter.TypeDeclaration = p.tryParseParameterTypeDeclaration(parameter)
@@ -2102,7 +2273,7 @@ func (p *Parser) isTokenMember(tok lexer.TokenKind, tokens []lexer.TokenKind) bo
 	return false
 }
 
-func (p *Parser) tryParseParameterTypeDeclaration(parentNode ast.Parameter) ast.Node {
+func (p *Parser) tryParseParameterTypeDeclaration(parentNode *ast.Parameter) ast.Node {
 	var parameterTypeDeclaration ast.Node
 	tn := &ast.TokenNode{Token: p.eatOptional(p.parameterTypeDeclarationTokens...)}
 	parameterTypeDeclaration = tn
@@ -2113,7 +2284,7 @@ func (p *Parser) tryParseParameterTypeDeclaration(parentNode ast.Parameter) ast.
 }
 
 func (p *Parser) parseAnonymousFunctionUseClause(parentNode *ast.AnonymousFunctionCreationExpression) ast.Node {
-	anonymousFunctionUseClause := ast.AnonymousFunctionUseClause{}
+	anonymousFunctionUseClause := &ast.AnonymousFunctionUseClause{}
 	anonymousFunctionUseClause.P = parentNode
 
 	anonymousFunctionUseClause.UseKeyword = p.eatOptional1(lexer.UseKeyword)
@@ -2130,7 +2301,7 @@ func (p *Parser) parseAnonymousFunctionUseClause(parentNode *ast.AnonymousFuncti
 		lexer.CommaToken,
 		fnName,
 		func(parentNode ast.Node) ast.Node {
-			useVariableName := ast.UseVariableName{}
+			useVariableName := &ast.UseVariableName{}
 			useVariableName.P = parentNode
 			useVariableName.ByRef = p.eatOptional1(lexer.AmpersandToken)
 			useVariableName.VariableName = p.eat1(lexer.VariableName)
@@ -2143,7 +2314,7 @@ func (p *Parser) parseAnonymousFunctionUseClause(parentNode *ast.AnonymousFuncti
 }
 
 func (p *Parser) parseReturnTypeDeclaration(parentNode ast.FunctionInterface) ast.Node {
-	tokNode := ast.TokenNode{Token: p.eatOptional(p.returnTypeDeclarationTokens...)}
+	tokNode := &ast.TokenNode{Token: p.eatOptional(p.returnTypeDeclarationTokens...)}
 	var returnTypeDeclaration ast.Node = tokNode
 	if tokNode.Token == nil {
 		returnTypeDeclaration = p.parseQualifiedName(parentNode)
@@ -2157,7 +2328,7 @@ func (p *Parser) parseReturnTypeDeclaration(parentNode ast.FunctionInterface) as
 
 func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
 	return func(parentNode ast.Node) ast.Node {
-		node := ast.QualifiedName{}
+		node := &ast.QualifiedName{}
 		node.P = parentNode
 		node.RelativeSpecifier = p.parseRelativeSpecifier(node)
 		if node.RelativeSpecifier == nil {
@@ -2206,7 +2377,7 @@ func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseRelativeSpecifier(parentNode ast.Node) ast.Node {
-	node := ast.RelativeSpecifier{}
+	node := &ast.RelativeSpecifier{}
 	node.P = parentNode
 	node.NamespaceKeyword = p.eatOptional1(lexer.NamespaceKeyword)
 	if node.NamespaceKeyword != nil {
@@ -2256,5 +2427,214 @@ func (p *Parser) parseArrayElementFn() ParseElementFn {
 
 		return arrayElement
 	}
+
+}
+
+func (p *Parser) parseCatchClause(parentNode *ast.TryStatement) ast.Node {
+	catchClause := &ast.CatchClause{}
+	catchClause.P = parentNode
+	catchClause.Catch = p.eat1(lexer.CatchKeyword)
+	catchClause.OpenParen = p.eat1(lexer.OpenParenToken)
+	catchClause.QualifiedName = p.parseQualifiedName(catchClause) // TODO generate missing token or error if null
+	catchClause.VariableName = p.eat1(lexer.VariableName)
+	catchClause.CloseParen = p.eat1(lexer.CloseParenToken)
+	catchClause.CompoundStatement = p.parseCompoundStatement(catchClause)
+	return catchClause
+}
+
+func (p *Parser) parseFinallyClause(parentNode *ast.TryStatement) ast.Node {
+	finallyClause := &ast.FinallyClause{}
+	finallyClause.P = parentNode
+	finallyClause.FinallyToken = p.eat1(lexer.FinallyKeyword)
+	finallyClause.CompoundStatement = p.parseCompoundStatement(finallyClause)
+	return finallyClause
+}
+
+func (p *Parser) parseDeclareDirective(parentNode ast.Node) ast.Node {
+	declareDirective := &ast.DeclareDirective{}
+	declareDirective.P = parentNode
+	declareDirective.Name = p.eat1(lexer.Name)
+	declareDirective.Equals = p.eat1(lexer.EqualsToken)
+	declareDirective.Literal =
+		p.eat(
+			lexer.FloatingLiteralToken,
+			lexer.IntegerLiteralToken,
+			lexer.OctalLiteralToken,
+			lexer.HexadecimalLiteralToken,
+			lexer.BinaryLiteralToken,
+			lexer.InvalidOctalLiteralToken,
+			lexer.InvalidHexadecimalLiteral,
+			lexer.InvalidBinaryLiteral,
+			lexer.StringLiteralToken,
+		) // TODO simplify
+
+	return declareDirective
+
+}
+
+func (p *Parser) parseNamespaceUseClauseList(parentNode ast.Node) ast.Node {
+	namespaceUseClauseList := &ast.NamespaceUseClauseList{}
+	return p.parseDelimitedList(
+		namespaceUseClauseList,
+		lexer.CommaToken,
+		func(token *lexer.Token) bool {
+			return p.isQualifiedNameStart(token) || token.Kind == lexer.FunctionKeyword || token.Kind == lexer.ConstKeyword
+		},
+		func(parentNode ast.Node) ast.Node {
+			namespaceUseClause := &ast.NamespaceUseClause{}
+			namespaceUseClause.P = parentNode
+			namespaceUseClause.NamespaceName = p.parseQualifiedName(namespaceUseClause)
+			if p.checkToken(lexer.AsKeyword) {
+				namespaceUseClause.NamespaceAliasingClause = p.parseNamespaceAliasingClause(namespaceUseClause)
+			} else if p.checkToken(lexer.OpenBraceToken) {
+				namespaceUseClause.OpenBrace = p.eat1(lexer.OpenBraceToken)
+				namespaceUseClause.GroupClauses = p.parseNamespaceUseGroupClauseList(namespaceUseClause)
+				namespaceUseClause.CloseBrace = p.eat1(lexer.CloseBraceToken)
+			}
+			return namespaceUseClause
+		},
+		parentNode,
+		false,
+	)
+}
+
+func (p *Parser) parseInterfaceBaseClause(parentNode *ast.InterfaceDeclaration) ast.Node {
+	interfaceBaseClause := ast.InterfaceBaseClause{}
+	interfaceBaseClause.P = parentNode
+
+	interfaceBaseClause.ExtendsKeyword = p.eatOptional1(lexer.ExtendsKeyword)
+	if interfaceBaseClause.ExtendsKeyword != nil {
+		interfaceBaseClause.InterfaceNameList = p.parseQualifiedNameList(interfaceBaseClause)
+	} else {
+		return nil
+	}
+
+	return interfaceBaseClause
+}
+
+func (p *Parser) parseTraitSelectAndAliasClauseList(parentNode *ast.TraitUseClause) ast.Node {
+	traitSelectOrAliasClauseList := &ast.TraitSelectOrAliasClauseList{}
+	return p.parseDelimitedList(
+		traitSelectOrAliasClauseList,
+		lexer.SemicolonToken,
+		p.isQualifiedNameStartFn(),
+		p.parseTraitSelectOrAliasClauseFn(),
+		parentNode,
+		false,
+	)
+}
+
+func (p *Parser) parseInterfaceMembers(parentNode *ast.InterfaceDeclaration) ast.Node {
+	interfaceMembers := ast.InterfaceMembers{}
+	interfaceMembers.OpenBrace = p.eat1(lexer.OpenBraceToken)
+	interfaceMembers.InterfaceMemberDeclarations = p.parseList(interfaceMembers, InterfaceMembers)
+	interfaceMembers.CloseBrace = p.eat1(lexer.CloseBraceToken)
+	interfaceMembers.P = parentNode
+	return interfaceMembers
+}
+
+func (p *Parser) parseTraitMembers(parentNode *ast.TraitDeclaration) ast.Node {
+	traitMembers := &ast.TraitMembers{}
+	traitMembers.P = parentNode
+	traitMembers.OpenBrace = p.eat1(lexer.OpenBraceToken)
+	traitMembers.TraitMemberDeclarations = p.parseList(traitMembers, TraitMembers)
+	traitMembers.CloseBrace = p.eat1(lexer.CloseBraceToken)
+	return traitMembers
+
+}
+
+func (p *Parser) isVariableNameStartFn() ElementStartFn {
+	return func(token *lexer.Token) bool {
+		return token.Kind == lexer.VariableName || token.Kind == lexer.DollarToken
+	}
+}
+
+func (p *Parser) parseStaticVariableDeclarationFn() ParseElementFn {
+	return func(parentNode ast.Node) ast.Node {
+		staticVariableDeclaration := &ast.StaticVariableDeclaration{}
+		staticVariableDeclaration.P = parentNode
+		staticVariableDeclaration.VariableName = p.eat1(lexer.VariableName)
+		staticVariableDeclaration.EqualsToken = p.eatOptional1(lexer.EqualsToken)
+		if staticVariableDeclaration.EqualsToken != nil {
+			// TODO add post-parse rule that checks for invalid assignments
+			staticVariableDeclaration.Assignment = p.parseExpression(staticVariableDeclaration, false)
+		}
+		return staticVariableDeclaration
+	}
+}
+
+func (p *Parser) isQualifiedNameStart(token *lexer.Token) bool {
+	return (p.isQualifiedNameStartFn())(token)
+}
+
+func (p *Parser) isQualifiedNameStartFn() func(*lexer.Token) bool {
+	return func(token *lexer.Token) bool {
+		switch token.Kind {
+		case lexer.BackslashToken,
+			lexer.NamespaceKeyword,
+			lexer.Name:
+			return true
+		}
+		return false
+	}
+}
+
+func (p *Parser) parseNamespaceAliasingClause(parentNode ast.Node) ast.Node {
+	namespaceAliasingClause := &ast.NamespaceAliasingClause{}
+	namespaceAliasingClause.P = parentNode
+	namespaceAliasingClause.AsKeyword = p.eat1(lexer.AsKeyword)
+	namespaceAliasingClause.Name = p.eat1(lexer.Name)
+	return namespaceAliasingClause
+}
+
+func (p *Parser) parseNamespaceUseGroupClauseList(parentNode *ast.NamespaceUseClause) ast.Node {
+	namespaceUseGroupClauseList := &ast.NamespaceUseGroupClauseList{}
+	return p.parseDelimitedList(
+		namespaceUseGroupClauseList,
+		lexer.CommaToken,
+		func(token *lexer.Token) bool {
+			return p.isQualifiedNameStart(token) || token.Kind == lexer.FunctionKeyword || token.Kind == lexer.ConstKeyword
+		},
+		func(parentNode ast.Node) ast.Node {
+			namespaceUseGroupClause := &ast.NamespaceUseGroupClause{}
+			namespaceUseGroupClause.P = parentNode
+
+			namespaceUseGroupClause.FunctionOrConst = p.eatOptional(lexer.FunctionKeyword, lexer.ConstKeyword)
+			namespaceUseGroupClause.NamespaceName = p.parseQualifiedName(namespaceUseGroupClause)
+			if p.checkToken(lexer.AsKeyword) {
+				namespaceUseGroupClause.NamespaceAliasingClause = p.parseNamespaceAliasingClause(namespaceUseGroupClause)
+			}
+
+			return namespaceUseGroupClause
+		},
+		parentNode,
+		false,
+	)
+}
+
+func (p *Parser) parseTraitSelectOrAliasClauseFn() ParseElementFn {
+	return func(parentNode ast.Node) ast.Node {
+		traitSelectAndAliasClause := &ast.TraitSelectOrAliasClause{}
+		traitSelectAndAliasClause.P = parentNode
+		traitSelectAndAliasClause.Name = // TODO update spec
+			p.parseQualifiedNameOrScopedPropertyAccessExpression(traitSelectAndAliasClause)
+
+		traitSelectAndAliasClause.AsOrInsteadOfKeyword = p.eat(lexer.AsKeyword, lexer.InsteadOfKeyword)
+		traitSelectAndAliasClause.Modifiers = p.parseModifiers() // TODO accept all modifiers, verify later
+
+		traitSelectAndAliasClause.TargetName =
+			p.parseQualifiedNameOrScopedPropertyAccessExpression(traitSelectAndAliasClause)
+
+		// TODO errors for insteadof/as
+		return traitSelectAndAliasClause
+	}
+}
+
+func (p *Parser) parseQualifiedNameOrScopedPropertyAccessExpression(parentNode *ast.TraitSelectOrAliasClause) ast.Node {
+	qualifiedNameOrScopedProperty := p.parseQualifiedName(parentNode)
+	if p.token.Kind == lexer.ColonColonToken {
+		qualifiedNameOrScopedProperty = p.parseScopedPropertyAccessExpression(qualifiedNameOrScopedProperty)
+	}
+	return qualifiedNameOrScopedProperty
 
 }

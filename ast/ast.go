@@ -81,6 +81,60 @@ type ArrayElement struct {
 	ElementValue Node
 }
 
+type ListIntrinsicExpression struct {
+	CNode        `serialize:"-"`
+	ListKeyword  *lexer.Token
+	OpenParen    *lexer.Token
+	CloseParen   *lexer.Token
+	ListElements DelimitedList
+}
+
+type UnsetIntrinsicExpression struct {
+	CNode        `serialize:"-"`
+	UnsetKeyword *lexer.Token
+	OpenParen    *lexer.Token
+	CloseParen   *lexer.Token
+	Expressions  DelimitedList
+}
+
+type EvalIntrinsicExpression struct {
+	CNode       `serialize:"-"`
+	EvalKeyword *lexer.Token
+	Expression  Node
+	OpenParen   *lexer.Token
+	CloseParen  *lexer.Token
+	Expressions DelimitedList
+}
+
+type ExitIntrinsicExpression struct {
+	CNode            `serialize:"-"`
+	ExitOrDieKeyword *lexer.Token
+	Expression       Node
+	OpenParen        *lexer.Token
+	CloseParen       *lexer.Token
+	Expressions      DelimitedList
+}
+
+type IssetIntrinsicExpression struct {
+	CNode        `serialize:"-"`
+	IssetKeyword *lexer.Token
+	Expression   Node
+	OpenParen    *lexer.Token
+	CloseParen   *lexer.Token
+	Expressions  DelimitedList
+}
+
+type PrintIntrinsicExpression struct {
+	CNode        `serialize:"-"`
+	PrintKeyword *lexer.Token
+	Expression   Node
+}
+
+type ReservedWord struct {
+	CNode    `serialize:"-"`
+	Children *lexer.Token
+}
+
 type ConstElement struct {
 	CNode       `serialize:"-"`
 	Name        *lexer.Token
@@ -96,10 +150,106 @@ type CaseStatement struct {
 	DefaultLabelTerminator *lexer.Token
 }
 
+type BreakOrContinueStatement struct {
+	CNode                  `serialize:"-"`
+	BreakOrContinueKeyword *lexer.Token
+	BreakoutLevel          Node
+	Semicolon              *lexer.Token
+}
+
 type ExpressionStatement struct {
 	CNode      `serialize:"-"`
 	Expression []Node `serialize:"-single"`
 	Semicolon  *lexer.Token
+}
+
+type ThrowStatement struct {
+	CNode        `serialize:"-"`
+	Expression   Node
+	ThrowKeyword *lexer.Token
+	Semicolon    *lexer.Token
+}
+
+type DeclareStatement struct {
+	CNode             `serialize:"-"`
+	DeclareKeyword    *lexer.Token
+	OpenParen         *lexer.Token
+	DeclareDirective  Node
+	CloseParen        *lexer.Token
+	Colon             *lexer.Token
+	Statements        []Node `serialize:"-single"`
+	EnddeclareKeyword *lexer.Token
+	Semicolon         *lexer.Token
+}
+
+type InterfaceDeclaration struct {
+	CNode               `serialize:"-"`
+	InterfaceKeyword    *lexer.Token
+	Name                *lexer.Token
+	InterfaceBaseClause Node
+	InterfaceMembers    Node
+}
+
+type NamespaceDefinition struct {
+	CNode                        `serialize:"-"`
+	NamespaceKeyword             *lexer.Token
+	Name                         Node
+	CompoundStatementOrSemicolon Node
+}
+
+type NamespaceUseDeclaration struct {
+	CNode           `serialize:"-"`
+	UseKeyword      *lexer.Token
+	FunctionOrConst *lexer.Token
+	Semicolon       *lexer.Token
+	UseClauses      Node
+}
+
+type TraitDeclaration struct {
+	CNode        `serialize:"-"`
+	TraitKeyword *lexer.Token
+	Name         *lexer.Token
+	TraitMembers Node
+}
+
+type GlobalDeclaration struct {
+	CNode            `serialize:"-"`
+	GlobalKeyword    *lexer.Token
+	VariableNameList Node
+	Semicolon        *lexer.Token
+}
+
+type FunctionStaticDeclaration struct {
+	CNode                  `serialize:"-"`
+	StaticKeyword          *lexer.Token
+	StaticVariableNameList Node
+	Semicolon              *lexer.Token
+}
+
+type ElseIfClauseNode struct {
+	CNode         `serialize:"-"`
+	ElseIfKeyword *lexer.Token
+	OpenParen     *lexer.Token
+	CloseParen    *lexer.Token
+	Expression    Node
+	Colon         *lexer.Token
+	Statements    []Node
+}
+
+type ElseClauseNode struct {
+	CNode       `serialize:"-"`
+	ElseKeyword *lexer.Token
+	Colon       *lexer.Token
+	Statements  []Node
+}
+
+type TryStatement struct {
+	CNode             `serialize:"-"`
+	TryKeyword        *lexer.Token
+	CompoundStatement Node
+	CatchClauses      []Node
+	FinallyClause     Node
+	Semicolon         *lexer.Token
 }
 
 type EmptyStatement struct {
@@ -371,9 +521,80 @@ type SubscriptExpression struct {
 
 type ScopedPropertyAccessExpression struct {
 	CNode                    `serialize:"-"`
-	ScopeResolutionQualifier *lexer.Token
+	ScopeResolutionQualifier Node
 	DoubleColon              *lexer.Token
 	MemberName               Node
+}
+
+type FinallyClause struct {
+	CNode             `serialize:"-"`
+	FinallyToken      *lexer.Token
+	CompoundStatement Node
+}
+
+type DeclareDirective struct {
+	CNode   `serialize:"-"`
+	Name    *lexer.Token
+	Equals  *lexer.Token
+	Literal *lexer.Token
+}
+
+type NamespaceUseClause struct {
+	CNode                   `serialize:"-"`
+	NamespaceName           Node
+	NamespaceAliasingClause Node
+	OpenBrace               *lexer.Token
+	GroupClauses            Node
+	CloseBrace              *lexer.Token
+}
+
+type TraitUseClause struct {
+	CNode                      `serialize:"-"`
+	UseKeyword                 *lexer.Token
+	TraitNameList              Node
+	SemicolonOrOpenBrace       *lexer.Token
+	TraitSelectAndAliasClauses Node
+	CloseBrace                 *lexer.Token
+}
+
+type InterfaceBaseClause struct {
+	CNode             `serialize:"-"`
+	ExtendsKeyword    *lexer.Token
+	InterfaceNameList Node
+}
+
+type InterfaceMembers struct {
+	CNode                       `serialize:"-"`
+	OpenBrace                   *lexer.Token
+	CloseBrace                  *lexer.Token
+	InterfaceMemberDeclarations []Node
+}
+
+type TraitMembers struct {
+	CNode                   `serialize:"-"`
+	OpenBrace               *lexer.Token
+	CloseBrace              *lexer.Token
+	TraitMemberDeclarations []Node
+}
+
+type StaticVariableDeclaration struct {
+	CNode        `serialize:"-"`
+	VariableName *lexer.Token
+	EqualsToken  *lexer.Token
+	Assignment   Node
+}
+
+type NamespaceAliasingClause struct {
+	CNode     `serialize:"-"`
+	AsKeyword *lexer.Token
+	Name      *lexer.Token
+}
+
+type NamespaceUseGroupClause struct {
+	CNode                   `serialize:"-"`
+	FunctionOrConst         *lexer.Token
+	NamespaceName           Node
+	NamespaceAliasingClause Node
 }
 
 type ArrayCreationExpression struct {
@@ -382,6 +603,14 @@ type ArrayCreationExpression struct {
 	OpenParenOrBracket  *lexer.Token
 	CloseParenOrBracket *lexer.Token
 	ArrayElements       DelimitedList
+}
+
+type TraitSelectOrAliasClause struct {
+	CNode                `serialize:"-"`
+	Name                 Node
+	AsOrInsteadOfKeyword *lexer.Token
+	Modifiers            []*lexer.Token
+	TargetName           Node
 }
 
 type StringLiteral struct {

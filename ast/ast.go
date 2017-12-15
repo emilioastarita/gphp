@@ -724,85 +724,85 @@ type AssocPair struct {
 }
 
 var OPERATOR_PRECEDENCE_AND_ASSOCIATIVITY = map[lexer.TokenKind]AssocPair{
-	lexer.OrKeyword: AssocPair{6, AssocLeft},
+	lexer.OrKeyword: {6, AssocLeft},
 
 	// logical-exc-OR-expression-2 (L)
-	lexer.XorKeyword: AssocPair{7, AssocLeft},
+	lexer.XorKeyword: {7, AssocLeft},
 
 	// logical-AND-expression-2 (L)
-	lexer.AndKeyword: AssocPair{8, AssocLeft},
+	lexer.AndKeyword: {8, AssocLeft},
 
 	// simple-assignment-expression (R)
 	// TODO byref-assignment-expression
-	lexer.EqualsToken: AssocPair{9, AssocRight},
+	lexer.EqualsToken: {9, AssocRight},
 
 	// compound-assignment-expression (R)
-	lexer.AsteriskAsteriskEqualsToken:       AssocPair{9, AssocRight},
-	lexer.AsteriskEqualsToken:               AssocPair{9, AssocRight},
-	lexer.SlashEqualsToken:                  AssocPair{9, AssocRight},
-	lexer.PercentEqualsToken:                AssocPair{9, AssocRight},
-	lexer.PlusEqualsToken:                   AssocPair{9, AssocRight},
-	lexer.MinusEqualsToken:                  AssocPair{9, AssocRight},
-	lexer.DotEqualsToken:                    AssocPair{9, AssocRight},
-	lexer.LessThanLessThanEqualsToken:       AssocPair{9, AssocRight},
-	lexer.GreaterThanGreaterThanEqualsToken: AssocPair{9, AssocRight},
-	lexer.AmpersandEqualsToken:              AssocPair{9, AssocRight},
-	lexer.CaretEqualsToken:                  AssocPair{9, AssocRight},
-	lexer.BarEqualsToken:                    AssocPair{9, AssocRight},
+	lexer.AsteriskAsteriskEqualsToken:       {9, AssocRight},
+	lexer.AsteriskEqualsToken:               {9, AssocRight},
+	lexer.SlashEqualsToken:                  {9, AssocRight},
+	lexer.PercentEqualsToken:                {9, AssocRight},
+	lexer.PlusEqualsToken:                   {9, AssocRight},
+	lexer.MinusEqualsToken:                  {9, AssocRight},
+	lexer.DotEqualsToken:                    {9, AssocRight},
+	lexer.LessThanLessThanEqualsToken:       {9, AssocRight},
+	lexer.GreaterThanGreaterThanEqualsToken: {9, AssocRight},
+	lexer.AmpersandEqualsToken:              {9, AssocRight},
+	lexer.CaretEqualsToken:                  {9, AssocRight},
+	lexer.BarEqualsToken:                    {9, AssocRight},
 
 	// TODO conditional-expression (L)
-	lexer.QuestionToken: AssocPair{10, AssocLeft},
+	lexer.QuestionToken: {10, AssocLeft},
 	//            lexer.ColonToken: AssocPair{9, AssocLeft},
 
 	// TODO coalesce-expression (R)
-	lexer.QuestionQuestionToken: AssocPair{9, AssocRight},
+	lexer.QuestionQuestionToken: {9, AssocRight},
 
 	//logical-inc-OR-expression-1 (L)
-	lexer.BarBarToken: AssocPair{12, AssocLeft},
+	lexer.BarBarToken: {12, AssocLeft},
 
 	// logical-AND-expression-1 (L)
-	lexer.AmpersandAmpersandToken: AssocPair{13, AssocLeft},
+	lexer.AmpersandAmpersandToken: {13, AssocLeft},
 
 	// bitwise-inc-OR-expression (L)
-	lexer.BarToken: AssocPair{14, AssocLeft},
+	lexer.BarToken: {14, AssocLeft},
 
 	// bitwise-exc-OR-expression (L)
-	lexer.CaretToken: AssocPair{15, AssocLeft},
+	lexer.CaretToken: {15, AssocLeft},
 
 	// bitwise-AND-expression (L)
-	lexer.AmpersandToken: AssocPair{16, AssocLeft},
+	lexer.AmpersandToken: {16, AssocLeft},
 
 	// equality-expression (X)
-	lexer.EqualsEqualsToken:            AssocPair{17, AssocNone},
-	lexer.ExclamationEqualsToken:       AssocPair{17, AssocNone},
-	lexer.LessThanGreaterThanToken:     AssocPair{17, AssocNone},
-	lexer.EqualsEqualsEqualsToken:      AssocPair{17, AssocNone},
-	lexer.ExclamationEqualsEqualsToken: AssocPair{17, AssocNone},
+	lexer.EqualsEqualsToken:            {17, AssocNone},
+	lexer.ExclamationEqualsToken:       {17, AssocNone},
+	lexer.LessThanGreaterThanToken:     {17, AssocNone},
+	lexer.EqualsEqualsEqualsToken:      {17, AssocNone},
+	lexer.ExclamationEqualsEqualsToken: {17, AssocNone},
 
 	// relational-expression (X)
-	lexer.LessThanToken:                  AssocPair{18, AssocNone},
-	lexer.GreaterThanToken:               AssocPair{18, AssocNone},
-	lexer.LessThanEqualsToken:            AssocPair{18, AssocNone},
-	lexer.GreaterThanEqualsToken:         AssocPair{18, AssocNone},
-	lexer.LessThanEqualsGreaterThanToken: AssocPair{18, AssocNone},
+	lexer.LessThanToken:                  {18, AssocNone},
+	lexer.GreaterThanToken:               {18, AssocNone},
+	lexer.LessThanEqualsToken:            {18, AssocNone},
+	lexer.GreaterThanEqualsToken:         {18, AssocNone},
+	lexer.LessThanEqualsGreaterThanToken: {18, AssocNone},
 
 	// shift-expression (L)
-	lexer.LessThanLessThanToken:       AssocPair{19, AssocLeft},
-	lexer.GreaterThanGreaterThanToken: AssocPair{19, AssocLeft},
+	lexer.LessThanLessThanToken:       {19, AssocLeft},
+	lexer.GreaterThanGreaterThanToken: {19, AssocLeft},
 
 	// additive-expression (L)
-	lexer.PlusToken:  AssocPair{20, AssocLeft},
-	lexer.MinusToken: AssocPair{20, AssocLeft},
-	lexer.DotToken:   AssocPair{20, AssocLeft},
+	lexer.PlusToken:  {20, AssocLeft},
+	lexer.MinusToken: {20, AssocLeft},
+	lexer.DotToken:   {20, AssocLeft},
 
 	// multiplicative-expression (L)
-	lexer.AsteriskToken: AssocPair{21, AssocLeft},
-	lexer.SlashToken:    AssocPair{21, AssocLeft},
-	lexer.PercentToken:  AssocPair{21, AssocLeft},
+	lexer.AsteriskToken: {21, AssocLeft},
+	lexer.SlashToken:    {21, AssocLeft},
+	lexer.PercentToken:  {21, AssocLeft},
 
 	// instanceof-expression (X)
-	lexer.InstanceOfKeyword: AssocPair{22, AssocNone},
+	lexer.InstanceOfKeyword: {22, AssocNone},
 
 	// exponentiation-expression (R)
-	lexer.AsteriskAsteriskToken: AssocPair{23, AssocRight},
+	lexer.AsteriskAsteriskToken: {23, AssocRight},
 }

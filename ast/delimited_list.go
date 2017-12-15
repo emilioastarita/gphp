@@ -31,6 +31,11 @@ type QualifiedNameParts struct {
 	Childs []Node `serialize:"children"`
 }
 
+type ArrayElementList struct {
+	CNode  `serialize:"-"`
+	Childs []Node `serialize:"children"`
+}
+
 func (e *ExpressionList) AddNode(node Node) {
 	if node == nil {
 		return
@@ -83,5 +88,16 @@ func (e *QualifiedNameParts) AddNode(node Node) {
 }
 
 func (e *QualifiedNameParts) Children() []Node {
+	return e.Childs
+}
+
+func (e *ArrayElementList) AddNode(node Node) {
+	if node == nil {
+		return
+	}
+	e.Childs = append(e.Childs, node)
+}
+
+func (e *ArrayElementList) Children() []Node {
 	return e.Childs
 }

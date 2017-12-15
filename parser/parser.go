@@ -1602,8 +1602,29 @@ func (p *Parser) parseStringLiteralExpression2(parentNode ast.Node) ast.Node {
 func (p *Parser) parseCallExpressionRest(node ast.Node) ast.Node {
 	panic("Not implemented")
 }
-func (p *Parser) parseArrayCreationExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+func (p *Parser) parseArrayCreationExpression(parentNode ast.Node) ast.Node {
+	arrayExpression := &ast.ArrayCreationExpression{}
+	arrayExpression.P = parentNode
+
+	arrayExpression.ArrayKeyword = p.eatOptional1(lexer.ArrayKeyword)
+
+	if arrayExpression.ArrayKeyword != nil {
+		arrayExpression.OpenParenOrBracket = p.eat1(lexer.OpenParenToken)
+	} else {
+		arrayExpression.OpenParenOrBracket = p.eat1(lexer.OpenBracketToken)
+	}
+
+	arrayElementList := &ast.ArrayElementList{}
+	arrayExpression.ArrayElements = p.parseArrayElementList(arrayExpression, arrayElementList)
+
+	if arrayExpression.ArrayKeyword != nil {
+		arrayExpression.CloseParenOrBracket = p.eat1(lexer.CloseParenToken)
+	} else {
+		arrayExpression.CloseParenOrBracket = p.eat1(lexer.CloseBracketToken)
+	}
+
+	return arrayExpression
+
 }
 
 func (p *Parser) parseEchoExpression(parentNode ast.Node) ast.Node {
@@ -1615,29 +1636,103 @@ func (p *Parser) parseEchoExpression(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseListIntrinsicExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	listExpression := ast.ListIntrinsicExpression();
+	listExpression.P = parentNode;
+	listExpression.listKeyword = p.eat1(lexer.ListKeyword);
+	listExpression.openParen = p.eat1(lexer.OpenParenToken);
+	// TODO - parse loosely as ArrayElementList, and validate parse tree later
+	listExpression.listElements =
+		p.parseArrayElementList(listExpression, DelimitedList\ListExpressionList::class);
+	listExpression.closeParen = p.eat1(lexer.CloseParenToken);
+
+	return listExpression;
+
 }
+
 func (p *Parser) parseUnsetIntrinsicExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	unsetExpression := ast.UnsetIntrinsicExpression()
+	unsetExpression.P = parentNode
+
+	unsetExpression.unsetKeyword = p.eat1(lexer.UnsetKeyword)
+	unsetExpression.openParen = p.eat1(lexer.OpenParenToken)
+	unsetExpression.expressions = p.parseExpressionList(unsetExpression)
+	unsetExpression.closeParen = p.eat1(lexer.CloseParenToken)
+
+	return unsetExpression
+
 }
+
 func (p *Parser) parseEvalIntrinsicExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	evalExpression := ast.EvalIntrinsicExpression()
+	evalExpression.P = parentNode
+
+	evalExpression.evalKeyword = p.eat1(lexer.EvalKeyword)
+	evalExpression.openParen = p.eat1(lexer.OpenParenToken)
+	evalExpression.expression = p.parseExpression(evalExpression)
+	evalExpression.closeParen = p.eat1(lexer.CloseParenToken)
+
+	return evalExpression
+
 }
+
 func (p *Parser) parseExitIntrinsicExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	exitExpression := ast.ExitIntrinsicExpression()
+	exitExpression.P = parentNode
+
+	exitExpression.exitOrDieKeyword = p.eat(lexer.ExitKeyword, lexer.DieKeyword)
+	exitExpression.openParen = p.eatOptional1(lexer.OpenParenToken)
+	if exitExpression.openParen != null {
+		if p.isExpressionStart(p.token) {
+			exitExpression.expression = p.parseExpression(exitExpression)
+		}
+		exitExpression.closeParen = p.eat1(lexer.CloseParenToken)
+	}
+
+	return exitExpression
+
 }
+
 func (p *Parser) parseIssetIntrinsicExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	issetExpression := ast.IssetIntrinsicExpression()
+	issetExpression.P = parentNode
+
+	issetExpression.issetKeyword = p.eat1(lexer.IsSetKeyword)
+	issetExpression.openParen = p.eat1(lexer.OpenParenToken)
+	issetExpression.expressions = p.parseExpressionList(issetExpression)
+	issetExpression.closeParen = p.eat1(lexer.CloseParenToken)
+
+	return issetExpression
 }
+
 func (p *Parser) parsePrintIntrinsicExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	printExpression := ast.PrintIntrinsicExpression()
+	printExpression.P = parentNode
+
+	printExpression.printKeyword = p.eat1(lexer.PrintKeyword)
+	printExpression.expression = p.parseExpression(printExpression)
+
+	return printExpression
 }
+
 func (p *Parser) parseReservedWordExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	reservedWord := ast.ReservedWord()
+	reservedWord.P = parentNode
+	reservedWord.children = p.token
+	p.advanceToken()
+	return reservedWord
 }
+
 func (p *Parser) parseParenthesizedExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+	parenthesizedExpression := ast.ParenthesizedExpression{}
+	parenthesizedExpression.P = parentNode
+
+	parenthesizedExpression.openParen = p.eat1(lexer.OpenParenToken)
+	parenthesizedExpression.expression = p.parseExpression(parenthesizedExpression)
+	parenthesizedExpression.closeParen = p.eat1(lexer.CloseParenToken)
+
+	return parenthesizedExpression
 }
+
 func (p *Parser) isListTerminator(context ParseContext) bool {
 	tokenKind := p.token.Kind
 	if tokenKind == lexer.EndOfFileToken {
@@ -1958,7 +2053,7 @@ func (p *Parser) isParameterStartFn() ElementStartFn {
 		switch token.Kind {
 		case lexer.DotDotDotToken:
 
-		// qualified-name
+			// qualified-name
 		case lexer.Name: // http://php.net/manual/en/language.namespaces.rules.php
 		case lexer.BackslashToken:
 		case lexer.NamespaceKeyword:
@@ -1968,7 +2063,7 @@ func (p *Parser) isParameterStartFn() ElementStartFn {
 		case lexer.VariableName:
 			return true
 
-		// nullable-type
+			// nullable-type
 		case lexer.QuestionToken:
 			return true
 		}
@@ -2121,4 +2216,45 @@ func (p *Parser) parseRelativeSpecifier(parentNode ast.Node) ast.Node {
 		return node
 	}
 	return nil
+}
+func (p *Parser) parseArrayElementList(listExpression ast.Node, delimited ast.DelimitedList) ast.DelimitedList {
+	return p.parseDelimitedList(
+		delimited,
+		lexer.CommaToken,
+		p.isArrayElementStartFn(),
+		p.parseArrayElementFn(),
+		listExpression,
+		true,
+	)
+}
+
+func (p *Parser) isArrayElementStartFn() ElementStartFn {
+	return func(token *lexer.Token) bool {
+		return token.Kind == lexer.AmpersandToken || p.isExpressionStart(token)
+	}
+}
+
+func (p *Parser) parseArrayElementFn() ParseElementFn {
+	return func(parentNode ast.Node) ast.Node {
+		arrayElement := &ast.ArrayElement{}
+		arrayElement.P = parentNode
+
+		if p.checkToken(lexer.AmpersandToken) {
+			arrayElement.ByRef = p.eat1(lexer.AmpersandToken)
+			arrayElement.ElementValue = p.parseExpression(arrayElement, false)
+		} else {
+			expression := p.parseExpression(arrayElement, false)
+			if p.checkToken(lexer.DoubleArrowToken) {
+				arrayElement.ElementKey = expression
+				arrayElement.ArrowToken = p.eat1(lexer.DoubleArrowToken)
+				arrayElement.ByRef = p.eatOptional1(lexer.AmpersandToken) // TODO not okay for list expressions
+				arrayElement.ElementValue = p.parseExpression(arrayElement, false)
+			} else {
+				arrayElement.ElementValue = expression
+			}
+		}
+
+		return arrayElement
+	}
+
 }

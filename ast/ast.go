@@ -381,7 +381,7 @@ type ArrayCreationExpression struct {
 	ArrayKeyword        *lexer.Token
 	OpenParenOrBracket  *lexer.Token
 	CloseParenOrBracket *lexer.Token
-	ArrayElements       Node
+	ArrayElements       DelimitedList
 }
 
 type StringLiteral struct {

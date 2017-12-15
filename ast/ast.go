@@ -32,7 +32,7 @@ type Parameter struct {
 }
 
 type UseVariableName struct {
-	CNode
+	CNode        `serialize:"-"`
 	ByRef        *lexer.Token
 	VariableName *lexer.Token
 }

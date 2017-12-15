@@ -1,0 +1,68 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": {
+                        "kind": "InlineHtml",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 20
+                    },
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 20,
+                        "start": 20,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "LessThanToken",
+                "fullStart": 26,
+                "start": 27,
+                "length": 2
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "QuestionToken",
+                "fullStart": 28,
+                "start": 28,
+                "length": 1
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "QualifiedName": {
+                            "globalSpecifier": null,
+                            "relativeSpecifier": null,
+                            "nameParts": [
+                                {
+                                    "kind": "Name",
+                                    "fullStart": 29,
+                                    "start": 29,
+                                    "length": 3
+                                }
+                            ]
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 32,
+                        "start": 32,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 32,
+            "start": 32,
+            "length": 0
+        }
+    }
+}

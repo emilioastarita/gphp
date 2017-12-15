@@ -1,0 +1,90 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "PostfixUpdateExpression": {
+                            "operand": {
+                                "ParenthesizedExpression": {
+                                    "openParen": {
+                                        "kind": "OpenParenToken",
+                                        "fullStart": 6,
+                                        "start": 62,
+                                        "length": 57
+                                    },
+                                    "expression": {
+                                        "BinaryExpression": {
+                                            "leftOperand": {
+                                                "NumericLiteral": {
+                                                    "children": {
+                                                        "kind": "IntegerLiteralToken",
+                                                        "fullStart": 63,
+                                                        "start": 63,
+                                                        "length": 1
+                                                    }
+                                                }
+                                            },
+                                            "operator": {
+                                                "kind": "PlusToken",
+                                                "fullStart": 64,
+                                                "start": 64,
+                                                "length": 1
+                                            },
+                                            "rightOperand": {
+                                                "NumericLiteral": {
+                                                    "children": {
+                                                        "kind": "IntegerLiteralToken",
+                                                        "fullStart": 65,
+                                                        "start": 65,
+                                                        "length": 1
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "closeParen": {
+                                        "kind": "CloseParenToken",
+                                        "fullStart": 66,
+                                        "start": 66,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "incrementOrDecrementOperator": {
+                                "kind": "PlusPlusToken",
+                                "fullStart": 67,
+                                "start": 67,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 69,
+                        "start": 69,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 70,
+            "start": 70,
+            "length": 0
+        }
+    }
+}

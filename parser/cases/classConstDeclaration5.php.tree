@@ -1,0 +1,125 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ClassDeclaration": {
+                    "abstractOrFinalModifier": null,
+                    "classKeyword": {
+                        "kind": "ClassKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 5
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 11,
+                        "start": 12,
+                        "length": 2
+                    },
+                    "classBaseClause": null,
+                    "classInterfaceClause": null,
+                    "classMembers": {
+                        "ClassMembersNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 13,
+                                "start": 14,
+                                "length": 2
+                            },
+                            "classMemberDeclarations": [
+                                {
+                                    "ClassConstDeclaration": {
+                                        "modifiers": [
+                                            {
+                                                "kind": "PublicKeyword",
+                                                "fullStart": 15,
+                                                "start": 75,
+                                                "length": 66
+                                            },
+                                            {
+                                                "kind": "ProtectedKeyword",
+                                                "fullStart": 81,
+                                                "start": 82,
+                                                "length": 10
+                                            }
+                                        ],
+                                        "constKeyword": {
+                                            "kind": "ConstKeyword",
+                                            "fullStart": 91,
+                                            "start": 92,
+                                            "length": 6
+                                        },
+                                        "constElements": {
+                                            "ConstElementList": {
+                                                "children": [
+                                                    {
+                                                        "ConstElement": {
+                                                            "name": {
+                                                                "kind": "Name",
+                                                                "fullStart": 97,
+                                                                "start": 98,
+                                                                "length": 2
+                                                            },
+                                                            "equalsToken": {
+                                                                "kind": "EqualsToken",
+                                                                "fullStart": 99,
+                                                                "start": 100,
+                                                                "length": 2
+                                                            },
+                                                            "assignment": {
+                                                                "StringLiteral": {
+                                                                    "startQuote": null,
+                                                                    "children": {
+                                                                        "kind": "StringLiteralToken",
+                                                                        "fullStart": 101,
+                                                                        "start": 102,
+                                                                        "length": 8
+                                                                    },
+                                                                    "endQuote": null
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "semicolon": {
+                                            "kind": "SemicolonToken",
+                                            "fullStart": 109,
+                                            "start": 109,
+                                            "length": 1
+                                        }
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 110,
+                                "start": 111,
+                                "length": 2
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 112,
+            "start": 112,
+            "length": 0
+        }
+    }
+}

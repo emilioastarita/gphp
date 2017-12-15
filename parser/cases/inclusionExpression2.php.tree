@@ -1,0 +1,102 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 85,
+                                        "length": 81
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 87,
+                                "start": 88,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "ScriptInclusionExpression": {
+                                    "requireOrIncludeKeyword": {
+                                        "kind": "RequireKeyword",
+                                        "fullStart": 89,
+                                        "start": 90,
+                                        "length": 8
+                                    },
+                                    "expression": {
+                                        "BinaryExpression": {
+                                            "leftOperand": {
+                                                "QualifiedName": {
+                                                    "globalSpecifier": null,
+                                                    "relativeSpecifier": null,
+                                                    "nameParts": [
+                                                        {
+                                                            "kind": "Name",
+                                                            "fullStart": 97,
+                                                            "start": 98,
+                                                            "length": 9
+                                                        }
+                                                    ]
+                                                }
+                                            },
+                                            "operator": {
+                                                "kind": "DotToken",
+                                                "fullStart": 106,
+                                                "start": 107,
+                                                "length": 2
+                                            },
+                                            "rightOperand": {
+                                                "StringLiteral": {
+                                                    "startQuote": null,
+                                                    "children": {
+                                                        "kind": "StringLiteralToken",
+                                                        "fullStart": 108,
+                                                        "start": 109,
+                                                        "length": 8
+                                                    },
+                                                    "endQuote": null
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 116,
+                        "start": 116,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 117,
+            "start": 117,
+            "length": 0
+        }
+    }
+}

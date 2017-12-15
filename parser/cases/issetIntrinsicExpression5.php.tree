@@ -1,0 +1,90 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "IssetIntrinsicExpression": {
+                            "issetKeyword": {
+                                "kind": "IsSetKeyword",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 5
+                            },
+                            "openParen": {
+                                "error": "MissingToken",
+                                "kind": "OpenParenToken",
+                                "fullStart": 11,
+                                "start": 11,
+                                "length": 0
+                            },
+                            "expressions": {
+                                "ExpressionList": {
+                                    "children": [
+                                        {
+                                            "IssetIntrinsicExpression": {
+                                                "issetKeyword": {
+                                                    "kind": "IsSetKeyword",
+                                                    "fullStart": 11,
+                                                    "start": 12,
+                                                    "length": 6
+                                                },
+                                                "openParen": {
+                                                    "error": "MissingToken",
+                                                    "kind": "OpenParenToken",
+                                                    "fullStart": 17,
+                                                    "start": 17,
+                                                    "length": 0
+                                                },
+                                                "expressions": null,
+                                                "closeParen": {
+                                                    "error": "MissingToken",
+                                                    "kind": "CloseParenToken",
+                                                    "fullStart": 17,
+                                                    "start": 17,
+                                                    "length": 0
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "closeParen": {
+                                "error": "MissingToken",
+                                "kind": "CloseParenToken",
+                                "fullStart": 17,
+                                "start": 17,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 17,
+                        "start": 17,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 17,
+            "start": 17,
+            "length": 0
+        }
+    }
+}

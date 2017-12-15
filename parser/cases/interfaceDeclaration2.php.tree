@@ -1,0 +1,60 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "InterfaceDeclaration": {
+                    "interfaceKeyword": {
+                        "kind": "InterfaceKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 9
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 15,
+                        "start": 16,
+                        "length": 2
+                    },
+                    "interfaceBaseClause": null,
+                    "interfaceMembers": {
+                        "InterfaceMembers": {
+                            "openBrace": {
+                                "error": "MissingToken",
+                                "kind": "OpenBraceToken",
+                                "fullStart": 17,
+                                "start": 17,
+                                "length": 0
+                            },
+                            "interfaceMemberDeclarations": [],
+                            "closeBrace": {
+                                "error": "MissingToken",
+                                "kind": "CloseBraceToken",
+                                "fullStart": 17,
+                                "start": 17,
+                                "length": 0
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 17,
+            "start": 17,
+            "length": 0
+        }
+    }
+}

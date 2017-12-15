@@ -1,0 +1,108 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "BinaryExpression": {
+                                    "leftOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 6,
+                                                "start": 6,
+                                                "length": 2
+                                            }
+                                        }
+                                    },
+                                    "operator": {
+                                        "kind": "PlusToken",
+                                        "fullStart": 8,
+                                        "start": 9,
+                                        "length": 2
+                                    },
+                                    "rightOperand": {
+                                        "BinaryExpression": {
+                                            "leftOperand": {
+                                                "Variable": {
+                                                    "dollar": null,
+                                                    "name": {
+                                                        "kind": "VariableName",
+                                                        "fullStart": 10,
+                                                        "start": 11,
+                                                        "length": 3
+                                                    }
+                                                }
+                                            },
+                                            "operator": {
+                                                "kind": "AsteriskToken",
+                                                "fullStart": 13,
+                                                "start": 14,
+                                                "length": 2
+                                            },
+                                            "rightOperand": {
+                                                "Variable": {
+                                                    "dollar": null,
+                                                    "name": {
+                                                        "kind": "VariableName",
+                                                        "fullStart": 15,
+                                                        "start": 16,
+                                                        "length": 3
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "MinusToken",
+                                "fullStart": 18,
+                                "start": 19,
+                                "length": 2
+                            },
+                            "rightOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 20,
+                                        "start": 21,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 23,
+                        "start": 23,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 24,
+            "start": 24,
+            "length": 0
+        }
+    }
+}

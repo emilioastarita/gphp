@@ -1,0 +1,110 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "DeclareStatement": {
+                    "declareKeyword": {
+                        "kind": "DeclareKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 8
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 14,
+                        "start": 15,
+                        "length": 2
+                    },
+                    "declareDirective": {
+                        "DeclareDirective": {
+                            "name": {
+                                "kind": "Name",
+                                "fullStart": 16,
+                                "start": 21,
+                                "length": 10
+                            },
+                            "equals": {
+                                "kind": "EqualsToken",
+                                "fullStart": 26,
+                                "start": 27,
+                                "length": 2
+                            },
+                            "literal": {
+                                "kind": "IntegerLiteralToken",
+                                "fullStart": 28,
+                                "start": 29,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 30,
+                        "start": 30,
+                        "length": 1
+                    },
+                    "colon": {
+                        "kind": "ColonToken",
+                        "fullStart": 31,
+                        "start": 32,
+                        "length": 2
+                    },
+                    "statements": [
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 33,
+                                    "start": 38,
+                                    "length": 6
+                                }
+                            }
+                        },
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 39,
+                                    "start": 44,
+                                    "length": 6
+                                }
+                            }
+                        }
+                    ],
+                    "enddeclareKeyword": {
+                        "error": "MissingToken",
+                        "kind": "EndDeclareKeyword",
+                        "fullStart": 45,
+                        "start": 45,
+                        "length": 0
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 45,
+                        "start": 45,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 45,
+            "start": 45,
+            "length": 0
+        }
+    }
+}

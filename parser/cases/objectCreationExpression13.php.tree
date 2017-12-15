@@ -1,0 +1,86 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 7,
+                                        "length": 3
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 9,
+                                "start": 10,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "ObjectCreationExpression": {
+                                    "newKeword": {
+                                        "kind": "NewKeyword",
+                                        "fullStart": 11,
+                                        "start": 12,
+                                        "length": 4
+                                    },
+                                    "classTypeDesignator": {
+                                        "QualifiedName": {
+                                            "globalSpecifier": null,
+                                            "relativeSpecifier": null,
+                                            "nameParts": [
+                                                {
+                                                    "kind": "Name",
+                                                    "fullStart": 15,
+                                                    "start": 16,
+                                                    "length": 7
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "openParen": null,
+                                    "argumentExpressionList": null,
+                                    "closeParen": null,
+                                    "classBaseClause": null,
+                                    "classInterfaceClause": null,
+                                    "classMembers": null
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 22,
+                        "start": 22,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 23,
+            "start": 23,
+            "length": 0
+        }
+    }
+}

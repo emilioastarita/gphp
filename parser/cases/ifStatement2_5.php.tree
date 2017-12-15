@@ -1,0 +1,78 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "IfStatementNode": {
+                    "ifKeyword": {
+                        "kind": "IfKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 3
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 9,
+                        "start": 10,
+                        "length": 2
+                    },
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 11,
+                                "start": 11,
+                                "length": 8
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 19,
+                        "start": 19,
+                        "length": 1
+                    },
+                    "colon": {
+                        "kind": "ColonToken",
+                        "fullStart": 20,
+                        "start": 21,
+                        "length": 2
+                    },
+                    "statements": [],
+                    "elseIfClauses": [],
+                    "elseClause": null,
+                    "endifKeyword": {
+                        "kind": "EndIfKeyword",
+                        "fullStart": 22,
+                        "start": 23,
+                        "length": 6
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 28,
+                        "start": 28,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 29,
+            "start": 29,
+            "length": 0
+        }
+    }
+}

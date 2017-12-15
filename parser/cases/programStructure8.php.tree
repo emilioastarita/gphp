@@ -1,0 +1,65 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "EmptyStatement": {
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 1
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "LessThanToken",
+                "fullStart": 7,
+                "start": 8,
+                "length": 2
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "QuestionToken",
+                "fullStart": 9,
+                "start": 9,
+                "length": 1
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "EqualsToken",
+                "fullStart": 10,
+                "start": 10,
+                "length": 1
+            },
+            {
+                "EmptyStatement": {
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 11,
+                        "start": 12,
+                        "length": 2
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 13,
+            "start": 13,
+            "length": 0
+        }
+    }
+}

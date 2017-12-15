@@ -1,0 +1,98 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "WhileStatement": {
+                    "whileToken": {
+                        "kind": "WhileKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 6
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 12,
+                        "start": 13,
+                        "length": 2
+                    },
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 14,
+                                "start": 14,
+                                "length": 3
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 17,
+                        "start": 17,
+                        "length": 1
+                    },
+                    "colon": {
+                        "kind": "ColonToken",
+                        "fullStart": 18,
+                        "start": 19,
+                        "length": 2
+                    },
+                    "statements": [
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 20,
+                                    "start": 25,
+                                    "length": 6
+                                }
+                            }
+                        },
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 26,
+                                    "start": 31,
+                                    "length": 6
+                                }
+                            }
+                        }
+                    ],
+                    "endWhile": {
+                        "kind": "EndWhileKeyword",
+                        "fullStart": 32,
+                        "start": 33,
+                        "length": 9
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 41,
+                        "start": 41,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 41,
+            "start": 41,
+            "length": 0
+        }
+    }
+}

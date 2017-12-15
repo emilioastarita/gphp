@@ -1,0 +1,68 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "GotoStatement": {
+                    "goto": {
+                        "kind": "GotoKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 5
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 11,
+                        "start": 12,
+                        "length": 5
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 16,
+                        "start": 16,
+                        "length": 1
+                    }
+                }
+            },
+            {
+                "GotoStatement": {
+                    "goto": {
+                        "kind": "GotoKeyword",
+                        "fullStart": 17,
+                        "start": 19,
+                        "length": 6
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 23,
+                        "start": 24,
+                        "length": 6
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 29,
+                        "start": 29,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 30,
+            "start": 30,
+            "length": 0
+        }
+    }
+}

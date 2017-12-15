@@ -1,0 +1,105 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ObjectCreationExpression": {
+                            "newKeword": {
+                                "kind": "NewKeyword",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 3
+                            },
+                            "classTypeDesignator": {
+                                "kind": "ClassKeyword",
+                                "fullStart": 9,
+                                "start": 10,
+                                "length": 6
+                            },
+                            "openParen": {
+                                "kind": "OpenParenToken",
+                                "fullStart": 15,
+                                "start": 16,
+                                "length": 2
+                            },
+                            "argumentExpressionList": null,
+                            "closeParen": {
+                                "kind": "CloseParenToken",
+                                "fullStart": 17,
+                                "start": 17,
+                                "length": 1
+                            },
+                            "classBaseClause": {
+                                "ClassBaseClause": {
+                                    "extendsKeyword": {
+                                        "kind": "ExtendsKeyword",
+                                        "fullStart": 18,
+                                        "start": 19,
+                                        "length": 8
+                                    },
+                                    "baseClass": {
+                                        "QualifiedName": {
+                                            "globalSpecifier": null,
+                                            "relativeSpecifier": null,
+                                            "nameParts": [
+                                                {
+                                                    "kind": "Name",
+                                                    "fullStart": 26,
+                                                    "start": 27,
+                                                    "length": 2
+                                                }
+                                            ]
+                                        }
+                                    }
+                                }
+                            },
+                            "classInterfaceClause": null,
+                            "classMembers": {
+                                "ClassMembersNode": {
+                                    "openBrace": {
+                                        "kind": "OpenBraceToken",
+                                        "fullStart": 28,
+                                        "start": 29,
+                                        "length": 2
+                                    },
+                                    "classMemberDeclarations": [],
+                                    "closeBrace": {
+                                        "kind": "CloseBraceToken",
+                                        "fullStart": 30,
+                                        "start": 30,
+                                        "length": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 31,
+                        "start": 31,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 32,
+            "start": 32,
+            "length": 0
+        }
+    }
+}

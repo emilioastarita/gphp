@@ -33,7 +33,7 @@ func TestCases(t *testing.T) {
 	suffix := ".tree"
 	tokensLen := len(suffix)
 
-	skipFiles := map[string]bool{}
+	skipFiles := SKIPPED_TESTS
 	resultFiles, _ := filepath.Glob("cases/*.php" + suffix)
 
 	for _, resultFile := range resultFiles {

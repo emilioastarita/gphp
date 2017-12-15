@@ -1,0 +1,96 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "EchoExpression": {
+                            "echoKeyword": {
+                                "kind": "EchoKeyword",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 4
+                            },
+                            "expressions": {
+                                "ExpressionList": {
+                                    "children": [
+                                        {
+                                            "Variable": {
+                                                "dollar": null,
+                                                "name": {
+                                                    "kind": "VariableName",
+                                                    "fullStart": 10,
+                                                    "start": 11,
+                                                    "length": 4
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 14,
+                                            "start": 14,
+                                            "length": 1
+                                        },
+                                        {
+                                            "Variable": {
+                                                "dollar": null,
+                                                "name": {
+                                                    "kind": "VariableName",
+                                                    "fullStart": 15,
+                                                    "start": 16,
+                                                    "length": 7
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 22,
+                                            "start": 22,
+                                            "length": 1
+                                        },
+                                        {
+                                            "StringLiteral": {
+                                                "startQuote": null,
+                                                "children": {
+                                                    "kind": "StringLiteralToken",
+                                                    "fullStart": 23,
+                                                    "start": 24,
+                                                    "length": 3
+                                                },
+                                                "endQuote": null
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 26,
+                        "start": 26,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 27,
+            "start": 27,
+            "length": 0
+        }
+    }
+}

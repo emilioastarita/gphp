@@ -1,0 +1,95 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 6,
+                                        "length": 2
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "InstanceOfKeyword",
+                                "fullStart": 8,
+                                "start": 9,
+                                "length": 11
+                            },
+                            "rightOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 19,
+                                        "start": 20,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 22,
+                        "start": 22,
+                        "length": 0
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "InstanceOfKeyword",
+                "fullStart": 22,
+                "start": 23,
+                "length": 11
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 33,
+                                "start": 34,
+                                "length": 3
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 36,
+                        "start": 36,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 37,
+            "start": 37,
+            "length": 0
+        }
+    }
+}

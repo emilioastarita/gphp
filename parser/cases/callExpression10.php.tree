@@ -1,0 +1,130 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "CallExpression": {
+                            "callableExpression": {
+                                "QualifiedName": {
+                                    "globalSpecifier": null,
+                                    "relativeSpecifier": null,
+                                    "nameParts": [
+                                        {
+                                            "kind": "Name",
+                                            "fullStart": 6,
+                                            "start": 7,
+                                            "length": 3
+                                        }
+                                    ]
+                                }
+                            },
+                            "openParen": {
+                                "kind": "OpenParenToken",
+                                "fullStart": 9,
+                                "start": 9,
+                                "length": 1
+                            },
+                            "argumentExpressionList": {
+                                "ArgumentExpressionList": {
+                                    "children": [
+                                        {
+                                            "ArgumentExpression": {
+                                                "byRefToken": null,
+                                                "dotDotDotToken": null,
+                                                "expression": {
+                                                    "ReservedWord": {
+                                                        "children": {
+                                                            "kind": "NullReservedWord",
+                                                            "fullStart": 10,
+                                                            "start": 10,
+                                                            "length": 4
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 14,
+                                            "start": 14,
+                                            "length": 1
+                                        },
+                                        {
+                                            "ArgumentExpression": {
+                                                "byRefToken": null,
+                                                "dotDotDotToken": null,
+                                                "expression": {
+                                                    "ReservedWord": {
+                                                        "children": {
+                                                            "kind": "TrueReservedWord",
+                                                            "fullStart": 15,
+                                                            "start": 16,
+                                                            "length": 5
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 20,
+                                            "start": 20,
+                                            "length": 1
+                                        },
+                                        {
+                                            "ArgumentExpression": {
+                                                "byRefToken": null,
+                                                "dotDotDotToken": null,
+                                                "expression": {
+                                                    "ReservedWord": {
+                                                        "children": {
+                                                            "kind": "FalseReservedWord",
+                                                            "fullStart": 21,
+                                                            "start": 22,
+                                                            "length": 6
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "closeParen": {
+                                "kind": "CloseParenToken",
+                                "fullStart": 27,
+                                "start": 27,
+                                "length": 1
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 28,
+                        "start": 28,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 29,
+            "start": 29,
+            "length": 0
+        }
+    }
+}

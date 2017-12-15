@@ -1,0 +1,58 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "GlobalDeclaration": {
+                    "globalKeyword": {
+                        "kind": "GlobalKeyword",
+                        "fullStart": 6,
+                        "start": 27,
+                        "length": 27
+                    },
+                    "variableNameList": {
+                        "VariableNameList": {
+                            "children": [
+                                {
+                                    "Variable": {
+                                        "dollar": null,
+                                        "name": {
+                                            "kind": "VariableName",
+                                            "fullStart": 33,
+                                            "start": 34,
+                                            "length": 3
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 36,
+                        "start": 36,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 36,
+            "start": 36,
+            "length": 0
+        }
+    }
+}

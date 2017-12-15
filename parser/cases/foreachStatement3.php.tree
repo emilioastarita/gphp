@@ -1,0 +1,123 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ForeachStatement": {
+                    "foreach": {
+                        "kind": "ForeachKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 8
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 14,
+                        "start": 15,
+                        "length": 2
+                    },
+                    "forEachCollectionName": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 16,
+                                "start": 16,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "asKeyword": {
+                        "kind": "AsKeyword",
+                        "fullStart": 18,
+                        "start": 19,
+                        "length": 3
+                    },
+                    "foreachKey": {
+                        "ForeachKey": {
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 21,
+                                        "start": 22,
+                                        "length": 3
+                                    }
+                                }
+                            },
+                            "arrow": {
+                                "kind": "DoubleArrowToken",
+                                "fullStart": 24,
+                                "start": 24,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "foreachValue": {
+                        "ForeachValue": {
+                            "ampersand": null,
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 26,
+                                        "start": 26,
+                                        "length": 2
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 28,
+                        "start": 28,
+                        "length": 1
+                    },
+                    "colon": null,
+                    "statements": {
+                        "EmptyStatement": {
+                            "semicolon": {
+                                "kind": "SemicolonToken",
+                                "fullStart": 29,
+                                "start": 34,
+                                "length": 6
+                            }
+                        }
+                    },
+                    "endForeach": null,
+                    "endForeachSemicolon": null
+                }
+            },
+            {
+                "EmptyStatement": {
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 35,
+                        "start": 36,
+                        "length": 2
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 37,
+            "start": 37,
+            "length": 0
+        }
+    }
+}

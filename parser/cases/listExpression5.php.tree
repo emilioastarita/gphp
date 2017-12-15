@@ -1,0 +1,90 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "ListIntrinsicExpression": {
+                                    "listKeyword": {
+                                        "kind": "ListKeyword",
+                                        "fullStart": 6,
+                                        "start": 54,
+                                        "length": 52
+                                    },
+                                    "openParen": {
+                                        "kind": "OpenParenToken",
+                                        "fullStart": 58,
+                                        "start": 58,
+                                        "length": 1
+                                    },
+                                    "listElements": {
+                                        "ListExpressionList": {
+                                            "children": [
+                                                {
+                                                    "kind": "CommaToken",
+                                                    "fullStart": 59,
+                                                    "start": 59,
+                                                    "length": 1
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "closeParen": {
+                                        "kind": "CloseParenToken",
+                                        "fullStart": 60,
+                                        "start": 60,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 61,
+                                "start": 62,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 63,
+                                        "start": 64,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 66,
+                        "start": 66,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 67,
+            "start": 67,
+            "length": 0
+        }
+    }
+}

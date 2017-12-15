@@ -1,0 +1,70 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ClassDeclaration": {
+                    "abstractOrFinalModifier": null,
+                    "classKeyword": {
+                        "kind": "ClassKeyword",
+                        "fullStart": 6,
+                        "start": 33,
+                        "length": 32
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 38,
+                        "start": 39,
+                        "length": 2
+                    },
+                    "classBaseClause": {
+                        "ClassBaseClause": {
+                            "extendsKeyword": {
+                                "kind": "ExtendsKeyword",
+                                "fullStart": 40,
+                                "start": 41,
+                                "length": 8
+                            },
+                            "baseClass": null
+                        }
+                    },
+                    "classInterfaceClause": null,
+                    "classMembers": {
+                        "ClassMembersNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 48,
+                                "start": 49,
+                                "length": 2
+                            },
+                            "classMemberDeclarations": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 50,
+                                "start": 56,
+                                "length": 7
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 57,
+            "start": 57,
+            "length": 0
+        }
+    }
+}

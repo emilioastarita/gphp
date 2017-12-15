@@ -1,0 +1,71 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ExitIntrinsicExpression": {
+                            "exitOrDieKeyword": {
+                                "kind": "ExitKeyword",
+                                "fullStart": 6,
+                                "start": 34,
+                                "length": 31
+                            },
+                            "openParen": null,
+                            "expression": null,
+                            "closeParen": null
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 37,
+                        "start": 37,
+                        "length": 0
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ExitIntrinsicExpression": {
+                            "exitOrDieKeyword": {
+                                "kind": "ExitKeyword",
+                                "fullStart": 37,
+                                "start": 38,
+                                "length": 4
+                            },
+                            "openParen": null,
+                            "expression": null,
+                            "closeParen": null
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 41,
+                        "start": 41,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 42,
+            "start": 42,
+            "length": 0
+        }
+    }
+}

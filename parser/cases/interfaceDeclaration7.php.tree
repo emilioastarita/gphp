@@ -1,0 +1,106 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "InterfaceDeclaration": {
+                    "interfaceKeyword": {
+                        "kind": "InterfaceKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 9
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 15,
+                        "start": 16,
+                        "length": 2
+                    },
+                    "interfaceBaseClause": null,
+                    "interfaceMembers": {
+                        "InterfaceMembers": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 17,
+                                "start": 19,
+                                "length": 3
+                            },
+                            "interfaceMemberDeclarations": [
+                                {
+                                    "MethodDeclaration": {
+                                        "modifiers": [
+                                            {
+                                                "kind": "PublicKeyword",
+                                                "fullStart": 20,
+                                                "start": 25,
+                                                "length": 11
+                                            }
+                                        ],
+                                        "functionKeyword": {
+                                            "kind": "FunctionKeyword",
+                                            "fullStart": 31,
+                                            "start": 32,
+                                            "length": 9
+                                        },
+                                        "byRefToken": null,
+                                        "name": {
+                                            "kind": "Name",
+                                            "fullStart": 40,
+                                            "start": 41,
+                                            "length": 2
+                                        },
+                                        "openParen": {
+                                            "kind": "OpenParenToken",
+                                            "fullStart": 42,
+                                            "start": 43,
+                                            "length": 2
+                                        },
+                                        "parameters": null,
+                                        "closeParen": {
+                                            "kind": "CloseParenToken",
+                                            "fullStart": 44,
+                                            "start": 44,
+                                            "length": 1
+                                        },
+                                        "colonToken": null,
+                                        "questionToken": null,
+                                        "returnType": null,
+                                        "compoundStatementOrSemicolon": {
+                                            "kind": "SemicolonToken",
+                                            "fullStart": 45,
+                                            "start": 45,
+                                            "length": 1
+                                        }
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 46,
+                                "start": 47,
+                                "length": 2
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 48,
+            "start": 48,
+            "length": 0
+        }
+    }
+}

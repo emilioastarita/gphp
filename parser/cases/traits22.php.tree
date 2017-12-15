@@ -1,0 +1,225 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ClassDeclaration": {
+                    "abstractOrFinalModifier": null,
+                    "classKeyword": {
+                        "kind": "ClassKeyword",
+                        "fullStart": 6,
+                        "start": 69,
+                        "length": 68
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 74,
+                        "start": 75,
+                        "length": 2
+                    },
+                    "classBaseClause": null,
+                    "classInterfaceClause": null,
+                    "classMembers": {
+                        "ClassMembersNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 76,
+                                "start": 77,
+                                "length": 2
+                            },
+                            "classMemberDeclarations": [
+                                {
+                                    "TraitUseClause": {
+                                        "useKeyword": {
+                                            "kind": "UseKeyword",
+                                            "fullStart": 78,
+                                            "start": 83,
+                                            "length": 8
+                                        },
+                                        "traitNameList": {
+                                            "QualifiedNameList": {
+                                                "children": [
+                                                    {
+                                                        "QualifiedName": {
+                                                            "globalSpecifier": {
+                                                                "kind": "BackslashToken",
+                                                                "fullStart": 86,
+                                                                "start": 87,
+                                                                "length": 2
+                                                            },
+                                                            "relativeSpecifier": null,
+                                                            "nameParts": [
+                                                                {
+                                                                    "kind": "Name",
+                                                                    "fullStart": 88,
+                                                                    "start": 88,
+                                                                    "length": 1
+                                                                }
+                                                            ]
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "semicolonOrOpenBrace": {
+                                            "kind": "OpenBraceToken",
+                                            "fullStart": 89,
+                                            "start": 90,
+                                            "length": 2
+                                        },
+                                        "traitSelectAndAliasClauses": {
+                                            "TraitSelectOrAliasClauseList": {
+                                                "children": [
+                                                    {
+                                                        "TraitSelectOrAliasClause": {
+                                                            "name": {
+                                                                "ScopedPropertyAccessExpression": {
+                                                                    "scopeResolutionQualifier": {
+                                                                        "QualifiedName": {
+                                                                            "globalSpecifier": {
+                                                                                "kind": "BackslashToken",
+                                                                                "fullStart": 91,
+                                                                                "start": 100,
+                                                                                "length": 10
+                                                                            },
+                                                                            "relativeSpecifier": null,
+                                                                            "nameParts": [
+                                                                                {
+                                                                                    "kind": "Name",
+                                                                                    "fullStart": 101,
+                                                                                    "start": 101,
+                                                                                    "length": 1
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    },
+                                                                    "doubleColon": {
+                                                                        "kind": "ColonColonToken",
+                                                                        "fullStart": 102,
+                                                                        "start": 102,
+                                                                        "length": 2
+                                                                    },
+                                                                    "memberName": {
+                                                                        "kind": "Name",
+                                                                        "fullStart": 104,
+                                                                        "start": 104,
+                                                                        "length": 1
+                                                                    }
+                                                                }
+                                                            },
+                                                            "asOrInsteadOfKeyword": {
+                                                                "kind": "InsteadOfKeyword",
+                                                                "fullStart": 105,
+                                                                "start": 106,
+                                                                "length": 10
+                                                            },
+                                                            "modifiers": [],
+                                                            "targetName": {
+                                                                "QualifiedName": {
+                                                                    "globalSpecifier": null,
+                                                                    "relativeSpecifier": null,
+                                                                    "nameParts": [
+                                                                        {
+                                                                            "kind": "Name",
+                                                                            "fullStart": 115,
+                                                                            "start": 116,
+                                                                            "length": 2
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "kind": "SemicolonToken",
+                                                        "fullStart": 117,
+                                                        "start": 117,
+                                                        "length": 1
+                                                    },
+                                                    {
+                                                        "TraitSelectOrAliasClause": {
+                                                            "name": {
+                                                                "QualifiedName": {
+                                                                    "globalSpecifier": null,
+                                                                    "relativeSpecifier": null,
+                                                                    "nameParts": [
+                                                                        {
+                                                                            "kind": "Name",
+                                                                            "fullStart": 118,
+                                                                            "start": 127,
+                                                                            "length": 10
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            },
+                                                            "asOrInsteadOfKeyword": {
+                                                                "kind": "AsKeyword",
+                                                                "fullStart": 128,
+                                                                "start": 129,
+                                                                "length": 3
+                                                            },
+                                                            "modifiers": [],
+                                                            "targetName": {
+                                                                "QualifiedName": {
+                                                                    "globalSpecifier": null,
+                                                                    "relativeSpecifier": null,
+                                                                    "nameParts": [
+                                                                        {
+                                                                            "kind": "Name",
+                                                                            "fullStart": 131,
+                                                                            "start": 132,
+                                                                            "length": 2
+                                                                        }
+                                                                    ]
+                                                                }
+                                                            }
+                                                        }
+                                                    },
+                                                    {
+                                                        "kind": "SemicolonToken",
+                                                        "fullStart": 133,
+                                                        "start": 133,
+                                                        "length": 1
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "closeBrace": {
+                                            "kind": "CloseBraceToken",
+                                            "fullStart": 134,
+                                            "start": 139,
+                                            "length": 6
+                                        }
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 140,
+                                "start": 141,
+                                "length": 2
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 142,
+            "start": 142,
+            "length": 0
+        }
+    }
+}

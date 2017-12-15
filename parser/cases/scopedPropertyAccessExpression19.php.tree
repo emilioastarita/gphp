@@ -1,0 +1,79 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "PostfixUpdateExpression": {
+                            "operand": {
+                                "ScopedPropertyAccessExpression": {
+                                    "scopeResolutionQualifier": {
+                                        "QualifiedName": {
+                                            "globalSpecifier": null,
+                                            "relativeSpecifier": null,
+                                            "nameParts": [
+                                                {
+                                                    "kind": "Name",
+                                                    "fullStart": 6,
+                                                    "start": 7,
+                                                    "length": 5
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "doubleColon": {
+                                        "kind": "ColonColonToken",
+                                        "fullStart": 11,
+                                        "start": 11,
+                                        "length": 2
+                                    },
+                                    "memberName": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 13,
+                                                "start": 13,
+                                                "length": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "incrementOrDecrementOperator": {
+                                "kind": "PlusPlusToken",
+                                "fullStart": 15,
+                                "start": 15,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 17,
+                        "start": 17,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 18,
+            "start": 18,
+            "length": 0
+        }
+    }
+}

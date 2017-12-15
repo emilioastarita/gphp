@@ -1,0 +1,208 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 52,
+                                        "length": 48
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 54,
+                                "start": 55,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "ArrayCreationExpression": {
+                                    "arrayKeyword": null,
+                                    "openParenOrBracket": {
+                                        "kind": "OpenBracketToken",
+                                        "fullStart": 56,
+                                        "start": 57,
+                                        "length": 2
+                                    },
+                                    "arrayElements": {
+                                        "ArrayElementList": {
+                                            "children": [
+                                                {
+                                                    "ArrayElement": {
+                                                        "elementKey": {
+                                                            "NumericLiteral": {
+                                                                "children": {
+                                                                    "kind": "IntegerLiteralToken",
+                                                                    "fullStart": 58,
+                                                                    "start": 58,
+                                                                    "length": 1
+                                                                }
+                                                            }
+                                                        },
+                                                        "arrowToken": {
+                                                            "kind": "DoubleArrowToken",
+                                                            "fullStart": 59,
+                                                            "start": 59,
+                                                            "length": 2
+                                                        },
+                                                        "byRef": null,
+                                                        "elementValue": {
+                                                            "Variable": {
+                                                                "dollar": null,
+                                                                "name": {
+                                                                    "kind": "VariableName",
+                                                                    "fullStart": 61,
+                                                                    "start": 61,
+                                                                    "length": 2
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "kind": "CommaToken",
+                                                    "fullStart": 63,
+                                                    "start": 63,
+                                                    "length": 1
+                                                },
+                                                {
+                                                    "ArrayElement": {
+                                                        "elementKey": {
+                                                            "NumericLiteral": {
+                                                                "children": {
+                                                                    "kind": "IntegerLiteralToken",
+                                                                    "fullStart": 64,
+                                                                    "start": 64,
+                                                                    "length": 1
+                                                                }
+                                                            }
+                                                        },
+                                                        "arrowToken": {
+                                                            "kind": "DoubleArrowToken",
+                                                            "fullStart": 65,
+                                                            "start": 65,
+                                                            "length": 2
+                                                        },
+                                                        "byRef": null,
+                                                        "elementValue": {
+                                                            "Variable": {
+                                                                "dollar": null,
+                                                                "name": {
+                                                                    "kind": "VariableName",
+                                                                    "fullStart": 67,
+                                                                    "start": 67,
+                                                                    "length": 2
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                },
+                                                {
+                                                    "kind": "CommaToken",
+                                                    "fullStart": 69,
+                                                    "start": 69,
+                                                    "length": 1
+                                                },
+                                                {
+                                                    "ArrayElement": {
+                                                        "elementKey": {
+                                                            "NumericLiteral": {
+                                                                "children": {
+                                                                    "kind": "IntegerLiteralToken",
+                                                                    "fullStart": 70,
+                                                                    "start": 71,
+                                                                    "length": 2
+                                                                }
+                                                            }
+                                                        },
+                                                        "arrowToken": {
+                                                            "kind": "DoubleArrowToken",
+                                                            "fullStart": 72,
+                                                            "start": 72,
+                                                            "length": 2
+                                                        },
+                                                        "byRef": null,
+                                                        "elementValue": {
+                                                            "BinaryExpression": {
+                                                                "leftOperand": {
+                                                                    "Variable": {
+                                                                        "dollar": null,
+                                                                        "name": {
+                                                                            "kind": "VariableName",
+                                                                            "fullStart": 74,
+                                                                            "start": 74,
+                                                                            "length": 2
+                                                                        }
+                                                                    }
+                                                                },
+                                                                "operator": {
+                                                                    "kind": "PlusToken",
+                                                                    "fullStart": 76,
+                                                                    "start": 76,
+                                                                    "length": 1
+                                                                },
+                                                                "rightOperand": {
+                                                                    "Variable": {
+                                                                        "dollar": null,
+                                                                        "name": {
+                                                                            "kind": "VariableName",
+                                                                            "fullStart": 77,
+                                                                            "start": 77,
+                                                                            "length": 2
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "closeParenOrBracket": {
+                                        "kind": "CloseBracketToken",
+                                        "fullStart": 79,
+                                        "start": 79,
+                                        "length": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 80,
+                        "start": 80,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 81,
+            "start": 81,
+            "length": 0
+        }
+    }
+}

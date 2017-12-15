@@ -1,0 +1,97 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "IfStatementNode": {
+                    "ifKeyword": {
+                        "kind": "IfKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 2
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 8,
+                        "start": 9,
+                        "length": 2
+                    },
+                    "expression": {
+                        "ReservedWord": {
+                            "children": {
+                                "kind": "TrueReservedWord",
+                                "fullStart": 10,
+                                "start": 10,
+                                "length": 4
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 14,
+                        "start": 14,
+                        "length": 1
+                    },
+                    "colon": null,
+                    "statements": {
+                        "CompoundStatementNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 15,
+                                "start": 16,
+                                "length": 2
+                            },
+                            "statements": [
+                                {
+                                    "InlineHtml": {
+                                        "scriptSectionEndTag": {
+                                            "kind": "ScriptSectionEndTag",
+                                            "fullStart": 17,
+                                            "start": 22,
+                                            "length": 8
+                                        },
+                                        "text": {
+                                            "kind": "InlineHtml",
+                                            "fullStart": 25,
+                                            "start": 25,
+                                            "length": 5
+                                        },
+                                        "scriptSectionStartTag": null
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "error": "MissingToken",
+                                "kind": "CloseBraceToken",
+                                "fullStart": 30,
+                                "start": 30,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "elseIfClauses": [],
+                    "elseClause": null,
+                    "endifKeyword": null,
+                    "semicolon": null
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 30,
+            "start": 30,
+            "length": 0
+        }
+    }
+}

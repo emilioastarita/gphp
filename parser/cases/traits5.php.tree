@@ -1,0 +1,122 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "TraitDeclaration": {
+                    "traitKeyword": {
+                        "kind": "TraitKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 5
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 11,
+                        "start": 12,
+                        "length": 2
+                    },
+                    "traitMembers": {
+                        "TraitMembers": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 13,
+                                "start": 14,
+                                "length": 2
+                            },
+                            "traitMemberDeclarations": [
+                                {
+                                    "TraitUseClause": {
+                                        "useKeyword": {
+                                            "kind": "UseKeyword",
+                                            "fullStart": 15,
+                                            "start": 44,
+                                            "length": 32
+                                        },
+                                        "traitNameList": {
+                                            "QualifiedNameList": {
+                                                "children": [
+                                                    {
+                                                        "QualifiedName": {
+                                                            "globalSpecifier": null,
+                                                            "relativeSpecifier": null,
+                                                            "nameParts": [
+                                                                {
+                                                                    "kind": "Name",
+                                                                    "fullStart": 47,
+                                                                    "start": 48,
+                                                                    "length": 2
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "kind": "CommaToken",
+                                                        "fullStart": 49,
+                                                        "start": 49,
+                                                        "length": 1
+                                                    },
+                                                    {
+                                                        "QualifiedName": {
+                                                            "globalSpecifier": null,
+                                                            "relativeSpecifier": null,
+                                                            "nameParts": [
+                                                                {
+                                                                    "kind": "Name",
+                                                                    "fullStart": 50,
+                                                                    "start": 51,
+                                                                    "length": 2
+                                                                }
+                                                            ]
+                                                        }
+                                                    },
+                                                    {
+                                                        "kind": "CommaToken",
+                                                        "fullStart": 52,
+                                                        "start": 52,
+                                                        "length": 1
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "semicolonOrOpenBrace": {
+                                            "kind": "SemicolonToken",
+                                            "fullStart": 53,
+                                            "start": 53,
+                                            "length": 1
+                                        },
+                                        "traitSelectAndAliasClauses": null,
+                                        "closeBrace": null
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 54,
+                                "start": 55,
+                                "length": 2
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 56,
+            "start": 56,
+            "length": 0
+        }
+    }
+}

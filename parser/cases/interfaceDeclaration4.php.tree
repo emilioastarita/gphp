@@ -1,0 +1,107 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "InterfaceDeclaration": {
+                    "interfaceKeyword": {
+                        "kind": "InterfaceKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 9
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 15,
+                        "start": 16,
+                        "length": 2
+                    },
+                    "interfaceBaseClause": {
+                        "InterfaceBaseClause": {
+                            "extendsKeyword": {
+                                "kind": "ExtendsKeyword",
+                                "fullStart": 17,
+                                "start": 18,
+                                "length": 8
+                            },
+                            "interfaceNameList": {
+                                "QualifiedNameList": {
+                                    "children": [
+                                        {
+                                            "QualifiedName": {
+                                                "globalSpecifier": null,
+                                                "relativeSpecifier": null,
+                                                "nameParts": [
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 25,
+                                                        "start": 26,
+                                                        "length": 2
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 27,
+                                            "start": 27,
+                                            "length": 1
+                                        },
+                                        {
+                                            "QualifiedName": {
+                                                "globalSpecifier": null,
+                                                "relativeSpecifier": null,
+                                                "nameParts": [
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 28,
+                                                        "start": 29,
+                                                        "length": 2
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "interfaceMembers": {
+                        "InterfaceMembers": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 30,
+                                "start": 31,
+                                "length": 2
+                            },
+                            "interfaceMemberDeclarations": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 32,
+                                "start": 38,
+                                "length": 7
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 39,
+            "start": 39,
+            "length": 0
+        }
+    }
+}

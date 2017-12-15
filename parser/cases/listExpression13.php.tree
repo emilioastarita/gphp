@@ -1,0 +1,282 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "ListIntrinsicExpression": {
+                                    "listKeyword": {
+                                        "kind": "ListKeyword",
+                                        "fullStart": 6,
+                                        "start": 6,
+                                        "length": 4
+                                    },
+                                    "openParen": {
+                                        "kind": "OpenParenToken",
+                                        "fullStart": 10,
+                                        "start": 11,
+                                        "length": 2
+                                    },
+                                    "listElements": {
+                                        "ListExpressionList": {
+                                            "children": [
+                                                {
+                                                    "ArrayElement": {
+                                                        "elementKey": null,
+                                                        "arrowToken": null,
+                                                        "byRef": null,
+                                                        "elementValue": {
+                                                            "ListIntrinsicExpression": {
+                                                                "listKeyword": {
+                                                                    "kind": "ListKeyword",
+                                                                    "fullStart": 12,
+                                                                    "start": 12,
+                                                                    "length": 4
+                                                                },
+                                                                "openParen": {
+                                                                    "kind": "OpenParenToken",
+                                                                    "fullStart": 16,
+                                                                    "start": 16,
+                                                                    "length": 1
+                                                                },
+                                                                "listElements": {
+                                                                    "ListExpressionList": {
+                                                                        "children": [
+                                                                            {
+                                                                                "ArrayElement": {
+                                                                                    "elementKey": null,
+                                                                                    "arrowToken": null,
+                                                                                    "byRef": null,
+                                                                                    "elementValue": {
+                                                                                        "ListIntrinsicExpression": {
+                                                                                            "listKeyword": {
+                                                                                                "kind": "ListKeyword",
+                                                                                                "fullStart": 17,
+                                                                                                "start": 17,
+                                                                                                "length": 4
+                                                                                            },
+                                                                                            "openParen": {
+                                                                                                "kind": "OpenParenToken",
+                                                                                                "fullStart": 21,
+                                                                                                "start": 21,
+                                                                                                "length": 1
+                                                                                            },
+                                                                                            "listElements": {
+                                                                                                "ListExpressionList": {
+                                                                                                    "children": [
+                                                                                                        {
+                                                                                                            "ArrayElement": {
+                                                                                                                "elementKey": null,
+                                                                                                                "arrowToken": null,
+                                                                                                                "byRef": null,
+                                                                                                                "elementValue": {
+                                                                                                                    "Variable": {
+                                                                                                                        "dollar": null,
+                                                                                                                        "name": {
+                                                                                                                            "kind": "VariableName",
+                                                                                                                            "fullStart": 22,
+                                                                                                                            "start": 22,
+                                                                                                                            "length": 2
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            },
+                                                                                            "closeParen": {
+                                                                                                "kind": "CloseParenToken",
+                                                                                                "fullStart": 24,
+                                                                                                "start": 24,
+                                                                                                "length": 1
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "kind": "CommaToken",
+                                                                                "fullStart": 25,
+                                                                                "start": 25,
+                                                                                "length": 1
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "closeParen": {
+                                                                    "kind": "CloseParenToken",
+                                                                    "fullStart": 26,
+                                                                    "start": 26,
+                                                                    "length": 1
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "closeParen": {
+                                        "kind": "CloseParenToken",
+                                        "fullStart": 27,
+                                        "start": 27,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 28,
+                                "start": 29,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "ArrayCreationExpression": {
+                                    "arrayKeyword": {
+                                        "kind": "ArrayKeyword",
+                                        "fullStart": 30,
+                                        "start": 31,
+                                        "length": 6
+                                    },
+                                    "openParenOrBracket": {
+                                        "kind": "OpenParenToken",
+                                        "fullStart": 36,
+                                        "start": 36,
+                                        "length": 1
+                                    },
+                                    "arrayElements": {
+                                        "ArrayElementList": {
+                                            "children": [
+                                                {
+                                                    "ArrayElement": {
+                                                        "elementKey": null,
+                                                        "arrowToken": null,
+                                                        "byRef": null,
+                                                        "elementValue": {
+                                                            "ArrayCreationExpression": {
+                                                                "arrayKeyword": {
+                                                                    "kind": "ArrayKeyword",
+                                                                    "fullStart": 37,
+                                                                    "start": 37,
+                                                                    "length": 5
+                                                                },
+                                                                "openParenOrBracket": {
+                                                                    "kind": "OpenParenToken",
+                                                                    "fullStart": 42,
+                                                                    "start": 42,
+                                                                    "length": 1
+                                                                },
+                                                                "arrayElements": {
+                                                                    "ArrayElementList": {
+                                                                        "children": [
+                                                                            {
+                                                                                "ArrayElement": {
+                                                                                    "elementKey": null,
+                                                                                    "arrowToken": null,
+                                                                                    "byRef": null,
+                                                                                    "elementValue": {
+                                                                                        "ArrayCreationExpression": {
+                                                                                            "arrayKeyword": {
+                                                                                                "kind": "ArrayKeyword",
+                                                                                                "fullStart": 43,
+                                                                                                "start": 43,
+                                                                                                "length": 5
+                                                                                            },
+                                                                                            "openParenOrBracket": {
+                                                                                                "kind": "OpenParenToken",
+                                                                                                "fullStart": 48,
+                                                                                                "start": 48,
+                                                                                                "length": 1
+                                                                                            },
+                                                                                            "arrayElements": {
+                                                                                                "ArrayElementList": {
+                                                                                                    "children": [
+                                                                                                        {
+                                                                                                            "ArrayElement": {
+                                                                                                                "elementKey": null,
+                                                                                                                "arrowToken": null,
+                                                                                                                "byRef": null,
+                                                                                                                "elementValue": {
+                                                                                                                    "NumericLiteral": {
+                                                                                                                        "children": {
+                                                                                                                            "kind": "IntegerLiteralToken",
+                                                                                                                            "fullStart": 49,
+                                                                                                                            "start": 49,
+                                                                                                                            "length": 1
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    ]
+                                                                                                }
+                                                                                            },
+                                                                                            "closeParenOrBracket": {
+                                                                                                "kind": "CloseParenToken",
+                                                                                                "fullStart": 50,
+                                                                                                "start": 50,
+                                                                                                "length": 1
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "closeParenOrBracket": {
+                                                                    "kind": "CloseParenToken",
+                                                                    "fullStart": 51,
+                                                                    "start": 51,
+                                                                    "length": 1
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "closeParenOrBracket": {
+                                        "kind": "CloseParenToken",
+                                        "fullStart": 52,
+                                        "start": 52,
+                                        "length": 1
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 53,
+                        "start": 53,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 54,
+            "start": 54,
+            "length": 0
+        }
+    }
+}

@@ -1,0 +1,95 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 6,
+                                        "length": 2
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsEqualsEqualsToken",
+                                "fullStart": 8,
+                                "start": 9,
+                                "length": 4
+                            },
+                            "rightOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 12,
+                                        "start": 13,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 15,
+                        "start": 15,
+                        "length": 0
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "EqualsEqualsEqualsToken",
+                "fullStart": 15,
+                "start": 16,
+                "length": 4
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 19,
+                                "start": 20,
+                                "length": 3
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 22,
+                        "start": 22,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 23,
+            "start": 23,
+            "length": 0
+        }
+    }
+}

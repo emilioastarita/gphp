@@ -1,0 +1,127 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "IfStatementNode": {
+                    "ifKeyword": {
+                        "kind": "IfKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 3
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 9,
+                        "start": 10,
+                        "length": 2
+                    },
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "ScopedPropertyAccessExpression": {
+                                    "scopeResolutionQualifier": {
+                                        "QualifiedName": {
+                                            "globalSpecifier": null,
+                                            "relativeSpecifier": null,
+                                            "nameParts": [
+                                                {
+                                                    "kind": "Name",
+                                                    "fullStart": 11,
+                                                    "start": 11,
+                                                    "length": 6
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "doubleColon": {
+                                        "kind": "ColonColonToken",
+                                        "fullStart": 17,
+                                        "start": 17,
+                                        "length": 2
+                                    },
+                                    "memberName": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 19,
+                                                "start": 19,
+                                                "length": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "InstanceOfKeyword",
+                                "fullStart": 21,
+                                "start": 22,
+                                "length": 11
+                            },
+                            "rightOperand": {
+                                "QualifiedName": {
+                                    "globalSpecifier": null,
+                                    "relativeSpecifier": null,
+                                    "nameParts": [
+                                        {
+                                            "kind": "Name",
+                                            "fullStart": 32,
+                                            "start": 33,
+                                            "length": 7
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 39,
+                        "start": 39,
+                        "length": 1
+                    },
+                    "colon": null,
+                    "statements": {
+                        "CompoundStatementNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 40,
+                                "start": 41,
+                                "length": 2
+                            },
+                            "statements": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 42,
+                                "start": 43,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "elseIfClauses": [],
+                    "elseClause": null,
+                    "endifKeyword": null,
+                    "semicolon": null
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 44,
+            "start": 44,
+            "length": 0
+        }
+    }
+}

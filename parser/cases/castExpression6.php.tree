@@ -1,0 +1,53 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "CastExpression": {
+                            "openParen": null,
+                            "castType": {
+                                "kind": "StringCastToken",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 8
+                            },
+                            "closeParen": null,
+                            "operand": {
+                                "error": "MissingToken",
+                                "kind": "Expression",
+                                "fullStart": 14,
+                                "start": 14,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 14,
+                        "start": 14,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 15,
+            "start": 15,
+            "length": 0
+        }
+    }
+}

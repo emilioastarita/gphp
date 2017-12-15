@@ -1,0 +1,150 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "NamespaceUseDeclaration": {
+                    "useKeyword": {
+                        "kind": "UseKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 3
+                    },
+                    "functionOrConst": null,
+                    "useClauses": null,
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 9,
+                        "start": 9,
+                        "length": 0
+                    }
+                }
+            },
+            {
+                "CompoundStatementNode": {
+                    "openBrace": {
+                        "kind": "OpenBraceToken",
+                        "fullStart": 9,
+                        "start": 10,
+                        "length": 2
+                    },
+                    "statements": [
+                        {
+                            "ExpressionStatement": {
+                                "expression": {
+                                    "QualifiedName": {
+                                        "globalSpecifier": null,
+                                        "relativeSpecifier": null,
+                                        "nameParts": [
+                                            {
+                                                "kind": "Name",
+                                                "fullStart": 11,
+                                                "start": 11,
+                                                "length": 1
+                                            }
+                                        ]
+                                    }
+                                },
+                                "semicolon": {
+                                    "error": "MissingToken",
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 12,
+                                    "start": 12,
+                                    "length": 0
+                                }
+                            }
+                        },
+                        {
+                            "error": "SkippedToken",
+                            "kind": "CommaToken",
+                            "fullStart": 12,
+                            "start": 12,
+                            "length": 1
+                        },
+                        {
+                            "ExpressionStatement": {
+                                "expression": {
+                                    "QualifiedName": {
+                                        "globalSpecifier": null,
+                                        "relativeSpecifier": null,
+                                        "nameParts": [
+                                            {
+                                                "kind": "Name",
+                                                "fullStart": 13,
+                                                "start": 14,
+                                                "length": 2
+                                            }
+                                        ]
+                                    }
+                                },
+                                "semicolon": {
+                                    "error": "MissingToken",
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 15,
+                                    "start": 15,
+                                    "length": 0
+                                }
+                            }
+                        },
+                        {
+                            "error": "SkippedToken",
+                            "kind": "CommaToken",
+                            "fullStart": 15,
+                            "start": 15,
+                            "length": 1
+                        },
+                        {
+                            "ExpressionStatement": {
+                                "expression": {
+                                    "QualifiedName": {
+                                        "globalSpecifier": null,
+                                        "relativeSpecifier": null,
+                                        "nameParts": [
+                                            {
+                                                "kind": "Name",
+                                                "fullStart": 16,
+                                                "start": 17,
+                                                "length": 2
+                                            }
+                                        ]
+                                    }
+                                },
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 18,
+                                    "start": 18,
+                                    "length": 1
+                                }
+                            }
+                        }
+                    ],
+                    "closeBrace": {
+                        "error": "MissingToken",
+                        "kind": "CloseBraceToken",
+                        "fullStart": 19,
+                        "start": 19,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 19,
+            "start": 19,
+            "length": 0
+        }
+    }
+}

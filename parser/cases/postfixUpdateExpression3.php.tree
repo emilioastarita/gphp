@@ -1,0 +1,83 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "PostfixUpdateExpression": {
+                            "operand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 7,
+                                        "length": 3
+                                    }
+                                }
+                            },
+                            "incrementOrDecrementOperator": {
+                                "kind": "PlusPlusToken",
+                                "fullStart": 9,
+                                "start": 9,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 11,
+                        "start": 11,
+                        "length": 0
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "PrefixUpdateExpression": {
+                            "incrementOrDecrementOperator": {
+                                "kind": "MinusMinusToken",
+                                "fullStart": 11,
+                                "start": 11,
+                                "length": 2
+                            },
+                            "operand": {
+                                "error": "MissingToken",
+                                "kind": "Expression",
+                                "fullStart": 13,
+                                "start": 13,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 13,
+                        "start": 13,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 14,
+            "start": 14,
+            "length": 0
+        }
+    }
+}

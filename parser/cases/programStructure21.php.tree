@@ -1,0 +1,24 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": {
+                        "kind": "InlineHtml",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    },
+                    "scriptSectionStartTag": null
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 6,
+            "start": 6,
+            "length": 0
+        }
+    }
+}

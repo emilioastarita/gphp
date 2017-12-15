@@ -1,0 +1,102 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "TryStatement": {
+                    "tryKeyword": {
+                        "kind": "TryKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 4
+                    },
+                    "compoundStatement": {
+                        "CompoundStatementNode": {
+                            "openBrace": {
+                                "error": "MissingToken",
+                                "kind": "OpenBraceToken",
+                                "fullStart": 10,
+                                "start": 10,
+                                "length": 0
+                            },
+                            "statements": [
+                                {
+                                    "TryStatement": {
+                                        "tryKeyword": {
+                                            "kind": "TryKeyword",
+                                            "fullStart": 10,
+                                            "start": 11,
+                                            "length": 4
+                                        },
+                                        "compoundStatement": {
+                                            "CompoundStatementNode": {
+                                                "openBrace": {
+                                                    "error": "MissingToken",
+                                                    "kind": "OpenBraceToken",
+                                                    "fullStart": 14,
+                                                    "start": 14,
+                                                    "length": 0
+                                                },
+                                                "statements": [
+                                                    {
+                                                        "error": "SkippedToken",
+                                                        "kind": "CatchKeyword",
+                                                        "fullStart": 14,
+                                                        "start": 15,
+                                                        "length": 6
+                                                    },
+                                                    {
+                                                        "error": "SkippedToken",
+                                                        "kind": "FinallyKeyword",
+                                                        "fullStart": 20,
+                                                        "start": 21,
+                                                        "length": 8
+                                                    }
+                                                ],
+                                                "closeBrace": {
+                                                    "error": "MissingToken",
+                                                    "kind": "CloseBraceToken",
+                                                    "fullStart": 28,
+                                                    "start": 28,
+                                                    "length": 0
+                                                }
+                                            }
+                                        },
+                                        "catchClauses": [],
+                                        "finallyClause": null
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "error": "MissingToken",
+                                "kind": "CloseBraceToken",
+                                "fullStart": 28,
+                                "start": 28,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "catchClauses": [],
+                    "finallyClause": null
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 28,
+            "start": 28,
+            "length": 0
+        }
+    }
+}

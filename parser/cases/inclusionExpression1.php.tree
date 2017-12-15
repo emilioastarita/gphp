@@ -1,0 +1,148 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ScriptInclusionExpression": {
+                            "requireOrIncludeKeyword": {
+                                "kind": "RequireKeyword",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 7
+                            },
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 13,
+                                        "start": 14,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 16,
+                        "start": 16,
+                        "length": 1
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ScriptInclusionExpression": {
+                            "requireOrIncludeKeyword": {
+                                "kind": "RequireOnceKeyword",
+                                "fullStart": 17,
+                                "start": 18,
+                                "length": 13
+                            },
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 30,
+                                        "start": 31,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 33,
+                        "start": 33,
+                        "length": 1
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ScriptInclusionExpression": {
+                            "requireOrIncludeKeyword": {
+                                "kind": "IncludeKeyword",
+                                "fullStart": 34,
+                                "start": 35,
+                                "length": 8
+                            },
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 42,
+                                        "start": 43,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 45,
+                        "start": 45,
+                        "length": 1
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ScriptInclusionExpression": {
+                            "requireOrIncludeKeyword": {
+                                "kind": "IncludeOnceKeyword",
+                                "fullStart": 46,
+                                "start": 47,
+                                "length": 13
+                            },
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 59,
+                                        "start": 60,
+                                        "length": 3
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 62,
+                        "start": 62,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 63,
+            "start": 64,
+            "length": 1
+        }
+    }
+}

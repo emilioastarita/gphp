@@ -1,0 +1,71 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "SubscriptExpression": {
+                            "postfixExpression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 6,
+                                        "length": 2
+                                    }
+                                }
+                            },
+                            "openBracketOrBrace": {
+                                "kind": "OpenBracketToken",
+                                "fullStart": 8,
+                                "start": 8,
+                                "length": 1
+                            },
+                            "accessExpression": {
+                                "NumericLiteral": {
+                                    "children": {
+                                        "kind": "IntegerLiteralToken",
+                                        "fullStart": 9,
+                                        "start": 9,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "closeBracketOrBrace": {
+                                "kind": "CloseBracketToken",
+                                "fullStart": 10,
+                                "start": 10,
+                                "length": 1
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 11,
+                        "start": 11,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 12,
+            "start": 12,
+            "length": 0
+        }
+    }
+}

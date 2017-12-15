@@ -1,0 +1,43 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": {
+                        "kind": "InlineHtml",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 3
+                    },
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 3,
+                        "start": 3,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "AsteriskToken",
+                "fullStart": 9,
+                "start": 9,
+                "length": 1
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "SlashToken",
+                "fullStart": 10,
+                "start": 10,
+                "length": 1
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 11,
+            "start": 11,
+            "length": 0
+        }
+    }
+}

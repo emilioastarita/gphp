@@ -1,0 +1,114 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "UnaryOpExpression": {
+                            "operator": {
+                                "kind": "MinusToken",
+                                "fullStart": 6,
+                                "start": 6,
+                                "length": 1
+                            },
+                            "operand": {
+                                "BinaryExpression": {
+                                    "leftOperand": {
+                                        "NumericLiteral": {
+                                            "children": {
+                                                "kind": "IntegerLiteralToken",
+                                                "fullStart": 7,
+                                                "start": 7,
+                                                "length": 1
+                                            }
+                                        }
+                                    },
+                                    "operator": {
+                                        "kind": "AsteriskAsteriskToken",
+                                        "fullStart": 8,
+                                        "start": 9,
+                                        "length": 3
+                                    },
+                                    "rightOperand": {
+                                        "UnaryOpExpression": {
+                                            "operator": {
+                                                "kind": "MinusToken",
+                                                "fullStart": 11,
+                                                "start": 12,
+                                                "length": 2
+                                            },
+                                            "operand": {
+                                                "BinaryExpression": {
+                                                    "leftOperand": {
+                                                        "NumericLiteral": {
+                                                            "children": {
+                                                                "kind": "IntegerLiteralToken",
+                                                                "fullStart": 13,
+                                                                "start": 13,
+                                                                "length": 1
+                                                            }
+                                                        }
+                                                    },
+                                                    "operator": {
+                                                        "kind": "AsteriskAsteriskToken",
+                                                        "fullStart": 14,
+                                                        "start": 15,
+                                                        "length": 3
+                                                    },
+                                                    "rightOperand": {
+                                                        "UnaryOpExpression": {
+                                                            "operator": {
+                                                                "kind": "MinusToken",
+                                                                "fullStart": 17,
+                                                                "start": 18,
+                                                                "length": 2
+                                                            },
+                                                            "operand": {
+                                                                "NumericLiteral": {
+                                                                    "children": {
+                                                                        "kind": "IntegerLiteralToken",
+                                                                        "fullStart": 19,
+                                                                        "start": 19,
+                                                                        "length": 1
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 20,
+                        "start": 20,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 21,
+            "start": 21,
+            "length": 0
+        }
+    }
+}

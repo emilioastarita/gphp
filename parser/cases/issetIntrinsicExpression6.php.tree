@@ -1,0 +1,57 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "IssetIntrinsicExpression": {
+                            "issetKeyword": {
+                                "kind": "IsSetKeyword",
+                                "fullStart": 6,
+                                "start": 45,
+                                "length": 44
+                            },
+                            "openParen": {
+                                "kind": "OpenParenToken",
+                                "fullStart": 50,
+                                "start": 50,
+                                "length": 1
+                            },
+                            "expressions": null,
+                            "closeParen": {
+                                "kind": "CloseParenToken",
+                                "fullStart": 51,
+                                "start": 51,
+                                "length": 1
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 52,
+                        "start": 52,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 53,
+            "start": 53,
+            "length": 0
+        }
+    }
+}

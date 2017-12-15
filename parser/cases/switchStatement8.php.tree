@@ -1,0 +1,157 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "SwitchStatementNode": {
+                    "switchKeyword": {
+                        "kind": "SwitchKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 7
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 13,
+                        "start": 14,
+                        "length": 2
+                    },
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 15,
+                                "start": 15,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 17,
+                        "start": 17,
+                        "length": 1
+                    },
+                    "colon": {
+                        "kind": "ColonToken",
+                        "fullStart": 18,
+                        "start": 18,
+                        "length": 1
+                    },
+                    "openBrace": null,
+                    "caseStatements": [
+                        {
+                            "CaseStatementNode": {
+                                "caseKeyword": {
+                                    "kind": "CaseKeyword",
+                                    "fullStart": 19,
+                                    "start": 24,
+                                    "length": 9
+                                },
+                                "expression": {
+                                    "Variable": {
+                                        "dollar": null,
+                                        "name": {
+                                            "kind": "VariableName",
+                                            "fullStart": 28,
+                                            "start": 29,
+                                            "length": 3
+                                        }
+                                    }
+                                },
+                                "defaultLabelTerminator": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 31,
+                                    "start": 31,
+                                    "length": 1
+                                },
+                                "statementList": [
+                                    {
+                                        "EmptyStatement": {
+                                            "semicolon": {
+                                                "kind": "SemicolonToken",
+                                                "fullStart": 32,
+                                                "start": 41,
+                                                "length": 10
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "CaseStatementNode": {
+                                "caseKeyword": {
+                                    "kind": "DefaultKeyword",
+                                    "fullStart": 42,
+                                    "start": 47,
+                                    "length": 12
+                                },
+                                "expression": null,
+                                "defaultLabelTerminator": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 54,
+                                    "start": 54,
+                                    "length": 1
+                                },
+                                "statementList": [
+                                    {
+                                        "EmptyStatement": {
+                                            "semicolon": {
+                                                "kind": "SemicolonToken",
+                                                "fullStart": 55,
+                                                "start": 64,
+                                                "length": 10
+                                            }
+                                        }
+                                    },
+                                    {
+                                        "EmptyStatement": {
+                                            "semicolon": {
+                                                "kind": "SemicolonToken",
+                                                "fullStart": 65,
+                                                "start": 74,
+                                                "length": 10
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ],
+                    "closeBrace": null,
+                    "endswitch": {
+                        "kind": "EndSwitchKeyword",
+                        "fullStart": 75,
+                        "start": 76,
+                        "length": 10
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 85,
+                        "start": 85,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 86,
+            "start": 86,
+            "length": 0
+        }
+    }
+}

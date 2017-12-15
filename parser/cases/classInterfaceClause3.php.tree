@@ -1,0 +1,115 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ClassDeclaration": {
+                    "abstractOrFinalModifier": null,
+                    "classKeyword": {
+                        "kind": "ClassKeyword",
+                        "fullStart": 6,
+                        "start": 55,
+                        "length": 54
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 60,
+                        "start": 61,
+                        "length": 2
+                    },
+                    "classBaseClause": null,
+                    "classInterfaceClause": {
+                        "ClassInterfaceClause": {
+                            "implementsKeyword": {
+                                "kind": "ImplementsKeyword",
+                                "fullStart": 62,
+                                "start": 63,
+                                "length": 11
+                            },
+                            "interfaceNameList": {
+                                "QualifiedNameList": {
+                                    "children": [
+                                        {
+                                            "QualifiedName": {
+                                                "globalSpecifier": null,
+                                                "relativeSpecifier": null,
+                                                "nameParts": [
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 73,
+                                                        "start": 74,
+                                                        "length": 12
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 85,
+                                            "start": 85,
+                                            "length": 1
+                                        },
+                                        {
+                                            "QualifiedName": {
+                                                "globalSpecifier": null,
+                                                "relativeSpecifier": null,
+                                                "nameParts": [
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 86,
+                                                        "start": 87,
+                                                        "length": 13
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 99,
+                                            "start": 99,
+                                            "length": 1
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "classMembers": {
+                        "ClassMembersNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 100,
+                                "start": 101,
+                                "length": 2
+                            },
+                            "classMemberDeclarations": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 102,
+                                "start": 108,
+                                "length": 7
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 109,
+            "start": 109,
+            "length": 0
+        }
+    }
+}

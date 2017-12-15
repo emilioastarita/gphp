@@ -1,0 +1,53 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "TryStatement": {
+                    "tryKeyword": {
+                        "kind": "TryKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 4
+                    },
+                    "compoundStatement": {
+                        "CompoundStatementNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 10,
+                                "start": 11,
+                                "length": 2
+                            },
+                            "statements": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 12,
+                                "start": 14,
+                                "length": 3
+                            }
+                        }
+                    },
+                    "catchClauses": [],
+                    "finallyClause": null
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 15,
+            "start": 15,
+            "length": 0
+        }
+    }
+}

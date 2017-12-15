@@ -1,0 +1,102 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "NamespaceUseDeclaration": {
+                    "useKeyword": {
+                        "kind": "UseKeyword",
+                        "fullStart": 6,
+                        "start": 28,
+                        "length": 25
+                    },
+                    "functionOrConst": {
+                        "kind": "ConstKeyword",
+                        "fullStart": 31,
+                        "start": 32,
+                        "length": 6
+                    },
+                    "useClauses": {
+                        "NamespaceUseClauseList": {
+                            "children": [
+                                {
+                                    "NamespaceUseClause": {
+                                        "namespaceName": {
+                                            "QualifiedName": {
+                                                "globalSpecifier": null,
+                                                "relativeSpecifier": null,
+                                                "nameParts": [
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 37,
+                                                        "start": 38,
+                                                        "length": 2
+                                                    },
+                                                    {
+                                                        "kind": "BackslashToken",
+                                                        "fullStart": 39,
+                                                        "start": 39,
+                                                        "length": 1
+                                                    },
+                                                    {
+                                                        "kind": "Name",
+                                                        "fullStart": 40,
+                                                        "start": 40,
+                                                        "length": 1
+                                                    }
+                                                ]
+                                            }
+                                        },
+                                        "namespaceAliasingClause": {
+                                            "NamespaceAliasingClause": {
+                                                "asKeyword": {
+                                                    "kind": "AsKeyword",
+                                                    "fullStart": 41,
+                                                    "start": 42,
+                                                    "length": 3
+                                                },
+                                                "name": {
+                                                    "error": "MissingToken",
+                                                    "kind": "Name",
+                                                    "fullStart": 44,
+                                                    "start": 44,
+                                                    "length": 0
+                                                }
+                                            }
+                                        },
+                                        "openBrace": null,
+                                        "groupClauses": null,
+                                        "closeBrace": null
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 44,
+                        "start": 44,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 45,
+            "start": 45,
+            "length": 0
+        }
+    }
+}

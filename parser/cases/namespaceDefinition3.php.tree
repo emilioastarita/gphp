@@ -1,0 +1,114 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "NamespaceDefinition": {
+                    "namespaceKeyword": {
+                        "kind": "NamespaceKeyword",
+                        "fullStart": 6,
+                        "start": 73,
+                        "length": 76
+                    },
+                    "name": {
+                        "QualifiedName": {
+                            "globalSpecifier": null,
+                            "relativeSpecifier": null,
+                            "nameParts": [
+                                {
+                                    "kind": "Name",
+                                    "fullStart": 82,
+                                    "start": 83,
+                                    "length": 2
+                                },
+                                {
+                                    "kind": "BackslashToken",
+                                    "fullStart": 84,
+                                    "start": 84,
+                                    "length": 1
+                                },
+                                {
+                                    "kind": "Name",
+                                    "fullStart": 85,
+                                    "start": 85,
+                                    "length": 1
+                                }
+                            ]
+                        }
+                    },
+                    "compoundStatementOrSemicolon": {
+                        "CompoundStatementNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 86,
+                                "start": 87,
+                                "length": 2
+                            },
+                            "statements": [
+                                {
+                                    "ClassDeclaration": {
+                                        "abstractOrFinalModifier": null,
+                                        "classKeyword": {
+                                            "kind": "ClassKeyword",
+                                            "fullStart": 88,
+                                            "start": 93,
+                                            "length": 10
+                                        },
+                                        "name": {
+                                            "kind": "Name",
+                                            "fullStart": 98,
+                                            "start": 99,
+                                            "length": 2
+                                        },
+                                        "classBaseClause": null,
+                                        "classInterfaceClause": null,
+                                        "classMembers": {
+                                            "ClassMembersNode": {
+                                                "openBrace": {
+                                                    "kind": "OpenBraceToken",
+                                                    "fullStart": 100,
+                                                    "start": 101,
+                                                    "length": 2
+                                                },
+                                                "classMemberDeclarations": [],
+                                                "closeBrace": {
+                                                    "kind": "CloseBraceToken",
+                                                    "fullStart": 102,
+                                                    "start": 102,
+                                                    "length": 1
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 103,
+                                "start": 104,
+                                "length": 2
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 105,
+            "start": 105,
+            "length": 0
+        }
+    }
+}

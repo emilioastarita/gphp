@@ -1,0 +1,96 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "IssetIntrinsicExpression": {
+                            "issetKeyword": {
+                                "kind": "IsSetKeyword",
+                                "fullStart": 6,
+                                "start": 45,
+                                "length": 44
+                            },
+                            "openParen": {
+                                "kind": "OpenParenToken",
+                                "fullStart": 50,
+                                "start": 50,
+                                "length": 1
+                            },
+                            "expressions": {
+                                "ExpressionList": {
+                                    "children": [
+                                        {
+                                            "Variable": {
+                                                "dollar": null,
+                                                "name": {
+                                                    "kind": "VariableName",
+                                                    "fullStart": 51,
+                                                    "start": 51,
+                                                    "length": 2
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 53,
+                                            "start": 53,
+                                            "length": 1
+                                        },
+                                        {
+                                            "Variable": {
+                                                "dollar": null,
+                                                "name": {
+                                                    "kind": "VariableName",
+                                                    "fullStart": 54,
+                                                    "start": 55,
+                                                    "length": 3
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "kind": "CommaToken",
+                                            "fullStart": 57,
+                                            "start": 57,
+                                            "length": 1
+                                        }
+                                    ]
+                                }
+                            },
+                            "closeParen": {
+                                "kind": "CloseParenToken",
+                                "fullStart": 58,
+                                "start": 58,
+                                "length": 1
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 59,
+                        "start": 59,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 60,
+            "start": 60,
+            "length": 0
+        }
+    }
+}

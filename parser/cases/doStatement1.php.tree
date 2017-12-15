@@ -1,0 +1,107 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "DoStatement": {
+                    "do": {
+                        "kind": "DoKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 2
+                    },
+                    "statement": {
+                        "CompoundStatementNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 8,
+                                "start": 9,
+                                "length": 2
+                            },
+                            "statements": [
+                                {
+                                    "EmptyStatement": {
+                                        "semicolon": {
+                                            "kind": "SemicolonToken",
+                                            "fullStart": 10,
+                                            "start": 15,
+                                            "length": 6
+                                        }
+                                    }
+                                },
+                                {
+                                    "EmptyStatement": {
+                                        "semicolon": {
+                                            "kind": "SemicolonToken",
+                                            "fullStart": 16,
+                                            "start": 21,
+                                            "length": 6
+                                        }
+                                    }
+                                }
+                            ],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 22,
+                                "start": 23,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "whileToken": {
+                        "kind": "WhileKeyword",
+                        "fullStart": 24,
+                        "start": 25,
+                        "length": 6
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 30,
+                        "start": 31,
+                        "length": 2
+                    },
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 32,
+                                "start": 32,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 34,
+                        "start": 34,
+                        "length": 1
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 35,
+                        "start": 35,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 36,
+            "start": 36,
+            "length": 0
+        }
+    }
+}

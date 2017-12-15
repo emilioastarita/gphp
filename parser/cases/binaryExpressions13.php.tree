@@ -1,0 +1,108 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "BinaryExpression": {
+                                    "leftOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 6,
+                                                "start": 6,
+                                                "length": 2
+                                            }
+                                        }
+                                    },
+                                    "operator": {
+                                        "kind": "LessThanToken",
+                                        "fullStart": 8,
+                                        "start": 9,
+                                        "length": 2
+                                    },
+                                    "rightOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 10,
+                                                "start": 11,
+                                                "length": 3
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsEqualsEqualsToken",
+                                "fullStart": 13,
+                                "start": 14,
+                                "length": 4
+                            },
+                            "rightOperand": {
+                                "BinaryExpression": {
+                                    "leftOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 17,
+                                                "start": 18,
+                                                "length": 3
+                                            }
+                                        }
+                                    },
+                                    "operator": {
+                                        "kind": "LessThanToken",
+                                        "fullStart": 20,
+                                        "start": 21,
+                                        "length": 2
+                                    },
+                                    "rightOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 22,
+                                                "start": 23,
+                                                "length": 3
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 25,
+                        "start": 25,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 26,
+            "start": 26,
+            "length": 0
+        }
+    }
+}

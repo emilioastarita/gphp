@@ -1,0 +1,59 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "UnsetIntrinsicExpression": {
+                            "unsetKeyword": {
+                                "kind": "UnsetKeyword",
+                                "fullStart": 6,
+                                "start": 57,
+                                "length": 56
+                            },
+                            "openParen": {
+                                "error": "MissingToken",
+                                "kind": "OpenParenToken",
+                                "fullStart": 62,
+                                "start": 62,
+                                "length": 0
+                            },
+                            "expressions": null,
+                            "closeParen": {
+                                "error": "MissingToken",
+                                "kind": "CloseParenToken",
+                                "fullStart": 62,
+                                "start": 62,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 62,
+                        "start": 62,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 63,
+            "start": 63,
+            "length": 0
+        }
+    }
+}

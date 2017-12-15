@@ -1,0 +1,61 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "YieldExpression": {
+                            "yieldOrYieldFromKeyword": {
+                                "kind": "YieldKeyword",
+                                "fullStart": 6,
+                                "start": 49,
+                                "length": 48
+                            },
+                            "arrayElement": {
+                                "ArrayElement": {
+                                    "elementKey": null,
+                                    "arrowToken": null,
+                                    "byRef": null,
+                                    "elementValue": {
+                                        "NumericLiteral": {
+                                            "children": {
+                                                "kind": "IntegerLiteralToken",
+                                                "fullStart": 54,
+                                                "start": 55,
+                                                "length": 2
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 56,
+                        "start": 56,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 57,
+            "start": 57,
+            "length": 0
+        }
+    }
+}

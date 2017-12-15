@@ -1,0 +1,70 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "CaseKeyword",
+                "fullStart": 6,
+                "start": 7,
+                "length": 5
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 11,
+                                "start": 12,
+                                "length": 3
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 14,
+                        "start": 14,
+                        "length": 0
+                    }
+                }
+            },
+            {
+                "error": "SkippedToken",
+                "kind": "ColonToken",
+                "fullStart": 14,
+                "start": 14,
+                "length": 1
+            },
+            {
+                "EmptyStatement": {
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 15,
+                        "start": 20,
+                        "length": 6
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 21,
+            "start": 21,
+            "length": 0
+        }
+    }
+}

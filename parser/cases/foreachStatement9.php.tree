@@ -1,0 +1,144 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ForeachStatement": {
+                    "foreach": {
+                        "kind": "ForeachKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 8
+                    },
+                    "openParen": {
+                        "error": "MissingToken",
+                        "kind": "OpenParenToken",
+                        "fullStart": 14,
+                        "start": 14,
+                        "length": 0
+                    },
+                    "forEachCollectionName": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 14,
+                                "start": 15,
+                                "length": 3
+                            }
+                        }
+                    },
+                    "asKeyword": {
+                        "kind": "AsKeyword",
+                        "fullStart": 17,
+                        "start": 18,
+                        "length": 3
+                    },
+                    "foreachKey": {
+                        "ForeachKey": {
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 20,
+                                        "start": 21,
+                                        "length": 3
+                                    }
+                                }
+                            },
+                            "arrow": {
+                                "kind": "DoubleArrowToken",
+                                "fullStart": 23,
+                                "start": 23,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "foreachValue": {
+                        "ForeachValue": {
+                            "ampersand": null,
+                            "expression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 25,
+                                        "start": 25,
+                                        "length": 2
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "error": "MissingToken",
+                        "kind": "CloseParenToken",
+                        "fullStart": 27,
+                        "start": 27,
+                        "length": 0
+                    },
+                    "colon": {
+                        "kind": "ColonToken",
+                        "fullStart": 27,
+                        "start": 28,
+                        "length": 2
+                    },
+                    "statements": [
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 29,
+                                    "start": 34,
+                                    "length": 6
+                                }
+                            }
+                        },
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 35,
+                                    "start": 40,
+                                    "length": 6
+                                }
+                            }
+                        }
+                    ],
+                    "endForeach": {
+                        "error": "MissingToken",
+                        "kind": "EndForEachKeyword",
+                        "fullStart": 41,
+                        "start": 41,
+                        "length": 0
+                    },
+                    "endForeachSemicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 41,
+                        "start": 41,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 41,
+            "start": 41,
+            "length": 0
+        }
+    }
+}

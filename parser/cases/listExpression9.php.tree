@@ -1,0 +1,208 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ClassDeclaration": {
+                    "abstractOrFinalModifier": null,
+                    "classKeyword": {
+                        "kind": "ClassKeyword",
+                        "fullStart": 6,
+                        "start": 76,
+                        "length": 75
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 81,
+                        "start": 82,
+                        "length": 2
+                    },
+                    "classBaseClause": null,
+                    "classInterfaceClause": null,
+                    "classMembers": {
+                        "ClassMembersNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 83,
+                                "start": 84,
+                                "length": 2
+                            },
+                            "classMemberDeclarations": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 85,
+                                "start": 86,
+                                "length": 2
+                            }
+                        }
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "ListIntrinsicExpression": {
+                                    "listKeyword": {
+                                        "kind": "ListKeyword",
+                                        "fullStart": 87,
+                                        "start": 88,
+                                        "length": 5
+                                    },
+                                    "openParen": {
+                                        "kind": "OpenParenToken",
+                                        "fullStart": 92,
+                                        "start": 93,
+                                        "length": 2
+                                    },
+                                    "listElements": {
+                                        "ListExpressionList": {
+                                            "children": [
+                                                {
+                                                    "ArrayElement": {
+                                                        "elementKey": null,
+                                                        "arrowToken": null,
+                                                        "byRef": null,
+                                                        "elementValue": {
+                                                            "ListIntrinsicExpression": {
+                                                                "listKeyword": {
+                                                                    "kind": "ListKeyword",
+                                                                    "fullStart": 94,
+                                                                    "start": 94,
+                                                                    "length": 4
+                                                                },
+                                                                "openParen": {
+                                                                    "kind": "OpenParenToken",
+                                                                    "fullStart": 98,
+                                                                    "start": 98,
+                                                                    "length": 1
+                                                                },
+                                                                "listElements": {
+                                                                    "ListExpressionList": {
+                                                                        "children": [
+                                                                            {
+                                                                                "ArrayElement": {
+                                                                                    "elementKey": null,
+                                                                                    "arrowToken": null,
+                                                                                    "byRef": null,
+                                                                                    "elementValue": {
+                                                                                        "Variable": {
+                                                                                            "dollar": null,
+                                                                                            "name": {
+                                                                                                "kind": "VariableName",
+                                                                                                "fullStart": 99,
+                                                                                                "start": 99,
+                                                                                                "length": 2
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            },
+                                                                            {
+                                                                                "kind": "CommaToken",
+                                                                                "fullStart": 101,
+                                                                                "start": 101,
+                                                                                "length": 1
+                                                                            }
+                                                                        ]
+                                                                    }
+                                                                },
+                                                                "closeParen": {
+                                                                    "kind": "CloseParenToken",
+                                                                    "fullStart": 102,
+                                                                    "start": 102,
+                                                                    "length": 1
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "closeParen": {
+                                        "kind": "CloseParenToken",
+                                        "fullStart": 103,
+                                        "start": 103,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 104,
+                                "start": 105,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "ObjectCreationExpression": {
+                                    "newKeword": {
+                                        "kind": "NewKeyword",
+                                        "fullStart": 106,
+                                        "start": 107,
+                                        "length": 4
+                                    },
+                                    "classTypeDesignator": {
+                                        "QualifiedName": {
+                                            "globalSpecifier": null,
+                                            "relativeSpecifier": null,
+                                            "nameParts": [
+                                                {
+                                                    "kind": "Name",
+                                                    "fullStart": 110,
+                                                    "start": 111,
+                                                    "length": 2
+                                                }
+                                            ]
+                                        }
+                                    },
+                                    "openParen": {
+                                        "kind": "OpenParenToken",
+                                        "fullStart": 112,
+                                        "start": 112,
+                                        "length": 1
+                                    },
+                                    "argumentExpressionList": null,
+                                    "closeParen": {
+                                        "kind": "CloseParenToken",
+                                        "fullStart": 113,
+                                        "start": 113,
+                                        "length": 1
+                                    },
+                                    "classBaseClause": null,
+                                    "classInterfaceClause": null,
+                                    "classMembers": null
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 114,
+                        "start": 114,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 115,
+            "start": 115,
+            "length": 0
+        }
+    }
+}

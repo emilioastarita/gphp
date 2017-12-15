@@ -1,0 +1,128 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "IfStatementNode": {
+                    "ifKeyword": {
+                        "kind": "IfKeyword",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 2
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 8,
+                        "start": 9,
+                        "length": 2
+                    },
+                    "expression": {
+                        "ReservedWord": {
+                            "children": {
+                                "kind": "TrueReservedWord",
+                                "fullStart": 10,
+                                "start": 10,
+                                "length": 4
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 14,
+                        "start": 14,
+                        "length": 1
+                    },
+                    "colon": {
+                        "kind": "ColonToken",
+                        "fullStart": 15,
+                        "start": 15,
+                        "length": 1
+                    },
+                    "statements": [
+                        {
+                            "ExpressionStatement": {
+                                "expression": {
+                                    "EchoExpression": {
+                                        "echoKeyword": {
+                                            "kind": "EchoKeyword",
+                                            "fullStart": 16,
+                                            "start": 21,
+                                            "length": 9
+                                        },
+                                        "expressions": {
+                                            "ExpressionList": {
+                                                "children": [
+                                                    {
+                                                        "StringLiteral": {
+                                                            "startQuote": null,
+                                                            "children": {
+                                                                "kind": "StringLiteralToken",
+                                                                "fullStart": 25,
+                                                                "start": 26,
+                                                                "length": 8
+                                                            },
+                                                            "endQuote": null
+                                                        }
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                },
+                                "semicolon": null
+                            }
+                        },
+                        {
+                            "InlineHtml": {
+                                "scriptSectionEndTag": {
+                                    "kind": "ScriptSectionEndTag",
+                                    "fullStart": 33,
+                                    "start": 34,
+                                    "length": 4
+                                },
+                                "text": null,
+                                "scriptSectionStartTag": {
+                                    "kind": "ScriptSectionStartTag",
+                                    "fullStart": 37,
+                                    "start": 37,
+                                    "length": 6
+                                }
+                            }
+                        }
+                    ],
+                    "elseIfClauses": [],
+                    "elseClause": null,
+                    "endifKeyword": {
+                        "kind": "EndIfKeyword",
+                        "fullStart": 43,
+                        "start": 43,
+                        "length": 5
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 48,
+                        "start": 48,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 49,
+            "start": 49,
+            "length": 0
+        }
+    }
+}

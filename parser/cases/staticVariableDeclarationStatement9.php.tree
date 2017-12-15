@@ -1,0 +1,59 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "FunctionStaticDeclaration": {
+                    "staticKeyword": {
+                        "kind": "StaticKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 7
+                    },
+                    "staticVariableNameList": {
+                        "StaticVariableNameList": {
+                            "children": [
+                                {
+                                    "StaticVariableDeclaration": {
+                                        "variableName": {
+                                            "kind": "VariableName",
+                                            "fullStart": 13,
+                                            "start": 14,
+                                            "length": 3
+                                        },
+                                        "equalsToken": null,
+                                        "assignment": null
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 16,
+                        "start": 16,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 16,
+            "start": 16,
+            "length": 0
+        }
+    }
+}

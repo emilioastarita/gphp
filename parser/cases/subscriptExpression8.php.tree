@@ -1,0 +1,91 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "SubscriptExpression": {
+                                    "postfixExpression": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 6,
+                                                "start": 6,
+                                                "length": 2
+                                            }
+                                        }
+                                    },
+                                    "openBracketOrBrace": {
+                                        "kind": "OpenBracketToken",
+                                        "fullStart": 8,
+                                        "start": 8,
+                                        "length": 1
+                                    },
+                                    "accessExpression": {
+                                        "NumericLiteral": {
+                                            "children": {
+                                                "kind": "IntegerLiteralToken",
+                                                "fullStart": 9,
+                                                "start": 9,
+                                                "length": 1
+                                            }
+                                        }
+                                    },
+                                    "closeBracketOrBrace": {
+                                        "kind": "CloseBracketToken",
+                                        "fullStart": 10,
+                                        "start": 10,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "PlusToken",
+                                "fullStart": 11,
+                                "start": 12,
+                                "length": 2
+                            },
+                            "rightOperand": {
+                                "NumericLiteral": {
+                                    "children": {
+                                        "kind": "IntegerLiteralToken",
+                                        "fullStart": 13,
+                                        "start": 14,
+                                        "length": 2
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 15,
+                        "start": 15,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 16,
+            "start": 16,
+            "length": 0
+        }
+    }
+}

@@ -1,0 +1,79 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "TernaryExpression": {
+                            "condition": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 6,
+                                        "length": 2
+                                    }
+                                }
+                            },
+                            "questionToken": {
+                                "kind": "QuestionToken",
+                                "fullStart": 8,
+                                "start": 9,
+                                "length": 2
+                            },
+                            "ifExpression": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 10,
+                                        "start": 11,
+                                        "length": 3
+                                    }
+                                }
+                            },
+                            "colonToken": {
+                                "kind": "ColonToken",
+                                "fullStart": 13,
+                                "start": 14,
+                                "length": 2
+                            },
+                            "elseExpression": {
+                                "error": "MissingToken",
+                                "kind": "Expression",
+                                "fullStart": 15,
+                                "start": 15,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 15,
+                        "start": 16,
+                        "length": 2
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 17,
+            "start": 17,
+            "length": 0
+        }
+    }
+}

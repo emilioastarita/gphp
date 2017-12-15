@@ -1,0 +1,62 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "CompoundStatementNode": {
+                    "openBrace": {
+                        "kind": "OpenBraceToken",
+                        "fullStart": 6,
+                        "start": 6,
+                        "length": 1
+                    },
+                    "statements": [
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 7,
+                                    "start": 12,
+                                    "length": 6
+                                }
+                            }
+                        },
+                        {
+                            "EmptyStatement": {
+                                "semicolon": {
+                                    "kind": "SemicolonToken",
+                                    "fullStart": 13,
+                                    "start": 18,
+                                    "length": 6
+                                }
+                            }
+                        }
+                    ],
+                    "closeBrace": {
+                        "kind": "CloseBraceToken",
+                        "fullStart": 19,
+                        "start": 20,
+                        "length": 2
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 21,
+            "start": 21,
+            "length": 0
+        }
+    }
+}

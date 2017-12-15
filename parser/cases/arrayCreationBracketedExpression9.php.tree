@@ -1,0 +1,117 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "ArrayCreationExpression": {
+                            "arrayKeyword": null,
+                            "openParenOrBracket": {
+                                "kind": "OpenBracketToken",
+                                "fullStart": 6,
+                                "start": 51,
+                                "length": 46
+                            },
+                            "arrayElements": {
+                                "ArrayElementList": {
+                                    "children": [
+                                        {
+                                            "ArrayElement": {
+                                                "elementKey": null,
+                                                "arrowToken": null,
+                                                "byRef": null,
+                                                "elementValue": {
+                                                    "ArrayCreationExpression": {
+                                                        "arrayKeyword": null,
+                                                        "openParenOrBracket": {
+                                                            "kind": "OpenBracketToken",
+                                                            "fullStart": 52,
+                                                            "start": 52,
+                                                            "length": 1
+                                                        },
+                                                        "arrayElements": {
+                                                            "ArrayElementList": {
+                                                                "children": [
+                                                                    {
+                                                                        "ArrayElement": {
+                                                                            "elementKey": null,
+                                                                            "arrowToken": null,
+                                                                            "byRef": null,
+                                                                            "elementValue": {
+                                                                                "Variable": {
+                                                                                    "dollar": null,
+                                                                                    "name": {
+                                                                                        "kind": "VariableName",
+                                                                                        "fullStart": 53,
+                                                                                        "start": 53,
+                                                                                        "length": 2
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    },
+                                                                    {
+                                                                        "kind": "CommaToken",
+                                                                        "fullStart": 55,
+                                                                        "start": 55,
+                                                                        "length": 1
+                                                                    },
+                                                                    {
+                                                                        "kind": "CommaToken",
+                                                                        "fullStart": 56,
+                                                                        "start": 56,
+                                                                        "length": 1
+                                                                    }
+                                                                ]
+                                                            }
+                                                        },
+                                                        "closeParenOrBracket": {
+                                                            "kind": "CloseBracketToken",
+                                                            "fullStart": 57,
+                                                            "start": 57,
+                                                            "length": 1
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
+                                }
+                            },
+                            "closeParenOrBracket": {
+                                "kind": "CloseBracketToken",
+                                "fullStart": 58,
+                                "start": 58,
+                                "length": 1
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 59,
+                        "start": 59,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 60,
+            "start": 60,
+            "length": 0
+        }
+    }
+}

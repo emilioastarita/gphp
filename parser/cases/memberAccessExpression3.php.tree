@@ -1,0 +1,78 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "MemberAccessExpression": {
+                            "dereferencableExpression": {
+                                "MemberAccessExpression": {
+                                    "dereferencableExpression": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 6,
+                                                "start": 6,
+                                                "length": 2
+                                            }
+                                        }
+                                    },
+                                    "arrowToken": {
+                                        "kind": "ArrowToken",
+                                        "fullStart": 8,
+                                        "start": 8,
+                                        "length": 2
+                                    },
+                                    "memberName": {
+                                        "kind": "Name",
+                                        "fullStart": 10,
+                                        "start": 10,
+                                        "length": 1
+                                    }
+                                }
+                            },
+                            "arrowToken": {
+                                "kind": "ArrowToken",
+                                "fullStart": 11,
+                                "start": 11,
+                                "length": 2
+                            },
+                            "memberName": {
+                                "error": "MissingToken",
+                                "kind": "MemberName",
+                                "fullStart": 13,
+                                "start": 13,
+                                "length": 0
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 13,
+                        "start": 13,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 14,
+            "start": 14,
+            "length": 0
+        }
+    }
+}

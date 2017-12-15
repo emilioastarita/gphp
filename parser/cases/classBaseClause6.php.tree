@@ -1,0 +1,100 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ClassDeclaration": {
+                    "abstractOrFinalModifier": null,
+                    "classKeyword": {
+                        "kind": "ClassKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 6
+                    },
+                    "name": {
+                        "kind": "Name",
+                        "fullStart": 12,
+                        "start": 13,
+                        "length": 2
+                    },
+                    "classBaseClause": {
+                        "ClassBaseClause": {
+                            "extendsKeyword": {
+                                "kind": "ExtendsKeyword",
+                                "fullStart": 14,
+                                "start": 15,
+                                "length": 8
+                            },
+                            "baseClass": {
+                                "QualifiedName": {
+                                    "globalSpecifier": {
+                                        "kind": "BackslashToken",
+                                        "fullStart": 22,
+                                        "start": 23,
+                                        "length": 2
+                                    },
+                                    "relativeSpecifier": null,
+                                    "nameParts": [
+                                        {
+                                            "kind": "Name",
+                                            "fullStart": 24,
+                                            "start": 24,
+                                            "length": 1
+                                        },
+                                        {
+                                            "kind": "BackslashToken",
+                                            "fullStart": 25,
+                                            "start": 25,
+                                            "length": 1
+                                        },
+                                        {
+                                            "kind": "Name",
+                                            "fullStart": 26,
+                                            "start": 26,
+                                            "length": 1
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "classInterfaceClause": null,
+                    "classMembers": {
+                        "ClassMembersNode": {
+                            "openBrace": {
+                                "kind": "OpenBraceToken",
+                                "fullStart": 27,
+                                "start": 28,
+                                "length": 2
+                            },
+                            "classMemberDeclarations": [],
+                            "closeBrace": {
+                                "kind": "CloseBraceToken",
+                                "fullStart": 29,
+                                "start": 35,
+                                "length": 7
+                            }
+                        }
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 36,
+            "start": 36,
+            "length": 0
+        }
+    }
+}

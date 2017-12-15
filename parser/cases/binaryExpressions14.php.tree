@@ -1,0 +1,86 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "BinaryExpression": {
+                            "leftOperand": {
+                                "BinaryExpression": {
+                                    "leftOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 6,
+                                                "start": 6,
+                                                "length": 2
+                                            }
+                                        }
+                                    },
+                                    "operator": {
+                                        "kind": "InstanceOfKeyword",
+                                        "fullStart": 8,
+                                        "start": 9,
+                                        "length": 11
+                                    },
+                                    "rightOperand": {
+                                        "Variable": {
+                                            "dollar": null,
+                                            "name": {
+                                                "kind": "VariableName",
+                                                "fullStart": 19,
+                                                "start": 20,
+                                                "length": 3
+                                            }
+                                        }
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "PlusToken",
+                                "fullStart": 22,
+                                "start": 23,
+                                "length": 2
+                            },
+                            "rightOperand": {
+                                "NumericLiteral": {
+                                    "children": {
+                                        "kind": "IntegerLiteralToken",
+                                        "fullStart": 24,
+                                        "start": 25,
+                                        "length": 2
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "kind": "SemicolonToken",
+                        "fullStart": 26,
+                        "start": 26,
+                        "length": 1
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 27,
+            "start": 27,
+            "length": 0
+        }
+    }
+}

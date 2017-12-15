@@ -1,0 +1,116 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "SwitchStatementNode": {
+                    "switchKeyword": {
+                        "kind": "SwitchKeyword",
+                        "fullStart": 6,
+                        "start": 7,
+                        "length": 7
+                    },
+                    "openParen": {
+                        "kind": "OpenParenToken",
+                        "fullStart": 13,
+                        "start": 14,
+                        "length": 2
+                    },
+                    "expression": {
+                        "Variable": {
+                            "dollar": null,
+                            "name": {
+                                "kind": "VariableName",
+                                "fullStart": 15,
+                                "start": 15,
+                                "length": 2
+                            }
+                        }
+                    },
+                    "closeParen": {
+                        "kind": "CloseParenToken",
+                        "fullStart": 17,
+                        "start": 17,
+                        "length": 1
+                    },
+                    "colon": null,
+                    "openBrace": {
+                        "kind": "OpenBraceToken",
+                        "fullStart": 18,
+                        "start": 19,
+                        "length": 2
+                    },
+                    "caseStatements": [
+                        {
+                            "CaseStatementNode": {
+                                "caseKeyword": {
+                                    "kind": "CaseKeyword",
+                                    "fullStart": 20,
+                                    "start": 25,
+                                    "length": 9
+                                },
+                                "expression": {
+                                    "error": "MissingToken",
+                                    "kind": "Expression",
+                                    "fullStart": 29,
+                                    "start": 29,
+                                    "length": 0
+                                },
+                                "defaultLabelTerminator": {
+                                    "kind": "ColonToken",
+                                    "fullStart": 29,
+                                    "start": 29,
+                                    "length": 1
+                                },
+                                "statementList": []
+                            }
+                        },
+                        {
+                            "CaseStatementNode": {
+                                "caseKeyword": {
+                                    "kind": "DefaultKeyword",
+                                    "fullStart": 30,
+                                    "start": 35,
+                                    "length": 12
+                                },
+                                "expression": null,
+                                "defaultLabelTerminator": {
+                                    "kind": "ColonToken",
+                                    "fullStart": 42,
+                                    "start": 42,
+                                    "length": 1
+                                },
+                                "statementList": []
+                            }
+                        }
+                    ],
+                    "closeBrace": {
+                        "kind": "CloseBraceToken",
+                        "fullStart": 43,
+                        "start": 44,
+                        "length": 2
+                    },
+                    "endswitch": null,
+                    "semicolon": null
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 45,
+            "start": 45,
+            "length": 0
+        }
+    }
+}

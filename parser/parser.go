@@ -993,11 +993,13 @@ func (p *Parser) parseFunctionType(functionDeclaration ast.FunctionInterface, ca
 		functionDeclaration.SetName(t)
 	}
 
-	if functionDeclaration.GetName() != nil {
+	hasNameToken := functionDeclaration.GetName() != nil && functionDeclaration.GetName().GetToken() != nil
+
+	if hasNameToken {
 		functionDeclaration.GetName().GetToken().Kind = lexer.Name
 	}
 
-	if isAnonymous && functionDeclaration.GetName() != nil {
+	if isAnonymous && hasNameToken {
 		// Anonymous functions should not have names
 		functionDeclaration.SetName(ast.NewSkippedNode(functionDeclaration.GetName().GetToken())) // TODO instaed handle this during post-walk
 	}
@@ -1014,8 +1016,10 @@ func (p *Parser) parseFunctionType(functionDeclaration ast.FunctionInterface, ca
 	functionDeclaration.SetCloseParen(p.eat1(lexer.CloseParenToken))
 
 	if isAnonymous {
-		panic("Impements anonymous interface")
-		//functionDeclaration.AnonymousFunctionUseClause = p.parseAnonymousFunctionUseClause(functionDeclaration)
+		switch val := functionDeclaration.(type) {
+		case *ast.AnonymousFunctionCreationExpression:
+			val.AnonymousFunctionUseClause = p.parseAnonymousFunctionUseClause(val)
+		}
 	}
 
 	if p.checkToken(lexer.ColonToken) {
@@ -1535,8 +1539,16 @@ func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 	p.advanceToken()
 	return expression
 }
-func (p *Parser) parseAnonymousFunctionCreationExpression(node ast.Node) ast.Node {
-	panic("Not implemented")
+
+func (p *Parser) parseAnonymousFunctionCreationExpression(parentNode ast.Node) ast.Node {
+	anonymousFunctionCreationExpression := &ast.AnonymousFunctionCreationExpression{}
+	anonymousFunctionCreationExpression.P = parentNode
+
+	anonymousFunctionCreationExpression.StaticModifier = p.eatOptional1(lexer.StaticKeyword)
+	p.parseFunctionType(anonymousFunctionCreationExpression, false, true)
+
+	return anonymousFunctionCreationExpression
+
 }
 func (p *Parser) parseMemberAccessExpression(expression ast.Node) ast.Node {
 	memberAccessExpression := ast.MemberAccessExpression{}
@@ -2004,7 +2016,7 @@ func (p *Parser) tryParseParameterTypeDeclaration(parentNode ast.Parameter) ast.
 	return parameterTypeDeclaration
 }
 
-func (p *Parser) parseAnonymousFunctionUseClause(parentNode *ast.MethodDeclaration) ast.Node {
+func (p *Parser) parseAnonymousFunctionUseClause(parentNode *ast.AnonymousFunctionCreationExpression) ast.Node {
 	anonymousFunctionUseClause := ast.AnonymousFunctionUseClause{}
 	anonymousFunctionUseClause.P = parentNode
 

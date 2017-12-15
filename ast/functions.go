@@ -58,10 +58,6 @@ type FunctionUseClause struct {
 	AnonymousFunctionUseClause Node
 }
 
-func (f *FunctionUseClause) SetParameters(v Node) {
-	f.AnonymousFunctionUseClause = v
-}
-
 type FunctionReturnType struct {
 	ColonToken    *lexer.Token
 	QuestionToken *lexer.Token
@@ -109,4 +105,14 @@ type FunctionDeclaration struct {
 	FunctionHeader     `serialize:"-flat"`
 	FunctionReturnType `serialize:"-flat"`
 	FunctionBody       `serialize:"-flat"`
+}
+
+type AnonymousFunctionCreationExpression struct {
+	CNode              `serialize:"-"`
+	FunctionHeader     `serialize:"-flat"`
+	FunctionReturnType `serialize:"-flat"`
+	FunctionBody       `serialize:"-flat"`
+	FunctionUseClause  `serialize:"-flat"`
+	StaticModifier     *lexer.Token
+	Modifiers          []*lexer.Token
 }

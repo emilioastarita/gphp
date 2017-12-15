@@ -269,7 +269,6 @@ type TryStatement struct {
 	CompoundStatement Node
 	CatchClauses      []Node
 	FinallyClause     Node
-	Semicolon         *lexer.Token
 }
 
 type EmptyStatement struct {

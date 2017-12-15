@@ -178,7 +178,7 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 			} else if isDelimitedCommentStart(l.content, l.pos, l.eofPos) {
 				scanDelimitedComment(l.content, &l.pos, l.eofPos)
 				continue
-			} else if l.content[l.pos+1] == '=' {
+			} else if l.pos+1 < l.eofPos && l.content[l.pos+1] == '=' {
 				l.pos += 2
 				return l.createToken(SlashEqualsToken), tokenMem
 			}

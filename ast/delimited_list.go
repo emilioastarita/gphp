@@ -6,194 +6,87 @@ type DelimitedList interface {
 	Children() []Node
 }
 
+type ExpressionListChild struct {
+	Child []Node `serialize:"children"`
+}
+
 type ExpressionList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
+}
+
+type ArgumentExpressionList struct {
+	CNode `serialize:"-"`
+	ExpressionListChild
+}
+
+type QualifiedNameList struct {
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type ConstElementList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type ParameterDeclarationList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type UseVariableNameList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type QualifiedNameParts struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type ArrayElementList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type ListExpressionList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type StaticVariableNameList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type NamespaceUseClauseList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type VariableNameList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type NamespaceUseGroupClauseList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
 type TraitSelectOrAliasClauseList struct {
-	CNode  `serialize:"-"`
-	Childs []Node `serialize:"children"`
+	CNode `serialize:"-"`
+	ExpressionListChild
 }
 
-func (e *ExpressionList) AddNode(node Node) {
+func (e *ExpressionListChild) AddNode(node Node) {
 	if node == nil {
 		return
 	}
-	e.Childs = append(e.Childs, node)
+	e.Child = append(e.Child, node)
 }
 
-func (e *ExpressionList) Children() []Node {
-	return e.Childs
-}
-
-func (e *ConstElementList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *ConstElementList) Children() []Node {
-	return e.Childs
-}
-
-func (e *ParameterDeclarationList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *ParameterDeclarationList) Children() []Node {
-	return e.Childs
-}
-
-func (e *UseVariableNameList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *UseVariableNameList) Children() []Node {
-	return e.Childs
-}
-
-func (e *QualifiedNameParts) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *QualifiedNameParts) Children() []Node {
-	return e.Childs
-}
-
-func (e *ArrayElementList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *ArrayElementList) Children() []Node {
-	return e.Childs
-}
-
-func (e *ListExpressionList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *ListExpressionList) Children() []Node {
-	return e.Childs
-}
-
-func (e *StaticVariableNameList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *StaticVariableNameList) Children() []Node {
-	return e.Childs
-}
-
-func (e *NamespaceUseClauseList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *NamespaceUseClauseList) Children() []Node {
-	return e.Childs
-}
-
-func (e *VariableNameList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *VariableNameList) Children() []Node {
-	return e.Childs
-}
-
-func (e *NamespaceUseGroupClauseList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *NamespaceUseGroupClauseList) Children() []Node {
-	return e.Childs
-}
-
-func (e *TraitSelectOrAliasClauseList) AddNode(node Node) {
-	if node == nil {
-		return
-	}
-	e.Childs = append(e.Childs, node)
-}
-
-func (e *TraitSelectOrAliasClauseList) Children() []Node {
-	return e.Childs
+func (e *ExpressionListChild) Children() []Node {
+	return e.Child
 }

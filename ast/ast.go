@@ -150,6 +150,26 @@ type CaseStatement struct {
 	DefaultLabelTerminator *lexer.Token
 }
 
+type ArgumentExpression struct {
+	CNode          `serialize:"-"`
+	ByRefToken     *lexer.Token
+	DotDotDotToken *lexer.Token
+	Expression     Node
+}
+
+type GotoStatement struct {
+	CNode     `serialize:"-"`
+	Goto      *lexer.Token
+	Name      *lexer.Token
+	Semicolon *lexer.Token
+}
+
+type YieldExpression struct {
+	CNode                   `serialize:"-"`
+	YieldOrYieldFromKeyword *lexer.Token
+	ArrayElement            Node
+}
+
 type BreakOrContinueStatement struct {
 	CNode                  `serialize:"-"`
 	BreakOrContinueKeyword *lexer.Token

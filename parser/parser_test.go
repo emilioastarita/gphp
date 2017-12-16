@@ -8,6 +8,7 @@ import (
 	diff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
 	"io/ioutil"
+	path "path"
 	"path/filepath"
 )
 
@@ -30,22 +31,25 @@ abstract final class A {
 }
 
 func TestCases(t *testing.T) {
-	suffix := ".tree"
-	tokensLen := len(suffix)
+	postfix := ".tree"
+	postfixLen := len(postfix)
 
 	skipFiles := SKIPPED_TESTS
-	resultFiles, _ := filepath.Glob("cases/*.php" + suffix)
+	resultFiles, _ := filepath.Glob("cases/*.php" + postfix)
 
 	for _, resultFile := range resultFiles {
 
 		t.Run(resultFile, func(t *testing.T) {
 			//t.Parallel()
-			if _, skipTest := skipFiles[resultFile]; skipTest {
+
+			resultCase, _ := ioutil.ReadFile(resultFile)
+			sourceFileName := resultFile[:len(resultFile)-postfixLen]
+
+			if _, skipTest := skipFiles[path.Base(sourceFileName)]; skipTest {
+				t.Log("Skipped: " + resultFile)
 				return
 			}
 
-			resultCase, _ := ioutil.ReadFile(resultFile)
-			sourceFileName := resultFile[:len(resultFile)-tokensLen]
 			sourceCase, _ := ioutil.ReadFile(sourceFileName)
 
 			p := Parser{}

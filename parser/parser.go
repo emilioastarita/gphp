@@ -1287,7 +1287,7 @@ func (p *Parser) parseInterfaceElementFn() func(ast.Node) ast.Node {
 			return p.parseMethodDeclaration(parentNode, modifiers)
 
 		default:
-			missingInterfaceMemberDeclaration := ast.MissingMemberDeclaration{}
+			missingInterfaceMemberDeclaration := &ast.MissingMemberDeclaration{}
 			missingInterfaceMemberDeclaration.P = parentNode
 			missingInterfaceMemberDeclaration.Modifiers = modifiers
 			return missingInterfaceMemberDeclaration
@@ -2600,7 +2600,7 @@ func (p *Parser) parseNamespaceUseClauseList(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseInterfaceBaseClause(parentNode *ast.InterfaceDeclaration) ast.Node {
-	interfaceBaseClause := ast.InterfaceBaseClause{}
+	interfaceBaseClause := &ast.InterfaceBaseClause{}
 	interfaceBaseClause.P = parentNode
 
 	interfaceBaseClause.ExtendsKeyword = p.eatOptional1(lexer.ExtendsKeyword)
@@ -2626,7 +2626,7 @@ func (p *Parser) parseTraitSelectAndAliasClauseList(parentNode *ast.TraitUseClau
 }
 
 func (p *Parser) parseInterfaceMembers(parentNode *ast.InterfaceDeclaration) ast.Node {
-	interfaceMembers := ast.InterfaceMembers{}
+	interfaceMembers := &ast.InterfaceMembers{}
 	interfaceMembers.OpenBrace = p.eat1(lexer.OpenBraceToken)
 	interfaceMembers.InterfaceMemberDeclarations = p.parseList(interfaceMembers, InterfaceMembers)
 	interfaceMembers.CloseBrace = p.eat1(lexer.CloseBraceToken)
@@ -2737,7 +2737,6 @@ func (p *Parser) parseQualifiedNameOrScopedPropertyAccessExpression(parentNode *
 		qualifiedNameOrScopedProperty = p.parseScopedPropertyAccessExpression(qualifiedNameOrScopedProperty)
 	}
 	return qualifiedNameOrScopedProperty
-
 }
 
 func (p *Parser) isArgumentExpressionStartFn() ElementStartFn {
@@ -2751,7 +2750,7 @@ func (p *Parser) isArgumentExpressionStartFn() ElementStartFn {
 
 func (p *Parser) parseArgumentExpressionFn() ParseElementFn {
 	return func(parentNode ast.Node) ast.Node {
-		argumentExpression := ast.ArgumentExpression{}
+		argumentExpression := &ast.ArgumentExpression{}
 		argumentExpression.P = parentNode
 		argumentExpression.ByRefToken = p.eatOptional1(lexer.AmpersandToken)
 		argumentExpression.DotDotDotToken = p.eatOptional1(lexer.DotDotDotToken)

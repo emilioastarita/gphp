@@ -790,7 +790,8 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 			// invalid binary literal
 			return InvalidBinaryLiteral
 		}
-		return BinaryLiteralToken
+		return IntegerLiteralToken
+		//return BinaryLiteralToken
 	} else if isHexadecimalLiteralStart(text, *pos, eofPos) {
 		*pos += 2
 		prevPos = *pos
@@ -799,7 +800,8 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 			return InvalidHexadecimalLiteral
 			// invalid hexadecimal literal
 		}
-		return HexadecimalLiteralToken
+		return IntegerLiteralToken
+		//return HexadecimalLiteralToken
 	} else if isDigitChar(text[*pos]) || text[*pos] == '.' {
 		// TODO throw error if there is no number past the dot.
 		prevPos = *pos
@@ -821,8 +823,8 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 			if !isValidOctalLiteral {
 				return InvalidOctalLiteralToken
 			}
-
-			return OctalLiteralToken
+			return IntegerLiteralToken
+			//return OctalLiteralToken
 		}
 
 		scanDecimalLiteral(text, pos, eofPos)

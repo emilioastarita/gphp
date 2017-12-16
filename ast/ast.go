@@ -342,7 +342,7 @@ type ForStatement struct {
 	ForEndOfLoop        Node
 	CloseParen          *lexer.Token
 	Colon               *lexer.Token
-	Statements          []Node
+	Statements          []Node `serialize:"-single"`
 	EndFor              *lexer.Token
 	EndForSemicolon     *lexer.Token
 }

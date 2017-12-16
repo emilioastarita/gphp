@@ -273,7 +273,7 @@ func (p *Parser) parseBinaryExpressionOrHigher(precedence int, parentNode ast.No
 		if shouldConsumeCurrentOperator == false {
 			break
 		}
-		unaryExpression, isUnaryExpression := leftOperand.(ast.UnaryOpExpression)
+		unaryExpression, isUnaryExpression := leftOperand.(*ast.UnaryOpExpression)
 		shouldOperatorTakePrecedenceOverUnary := token.Kind == lexer.AsteriskAsteriskToken && isUnaryExpression
 
 		if shouldOperatorTakePrecedenceOverUnary {
@@ -767,15 +767,15 @@ func (p *Parser) parsePostfixExpressionRest(expression ast.Node, allowUpdateExpr
 
 	retExpr := true
 	switch expression.(type) {
-	case ast.Variable,
-		ast.ParenthesizedExpression,
-		ast.QualifiedName,
-		ast.CallExpression,
-		ast.MemberAccessExpression,
-		ast.SubscriptExpression,
-		ast.ScopedPropertyAccessExpression,
-		ast.StringLiteral,
-		ast.ArrayCreationExpression:
+	case *ast.Variable,
+		*ast.ParenthesizedExpression,
+		*ast.QualifiedName,
+		*ast.CallExpression,
+		*ast.MemberAccessExpression,
+		*ast.SubscriptExpression,
+		*ast.ScopedPropertyAccessExpression,
+		*ast.StringLiteral,
+		*ast.ArrayCreationExpression:
 		retExpr = false
 	}
 	if retExpr {
@@ -796,7 +796,7 @@ func (p *Parser) parsePostfixExpressionRest(expression ast.Node, allowUpdateExpr
 		}
 
 		switch expression.(type) {
-		case ast.ArrayCreationExpression:
+		case *ast.ArrayCreationExpression:
 			// Remaining postfix expressions are invalid, so abort
 			return expression
 		}
@@ -1029,13 +1029,13 @@ func (p *Parser) parseFunctionType(functionDeclaration ast.FunctionInterface, ca
 		functionDeclaration.SetReturnType(p.parseReturnTypeDeclaration(functionDeclaration))
 	}
 
-	var tokNode ast.TokenNode
+	var tokNode *ast.TokenNode
 	if canBeAbstract {
-		tokNode = ast.TokenNode{Token: p.eatOptional1(lexer.SemicolonToken)}
+		tokNode = &ast.TokenNode{Token: p.eatOptional1(lexer.SemicolonToken)}
 		functionDeclaration.SetCompoundStatementOrSemicolon(tokNode)
 	}
 
-	if tokNode.Token == nil {
+	if tokNode == nil {
 		functionDeclaration.SetCompoundStatementOrSemicolon(p.parseCompoundStatement(functionDeclaration))
 	}
 }

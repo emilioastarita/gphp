@@ -103,7 +103,6 @@ type EvalIntrinsicExpression struct {
 	Expression  Node
 	OpenParen   *lexer.Token
 	CloseParen  *lexer.Token
-	Expressions DelimitedList
 }
 
 type ExitIntrinsicExpression struct {

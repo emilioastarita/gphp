@@ -432,18 +432,18 @@ type ReturnStatement struct {
 	Semicolon     *lexer.Token
 }
 
-type IfStatement struct {
+type IfStatementNode struct {
 	CNode         `serialize:"-"`
 	IfKeyword     *lexer.Token
 	OpenParen     *lexer.Token
 	Expression    Node
 	CloseParen    *lexer.Token
 	Colon         *lexer.Token
-	Statements    []Node
+	Statements    []Node `serialize:"-single"`
 	ElseIfClauses []Node
 	ElseClause    Node
 	EndifKeyword  *lexer.Token
-	SemiColon     *lexer.Token
+	Semicolon     *lexer.Token
 }
 
 type InlineHtml struct {

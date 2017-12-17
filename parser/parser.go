@@ -607,7 +607,7 @@ func (p *Parser) parseStatement(parentNode ast.Node) ast.Node {
 }
 
 func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
-	st := &ast.IfStatement{}
+	st := &ast.IfStatementNode{}
 	st.P = parentNode
 	st.IfKeyword = p.eat1(lexer.IfKeyword)
 	st.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -621,7 +621,7 @@ func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
 		// @todo
 		st.Statements = []ast.Node{p.parseStatement(st)}
 	}
-	st.ElseIfClauses = nil
+	st.ElseIfClauses = make([]ast.Node, 0)
 	for p.checkToken(lexer.ElseIfKeyword) {
 		st.ElseIfClauses = append(st.ElseIfClauses, p.parseElseIfClause(st))
 	}
@@ -632,7 +632,7 @@ func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
 
 	st.EndifKeyword = p.eatOptional1(lexer.EndIfKeyword)
 	if st.EndifKeyword != nil {
-		st.SemiColon = p.eatSemicolonOrAbortStatement()
+		st.Semicolon = p.eatSemicolonOrAbortStatement()
 	}
 
 	return st
@@ -1685,7 +1685,7 @@ func (p *Parser) parseFunctionStaticDeclaration(parentNode ast.Node) ast.Node {
 	return functionStaticDeclaration
 }
 
-func (p *Parser) parseElseIfClause(parentNode *ast.IfStatement) ast.Node {
+func (p *Parser) parseElseIfClause(parentNode *ast.IfStatementNode) ast.Node {
 	elseIfClause := &ast.ElseIfClauseNode{}
 	elseIfClause.P = parentNode
 	elseIfClause.ElseIfKeyword = p.eat1(lexer.ElseIfKeyword)
@@ -1702,7 +1702,7 @@ func (p *Parser) parseElseIfClause(parentNode *ast.IfStatement) ast.Node {
 
 }
 
-func (p *Parser) parseElseClause(parentNode *ast.IfStatement) ast.Node {
+func (p *Parser) parseElseClause(parentNode *ast.IfStatementNode) ast.Node {
 	elseClause := &ast.ElseClauseNode{}
 	elseClause.P = parentNode
 	elseClause.ElseKeyword = p.eat1(lexer.ElseKeyword)

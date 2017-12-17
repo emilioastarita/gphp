@@ -111,7 +111,6 @@ type ExitIntrinsicExpression struct {
 	Expression       Node
 	OpenParen        *lexer.Token
 	CloseParen       *lexer.Token
-	Expressions      DelimitedList
 }
 
 type IssetIntrinsicExpression struct {

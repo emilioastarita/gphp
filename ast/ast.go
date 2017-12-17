@@ -475,11 +475,11 @@ type ErrorControlExpression struct {
 }
 
 type CastExpression struct {
-	UnaryOpExpression `serialize:"-flat"`
-	OpenParen         *lexer.Token
-	CastType          *lexer.Token
-	CloseParen        *lexer.Token
-	Operand           Node
+	CNode      `serialize:"-"`
+	Operand    Node
+	OpenParen  *lexer.Token
+	CastType   *lexer.Token
+	CloseParen *lexer.Token
 }
 
 type PrefixUpdateExpression struct {

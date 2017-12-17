@@ -169,6 +169,13 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 				return l.createToken(kind), tokenMem
 			}
 
+			// we must check for cast tokens
+			if charCode == '(' {
+				tokenKind, ok := tryScanCastToken(l)
+				if ok {
+					return l.createToken(tokenKind), tokenMem
+				}
+			}
 			return scanOperatorOrPunctuactorToken(l), tokenMem
 
 		case '/':
@@ -203,6 +210,44 @@ func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
 			return getNameOrDigitTokens(l, tokenMem)
 		}
 	}
+}
+
+func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
+	foundTokenKind := Unknown
+	for i := l.pos + 1; i < l.eofPos; i++ {
+		if unicode.IsSpace(l.content[i]) {
+			continue
+		}
+
+		if foundTokenKind != Unknown && l.content[i] == ')' {
+			l.pos = i + 1
+			return foundTokenKind, true
+		}
+
+		if foundTokenKind != Unknown && l.content[i] != ')' {
+			return foundTokenKind, false
+		}
+
+		// no name start return false
+		if !isNameStart(l.content, i, l.eofPos) {
+			return foundTokenKind, false
+		}
+
+		// lookahead for cast keywords
+		for castString, tokenKindCast := range CAST_KEYWORDS {
+			if i+len(castString) >= l.eofPos {
+				continue
+			}
+
+			word := strings.ToLower(string(l.content[i : i+len(castString)]))
+			if word == castString {
+				foundTokenKind = tokenKindCast
+				i = i + len(castString) - 1
+				break
+			}
+		}
+	}
+	return foundTokenKind, false
 }
 
 func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {

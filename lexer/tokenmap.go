@@ -95,6 +95,16 @@ var RESERVED_WORDS = map[string]TokenKind{
 	"real":    RealReservedWord,
 	"void":    VoidReservedWord,
 }
+
+var CAST_KEYWORDS = map[string]TokenKind{
+	"array":  ArrayCastToken,
+	"bool":   BoolCastToken,
+	"double": DoubleCastToken,
+	"int":    IntCastToken,
+	"object": ObjectCastToken,
+	"unset":  UnsetCastToken,
+}
+
 var KEYWORDS = map[string]TokenKind{
 	"abstract":     AbstractKeyword,
 	"and":          AndKeyword,

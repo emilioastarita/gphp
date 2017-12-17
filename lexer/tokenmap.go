@@ -96,6 +96,8 @@ var RESERVED_WORDS = map[string]TokenKind{
 	"void":    VoidReservedWord,
 }
 
+// we need this in this order
+// to avoid find `bool` before `boolean`.
 var CAST_KEYWORDS = []string{
 	"boolean",
 	"string",

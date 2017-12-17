@@ -481,7 +481,7 @@ type CastExpression struct {
 }
 
 type PrefixUpdateExpression struct {
-	UnaryOpExpression            `serialize:"-flat"`
+	CNode                        `serialize:"-"`
 	IncrementOrDecrementOperator *lexer.Token
 	Operand                      Node
 }

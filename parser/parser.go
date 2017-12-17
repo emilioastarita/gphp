@@ -506,8 +506,8 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 			// jump-statement
 		case lexer.GotoKeyword: // goto-statement
 			return p.parseGotoStatement(parentNode)
-		case lexer.ContinueKeyword: // continue-statement
-		case lexer.BreakKeyword: // break-statement
+		case lexer.ContinueKeyword, // continue-statement
+			lexer.BreakKeyword: // break-statement
 			return p.parseBreakOrContinueStatement(parentNode)
 		case lexer.ReturnKeyword: // return-statement
 			return p.parseReturnStatement(parentNode)

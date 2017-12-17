@@ -312,7 +312,7 @@ type WhileStatement struct {
 	Expression Node
 	CloseParen *lexer.Token
 	Colon      *lexer.Token
-	Statements []Node
+	Statements []Node `serialize:"-single"`
 	EndWhile   *lexer.Token
 	Semicolon  *lexer.Token
 }
@@ -355,7 +355,7 @@ type ForeachStatement struct {
 	ForeachValue          Node
 	CloseParen            *lexer.Token
 	Colon                 *lexer.Token
-	Statements            []Node
+	Statements            []Node `serialize:"-single"`
 	EndForeach            *lexer.Token
 	EndForeachSemicolon   *lexer.Token
 }

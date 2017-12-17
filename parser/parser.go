@@ -1914,6 +1914,10 @@ func (p *Parser) parseExitIntrinsicExpression(parentNode ast.Node) ast.Node {
 	exitExpression.P = parentNode
 
 	exitExpression.ExitOrDieKeyword = p.eat(lexer.ExitKeyword, lexer.DieKeyword)
+	if exitExpression.ExitOrDieKeyword != nil {
+		// normalize always to ExitKeyWord
+		exitExpression.ExitOrDieKeyword.Kind = lexer.ExitKeyword
+	}
 	exitExpression.OpenParen = p.eatOptional1(lexer.OpenParenToken)
 	if exitExpression.OpenParen != nil {
 		if p.isExpressionStart(p.token) {

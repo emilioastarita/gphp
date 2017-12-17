@@ -1035,7 +1035,7 @@ func (p *Parser) parseFunctionType(functionDeclaration ast.FunctionInterface, ca
 		functionDeclaration.SetCompoundStatementOrSemicolon(tokNode)
 	}
 
-	if tokNode == nil {
+	if tokNode == nil || tokNode.Token == nil {
 		functionDeclaration.SetCompoundStatementOrSemicolon(p.parseCompoundStatement(functionDeclaration))
 	}
 }

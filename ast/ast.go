@@ -21,7 +21,7 @@ type CNode struct {
 }
 
 type Parameter struct {
-	CNode
+	CNode           `serialize:"-"`
 	QuestionToken   *lexer.Token
 	TypeDeclaration Node
 	ByRefToken      *lexer.Token

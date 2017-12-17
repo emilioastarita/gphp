@@ -97,8 +97,10 @@ var RESERVED_WORDS = map[string]TokenKind{
 }
 
 var CAST_KEYWORDS = []string{
-	"array",
 	"boolean",
+	"string",
+	"binary",
+	"array",
 	"double",
 	"object",
 	"unset",
@@ -109,6 +111,8 @@ var CAST_KEYWORDS = []string{
 var CAST_KEYWORDS_MAP = map[string]TokenKind{
 	"array":   ArrayCastToken,
 	"boolean": BoolCastToken,
+	"string":  StringCastToken,
+	"binary":  StringCastToken,
 	"double":  DoubleCastToken,
 	"object":  ObjectCastToken,
 	"unset":   UnsetCastToken,

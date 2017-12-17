@@ -234,14 +234,14 @@ func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 		}
 
 		// lookahead for cast keywords
-		for castString, tokenKindCast := range CAST_KEYWORDS {
+		for _, castString := range CAST_KEYWORDS {
 			if i+len(castString) >= l.eofPos {
 				continue
 			}
 
 			word := strings.ToLower(string(l.content[i : i+len(castString)]))
 			if word == castString {
-				foundTokenKind = tokenKindCast
+				foundTokenKind = CAST_KEYWORDS_MAP[castString]
 				i = i + len(castString) - 1
 				break
 			}

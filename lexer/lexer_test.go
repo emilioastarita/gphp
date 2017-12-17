@@ -20,7 +20,7 @@ func BenchmarkComplex(b *testing.B) {
 func TestEx(t *testing.T) {
 	stream := TokensStream{}
 	stream.Source(`<?php
-(int) $b;`)
+(boolean)`)
 	stream.CreateTokens()
 	stream.Debug()
 }

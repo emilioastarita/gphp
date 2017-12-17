@@ -96,13 +96,24 @@ var RESERVED_WORDS = map[string]TokenKind{
 	"void":    VoidReservedWord,
 }
 
-var CAST_KEYWORDS = map[string]TokenKind{
-	"array":  ArrayCastToken,
-	"bool":   BoolCastToken,
-	"double": DoubleCastToken,
-	"int":    IntCastToken,
-	"object": ObjectCastToken,
-	"unset":  UnsetCastToken,
+var CAST_KEYWORDS = []string{
+	"array",
+	"boolean",
+	"double",
+	"object",
+	"unset",
+	"bool",
+	"int",
+}
+
+var CAST_KEYWORDS_MAP = map[string]TokenKind{
+	"array":   ArrayCastToken,
+	"boolean": BoolCastToken,
+	"double":  DoubleCastToken,
+	"object":  ObjectCastToken,
+	"unset":   UnsetCastToken,
+	"bool":    BoolCastToken,
+	"int":     IntCastToken,
 }
 
 var KEYWORDS = map[string]TokenKind{

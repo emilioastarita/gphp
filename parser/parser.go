@@ -588,10 +588,8 @@ func (p *Parser) parseStatementFn() func(ast.Node) ast.Node {
 
 		_, isMissing := ret.(*ast.Missing)
 
-		if isMissing == false {
-			expressionStatement.Expression = []ast.Node{ret}
-		} else {
-			expressionStatement.Expression = []ast.Node{ret, ast.NewSkippedNode(p.token)}
+		expressionStatement.Expression = []ast.Node{ret}
+		if isMissing {
 			p.advanceToken()
 		}
 
@@ -619,7 +617,7 @@ func (p *Parser) parseIfStatement(parentNode ast.Node) ast.Node {
 		st.Statements = p.parseList(st, IfClause2Elements)
 	} else {
 		// @todo
-		st.Statements = []ast.Node{p.parseStatement(st)}
+		st.Statements = p.parseStatement(st)
 	}
 	st.ElseIfClauses = make([]ast.Node, 0)
 	for p.checkToken(lexer.ElseIfKeyword) {
@@ -1353,7 +1351,7 @@ func (p *Parser) parseWhileStatement(parentNode ast.Node) ast.Node {
 		whileStatement.EndWhile = p.eat1(lexer.EndWhileKeyword)
 		whileStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		whileStatement.Statements = []ast.Node{p.parseStatement(whileStatement)}
+		whileStatement.Statements = p.parseStatement(whileStatement)
 	}
 	return whileStatement
 }
@@ -1389,7 +1387,7 @@ func (p *Parser) parseForStatement(parentNode ast.Node) ast.Node {
 		forStatement.EndFor = p.eat1(lexer.EndForKeyword)
 		forStatement.EndForSemicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		forStatement.Statements = []ast.Node{p.parseStatement(forStatement)}
+		forStatement.Statements = p.parseStatement(forStatement)
 	}
 	return forStatement
 }
@@ -1411,7 +1409,7 @@ func (p *Parser) parseForeachStatement(parentNode ast.Node) ast.Node {
 		foreachStatement.EndForeach = p.eat1(lexer.EndForEachKeyword)
 		foreachStatement.EndForeachSemicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		foreachStatement.Statements = []ast.Node{p.parseStatement(foreachStatement)}
+		foreachStatement.Statements = p.parseStatement(foreachStatement)
 	}
 	return foreachStatement
 }
@@ -1540,7 +1538,7 @@ func (p *Parser) parseDeclareStatement(parentNode ast.Node) ast.Node {
 		declareStatement.EnddeclareKeyword = p.eat1(lexer.EndDeclareKeyword)
 		declareStatement.Semicolon = p.eatSemicolonOrAbortStatement()
 	} else {
-		declareStatement.Statements = []ast.Node{p.parseStatement(declareStatement)}
+		declareStatement.Statements = p.parseStatement(declareStatement)
 	}
 
 	return declareStatement
@@ -1696,7 +1694,7 @@ func (p *Parser) parseElseIfClause(parentNode *ast.IfStatementNode) ast.Node {
 		elseIfClause.Colon = p.eat1(lexer.ColonToken)
 		elseIfClause.Statements = p.parseList(elseIfClause, IfClause2Elements)
 	} else {
-		elseIfClause.Statements = []ast.Node{p.parseStatement(elseIfClause)}
+		elseIfClause.Statements = p.parseStatement(elseIfClause)
 	}
 	return elseIfClause
 
@@ -1710,7 +1708,7 @@ func (p *Parser) parseElseClause(parentNode *ast.IfStatementNode) ast.Node {
 		elseClause.Colon = p.eat1(lexer.ColonToken)
 		elseClause.Statements = p.parseList(elseClause, IfClause2Elements)
 	} else {
-		elseClause.Statements = []ast.Node{p.parseStatement(elseClause)}
+		elseClause.Statements = p.parseStatement(elseClause)
 	}
 	return elseClause
 

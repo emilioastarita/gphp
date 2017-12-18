@@ -451,7 +451,7 @@ type TraitSelectOrAliasClause struct {
 type StringLiteral struct {
 	CNode      `serialize:"-"`
 	StartQuote *lexer.Token
-	Children   []Node `serialize:"-single"`
+	Children   NodeOrNodeColl
 	EndQuote   *lexer.Token
 }
 

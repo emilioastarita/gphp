@@ -448,7 +448,10 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 			if len(tokenMem) == 0 {
 				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
 				l.fullStart = l.start
-				tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, TokenCatNormal})
+				if l.start != eofPos-1 {
+					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, TokenCatNormal})
+				}
+
 				return tokenMem
 			} else {
 				return tokenMem
@@ -506,10 +509,10 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 						tokenMem = l.addToMem(CloseBracketToken, *pos, tokenMem)
 					}
 				} else if *pos+1 < eofPos && fileContent[*pos] == '-' && fileContent[*pos+1] == '>' {
-					*pos++
-					*pos++
-					tokenMem = l.addToMem(ArrowToken, *pos, tokenMem)
-					if isNameStart(fileContent, *pos, eofPos) {
+					if isNameStart(fileContent, *pos+2, eofPos) {
+						*pos++
+						*pos++
+						tokenMem = l.addToMem(ArrowToken, *pos, tokenMem)
 						// var name index
 						*pos++
 						scanName(fileContent, pos, eofPos)
@@ -744,14 +747,16 @@ func isValidNameUnicodeChar(charCode rune) bool {
 
 func scanHexadecimalLiteral(text []rune, pos *int, eofPos int) bool {
 	isValid := true
-	for *pos < eofPos {
+	p := *pos
+	for p < eofPos {
 		charCode := text[*pos]
 		if isHexadecimalDigit(charCode) {
+			p++
 			*pos++
 			continue
 		} else if isDigitChar(charCode) || isNameNonDigitChar(charCode) {
-			*pos++
 			// REPORT ERROR;
+			p++
 			isValid = false
 			continue
 		}
@@ -866,10 +871,10 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 		//return BinaryLiteralToken
 	} else if isHexadecimalLiteralStart(text, *pos, eofPos) {
 		*pos += 2
-		prevPos = *pos
+
 		isValidHexLiteral := scanHexadecimalLiteral(text, pos, eofPos)
-		if prevPos == *pos || !isValidHexLiteral {
-			return InvalidHexadecimalLiteral
+		if !isValidHexLiteral {
+			return IntegerLiteralToken
 			// invalid hexadecimal literal
 		}
 		return IntegerLiteralToken

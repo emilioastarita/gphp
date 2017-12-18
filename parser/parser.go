@@ -1756,8 +1756,7 @@ func (p *Parser) parseStringLiteralExpression(parentNode ast.Node) ast.Node {
 	// TODO validate input token
 	expression := &ast.StringLiteral{}
 	expression.P = parentNode
-	t := &ast.TokenNode{Token: p.token}
-	expression.Children = append(expression.Children, t)
+	expression.Children = p.token
 	p.advanceToken()
 	return expression
 }
@@ -1789,31 +1788,33 @@ func (p *Parser) parseStringLiteralExpression2(parentNode ast.Node) ast.Node {
 	expression := &ast.StringLiteral{}
 	expression.P = parentNode
 	expression.StartQuote = p.eat(lexer.SingleQuoteToken, lexer.DoubleQuoteToken, lexer.HeredocStart, lexer.BacktickToken)
+	children := make([]ast.Node, 0)
 	for {
 		switch p.token.Kind {
 		case lexer.DollarOpenBraceToken,
 			lexer.OpenBraceDollarToken:
 			t1 := &ast.TokenNode{Token: p.eat(lexer.DollarOpenBraceToken, lexer.OpenBraceDollarToken)}
-			expression.Children = append(expression.Children, t1)
+			children = append(children, t1)
 			if p.token.Kind == lexer.StringVarname {
-				expression.Children = append(expression.Children, p.parseSimpleVariable(expression))
+				children = append(children, p.parseSimpleVariable(expression))
 			} else {
-				expression.Children = append(expression.Children, p.parseExpression(expression, false))
+				children = append(children, p.parseExpression(expression, false))
 			}
 			t2 := &ast.TokenNode{Token: p.eat1(lexer.CloseBraceToken)}
-			expression.Children = append(expression.Children, t2)
+			children = append(children, t2)
 			continue
 		case expression.StartQuote.Kind,
 			lexer.EndOfFileToken,
 			lexer.HeredocEnd:
 			expression.EndQuote = p.eat(expression.StartQuote.Kind, lexer.HeredocEnd)
+			expression.Children = children
 			return expression
 		case lexer.VariableName:
-			expression.Children = append(expression.Children, p.parseTemplateStringExpression(expression))
+			children = append(children, p.parseTemplateStringExpression(expression))
 			continue
 		default:
 			t := &ast.TokenNode{Token: p.token}
-			expression.Children = append(expression.Children, t)
+			children = append(children, t)
 			p.advanceToken()
 			continue
 		}
@@ -2265,8 +2266,7 @@ func (p *Parser) parseTemplateStringSubscriptExpression(postfixExpression ast.No
 func (p *Parser) parseTemplateStringSubscriptStringLiteral(parentNode *ast.SubscriptExpression) ast.Node {
 	expression := &ast.StringLiteral{}
 	expression.P = parentNode
-	t := &ast.TokenNode{Token: p.eat1(lexer.Name)}
-	expression.Children = append(expression.Children, t)
+	expression.Children = p.eat1(lexer.Name)
 	return expression
 }
 
@@ -2488,6 +2488,7 @@ func (p *Parser) parseRelativeSpecifier(parentNode ast.Node) ast.Node {
 	}
 	return nil
 }
+
 func (p *Parser) parseArrayElementList(listExpression ast.Node, delimited ast.DelimitedList) ast.DelimitedList {
 	return p.parseDelimitedList(
 		delimited,

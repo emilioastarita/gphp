@@ -20,7 +20,9 @@ func BenchmarkComplex(b *testing.B) {
 func TestEx(t *testing.T) {
 	stream := TokensStream{}
 	stream.Source(`<?php
-(boolean)`)
+
+// TODO should fail when outside function
+yield from 5;`)
 	stream.CreateTokens()
 	stream.Debug()
 }

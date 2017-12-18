@@ -250,6 +250,37 @@ func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 	return foundTokenKind, false
 }
 
+func tryScanYieldFrom(l *LexerScanner) (int, bool) {
+	foundTokenKind := false
+	from := "from"
+	fromLen := len(from)
+	for i := l.pos + 1; i < l.eofPos; i++ {
+
+		if unicode.IsSpace(l.content[i]) {
+			if foundTokenKind {
+				return i, true
+			}
+			continue
+		}
+
+		if i+fromLen >= l.eofPos {
+			return -1, false
+		}
+
+		// no name start return false
+		if !isNameStart(l.content, i, l.eofPos) {
+			return -1, false
+		}
+
+		word := strings.ToLower(string(l.content[i : i+fromLen]))
+		if word == from {
+			foundTokenKind = true
+			i = i + fromLen - 1
+		}
+	}
+	return -1, false
+}
+
 func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
 	if isNameStart(l.content, l.pos, l.eofPos) {
 		scanName(l.content, &l.pos, l.eofPos)
@@ -258,6 +289,13 @@ func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
 		lowerText := strings.ToLower(tokenText)
 		if isKeywordOrReservedWordStart(lowerText) {
 			token = getKeywordOrReservedWordTokenFromNameToken(token, lowerText, l.content, &l.pos, l.eofPos)
+			if token.Kind == YieldKeyword {
+				newPos, ok := tryScanYieldFrom(l)
+				if ok {
+					l.pos = newPos
+					token = l.createToken(YieldFromKeyword)
+				}
+			}
 		}
 		return token, tokenMem
 	} else if isDigitChar(l.content[l.pos]) {
@@ -343,17 +381,6 @@ func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart 
 		kind, ok = RESERVED_WORDS[lowerKeywordStart]
 	}
 	token.Kind = kind
-	if token.Kind == YieldKeyword {
-		//savedPos := pos;
-		//nextToken = scanNextToken();
-		//lowerText = strings.ToLower(nextToken.getFullText(text))
-		//if (preg_replace('/\s+/', '', strtolower($nextToken->getFullText($text))) == "from") {
-		//	token.Kind = YieldFromKeyword;
-		//	token.Length = *pos - token.FullStart;
-		//} else {
-		//	*pos = savedPos;
-		//}
-	}
 	return token
 }
 

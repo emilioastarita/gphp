@@ -256,7 +256,7 @@ func tryScanYieldFrom(l *LexerScanner) (int, bool) {
 	fromLen := len(from)
 	for i := l.pos + 1; i < l.eofPos; i++ {
 
-		if unicode.IsSpace(l.content[i]) {
+		if unicode.IsSpace(l.content[i]) || l.content[i] == ';' {
 			if foundTokenKind {
 				return i, true
 			}

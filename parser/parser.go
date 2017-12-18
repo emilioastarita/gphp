@@ -2327,23 +2327,21 @@ func (p *Parser) parseConstElementFn() ParseElementFn {
 func (p *Parser) isParameterStartFn() ElementStartFn {
 	return func(token *lexer.Token) bool {
 		switch token.Kind {
-		case lexer.DotDotDotToken:
-
+		case lexer.DotDotDotToken,
 			// qualified-name
-		case lexer.Name: // http://php.net/manual/en/language.namespaces.rules.php
-		case lexer.BackslashToken:
-		case lexer.NamespaceKeyword:
+			lexer.Name, // http://php.net/manual/en/language.namespaces.rules.php
+			lexer.BackslashToken,
+			lexer.NamespaceKeyword,
 
-		case lexer.AmpersandToken:
+			lexer.AmpersandToken,
 
-		case lexer.VariableName:
+			lexer.VariableName:
 			return true
 
 			// nullable-type
 		case lexer.QuestionToken:
 			return true
 		}
-
 		// scalar-type
 		return p.isTokenMember(token.Kind, p.parameterTypeDeclarationTokens)
 	}

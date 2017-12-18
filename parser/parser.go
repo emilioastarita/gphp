@@ -1140,13 +1140,10 @@ func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
 	objectCreationExpression := &ast.ObjectCreationExpression{}
 	objectCreationExpression.P = parentNode
 	objectCreationExpression.NewKeword = p.eat1(lexer.NewKeyword)
+
 	// TODO - add tests for this scenario
 	p.isParsingObjectCreationExpression = true
 	if r := p.eatOptional1(lexer.ClassKeyword); r != nil {
-		tokNode := &ast.TokenNode{}
-		tokNode.Token = r
-		objectCreationExpression.ClassTypeDesignator = tokNode
-	} else if r := p.eatOptional1(lexer.StaticKeyword); r != nil {
 		tokNode := &ast.TokenNode{}
 		tokNode.Token = r
 		objectCreationExpression.ClassTypeDesignator = tokNode
@@ -1154,9 +1151,10 @@ func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
 		r := p.parseExpression(objectCreationExpression, false)
 		objectCreationExpression.ClassTypeDesignator = r
 	}
-
 	p.isParsingObjectCreationExpression = false
+
 	objectCreationExpression.OpenParen = p.eatOptional1(lexer.OpenParenToken)
+
 	if objectCreationExpression.OpenParen != nil {
 		objectCreationExpression.ArgumentExpressionList = p.parseArgumentExpressionList(objectCreationExpression)
 		objectCreationExpression.CloseParen = p.eat1(lexer.CloseParenToken)
@@ -1164,6 +1162,7 @@ func (p *Parser) parseObjectCreationExpression(parentNode ast.Node) ast.Node {
 
 	objectCreationExpression.ClassBaseClause = p.parseClassBaseClause(objectCreationExpression)
 	objectCreationExpression.ClassInterfaceClause = p.parseClassInterfaceClause(objectCreationExpression)
+
 	if p.token.Kind == lexer.OpenBraceToken {
 		objectCreationExpression.ClassMembers = p.parseClassMembers(objectCreationExpression)
 	}

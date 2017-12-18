@@ -16,9 +16,7 @@ func TestParser(t *testing.T) {
 	p := Parser{}
 	sourceFile := p.ParseSourceFile(`<?php
 
-function foobar ($a, ...$b) {
-
-}`, "")
+$a = new static;`, "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {

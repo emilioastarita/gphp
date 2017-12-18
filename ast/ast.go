@@ -116,7 +116,6 @@ type ExitIntrinsicExpression struct {
 type IssetIntrinsicExpression struct {
 	CNode        `serialize:"-"`
 	IssetKeyword *lexer.Token
-	Expression   Node
 	OpenParen    *lexer.Token
 	CloseParen   *lexer.Token
 	Expressions  DelimitedList
@@ -140,7 +139,7 @@ type ConstElement struct {
 	Assignment  Node
 }
 
-type CaseStatement struct {
+type CaseStatementNode struct {
 	CNode                  `serialize:"-"`
 	CaseKeyword            *lexer.Token
 	Expression             Node
@@ -251,14 +250,14 @@ type ElseIfClauseNode struct {
 	CloseParen    *lexer.Token
 	Expression    Node
 	Colon         *lexer.Token
-	Statements    []Node
+	Statements    []Node `serialize:"-single"`
 }
 
 type ElseClauseNode struct {
 	CNode       `serialize:"-"`
 	ElseKeyword *lexer.Token
 	Colon       *lexer.Token
-	Statements  []Node
+	Statements  []Node `serialize:"-single"`
 }
 
 type TryStatement struct {
@@ -291,7 +290,7 @@ type ClassDeclaration struct {
 	ClassMembers            Node
 }
 
-type SwitchStatement struct {
+type SwitchStatementNode struct {
 	CNode          `serialize:"-"`
 	SwitchKeyword  *lexer.Token
 	OpenParen      *lexer.Token
@@ -440,7 +439,7 @@ type IfStatementNode struct {
 	CloseParen    *lexer.Token
 	Colon         *lexer.Token
 	Statements    []Node `serialize:"-single"`
-	ElseIfClauses []Node
+	ElseIfClauses []Node `serialize:"-single"`
 	ElseClause    Node
 	EndifKeyword  *lexer.Token
 	Semicolon     *lexer.Token

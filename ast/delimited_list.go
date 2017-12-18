@@ -4,6 +4,7 @@ type DelimitedList interface {
 	Node
 	AddNode(n Node)
 	Children() []Node
+	Len() int
 }
 
 type ExpressionListChild struct {
@@ -89,4 +90,8 @@ func (e *ExpressionListChild) AddNode(node Node) {
 
 func (e *ExpressionListChild) Children() []Node {
 	return e.Child
+}
+
+func (e *ExpressionListChild) Len() int {
+	return len(e.Child)
 }

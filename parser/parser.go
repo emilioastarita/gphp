@@ -749,7 +749,7 @@ func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
 	op := p.parsePrimaryExpression(n)
 	n.Operand = op
 	switch n.Operand.(type) {
-	case ast.Missing:
+	case *ast.Missing:
 		n.Operand = p.parsePostfixExpressionRest(n.Operand, false)
 	}
 	return n
@@ -1297,7 +1297,7 @@ func (p *Parser) parseInterfaceElementFn() func(ast.Node) ast.Node {
 
 func (p *Parser) parseCaseOrDefaultStatement() func(ast.Node) ast.Node {
 	return func(parentNode ast.Node) ast.Node {
-		caseStatement := &ast.CaseStatement{}
+		caseStatement := &ast.CaseStatementNode{}
 		caseStatement.P = parentNode
 		// TODO add error checking
 		caseStatement.CaseKeyword = p.eat(lexer.CaseKeyword, lexer.DefaultKeyword)
@@ -1312,7 +1312,7 @@ func (p *Parser) parseCaseOrDefaultStatement() func(ast.Node) ast.Node {
 }
 
 func (p *Parser) parseSwitchStatement(parentNode ast.Node) ast.Node {
-	switchStatement := &ast.SwitchStatement{}
+	switchStatement := &ast.SwitchStatementNode{}
 	switchStatement.P = parentNode
 	switchStatement.SwitchKeyword = p.eat1(lexer.SwitchKeyword)
 	switchStatement.OpenParen = p.eat1(lexer.OpenParenToken)
@@ -2466,12 +2466,11 @@ func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
 				return &ast.TokenNode{Token: name}
 			}, node, false)
 
-		//@todo check nameParts.Token == nil
-		if nameParts == nil && node.GlobalSpecifier == nil && node.RelativeSpecifier == nil {
+		if (nameParts == nil || nameParts.Len() == 0) && node.GlobalSpecifier == nil && node.RelativeSpecifier == nil {
 			return nil
 		}
 
-		if nameParts != nil {
+		if nameParts.Len() != 0 {
 			node.NameParts = nameParts.Children()
 		}
 		return node

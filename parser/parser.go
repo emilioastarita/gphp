@@ -2290,8 +2290,8 @@ func (p *Parser) parseMemberName(parentNode ast.Node) ast.Node {
 		tokNode := &ast.TokenNode{}
 		tokNode.Token = token
 		return tokNode
-	case lexer.VariableName:
-	case lexer.DollarToken:
+	case lexer.VariableName,
+		lexer.DollarToken:
 		return p.parseSimpleVariable(parentNode) // TODO should be simple-variable
 	case lexer.OpenBraceToken:
 		return p.parseBracedExpression(parentNode)

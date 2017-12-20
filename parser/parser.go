@@ -73,7 +73,7 @@ func (p *Parser) reset() {
 
 func (p *Parser) advanceToken() {
 	c := p.stream.ScanNext()
-	p.token = &c
+	p.token = c
 }
 
 func (p *Parser) parseInlineHtml(source ast.Node) ast.Node {

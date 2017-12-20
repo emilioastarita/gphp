@@ -25,11 +25,11 @@ type LexerScanner struct {
 }
 
 type TokensStream struct {
-	Tokens []Token
+	Tokens []*Token
 	Pos    int
 	EofPos int
 
-	tokenMem []Token
+	tokenMem []*Token
 	lexer    LexerScanner
 }
 
@@ -53,7 +53,7 @@ func (s *TokensStream) CreateTokens() {
 		if token.Kind == -1 {
 			s.Tokens = append(s.Tokens, s.tokenMem...)
 		} else {
-			s.Tokens = append(s.Tokens, *token)
+			s.Tokens = append(s.Tokens, token)
 			lexer.pos = token.FullStart + token.Length
 		}
 	}
@@ -61,7 +61,7 @@ func (s *TokensStream) CreateTokens() {
 	s.EofPos = len(s.Tokens) - 1
 }
 
-func (s *TokensStream) ScanNext() Token {
+func (s *TokensStream) ScanNext() *Token {
 	if s.Pos >= s.EofPos {
 		return s.Tokens[s.EofPos]
 	}
@@ -78,15 +78,15 @@ func (s *TokensStream) Debug() {
 	}
 }
 
-func (l *LexerScanner) addToMem(kind TokenKind, pos int, tokenMem []Token) []Token {
-	tokenMem = append(tokenMem, Token{kind, l.fullStart, l.start, pos - l.fullStart, TokenCatNormal})
+func (l *LexerScanner) addToMem(kind TokenKind, pos int, tokenMem []*Token) []*Token {
+	tokenMem = append(tokenMem, &Token{kind, l.fullStart, l.start, pos - l.fullStart, TokenCatNormal})
 	l.fullStart = pos
 	l.start = pos
 	return tokenMem
 }
 
-func (l *LexerScanner) addToMemInPlace(kind TokenKind, pos int, length int, tokenMem []Token) []Token {
-	tokenMem = append(tokenMem, Token{kind, pos, pos, length, TokenCatNormal})
+func (l *LexerScanner) addToMemInPlace(kind TokenKind, pos int, length int, tokenMem []*Token) []*Token {
+	tokenMem = append(tokenMem, &Token{kind, pos, pos, length, TokenCatNormal})
 	return tokenMem
 }
 
@@ -94,7 +94,7 @@ func (l *LexerScanner) createToken(kind TokenKind) *Token {
 	return &Token{kind, l.fullStart, l.start, l.pos - l.fullStart, TokenCatNormal}
 }
 
-func (l *LexerScanner) scan(tokenMem []Token) (*Token, []Token) {
+func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 	l.fullStart = l.pos
 
 	for {
@@ -281,7 +281,7 @@ func tryScanYieldFrom(l *LexerScanner) (int, bool) {
 	return -1, false
 }
 
-func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
+func getNameOrDigitTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
 	if isNameStart(l.content, l.pos, l.eofPos) {
 		scanName(l.content, &l.pos, l.eofPos)
 		token := l.createToken(Name)
@@ -306,7 +306,7 @@ func getNameOrDigitTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
 	return l.createToken(Unknown), tokenMem
 }
 
-func getStringQuoteTokens(l *LexerScanner, tokenMem []Token) (*Token, []Token) {
+func getStringQuoteTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
 	if l.content[l.pos] == '"' {
 		tokenMem = scanTemplateAndSetTokenValue(l, tokenMem)
 		return l.createToken(-1), tokenMem
@@ -436,7 +436,7 @@ func scanName(text []rune, pos *int, eofPos int) {
 	}
 }
 
-func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
+func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 	startPosition := l.start
 	eofPos := l.eofPos
 	pos := &l.pos
@@ -446,10 +446,10 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		if *pos >= eofPos {
 			// UNTERMINATED, report error
 			if len(tokenMem) == 0 {
-				tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
+				tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
 				l.fullStart = l.start
 				if l.start != eofPos-1 {
-					tokenMem = append(tokenMem, Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, TokenCatNormal})
+					tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, TokenCatNormal})
 				}
 
 				return tokenMem
@@ -480,7 +480,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 		if char == '$' {
 			if isNameStart(fileContent, *pos+1, eofPos) {
 				if len(tokenMem) == 0 {
-					tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
+					tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
 					l.start++
 					l.fullStart = l.start
 				}
@@ -553,13 +553,13 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []Token) []Token {
 	return tokenMem
 }
 
-func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []Token) (bool, []Token) {
+func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []*Token) (bool, []*Token) {
 	if len(tokenMem) == 0 {
-		tokenMem = append(tokenMem, Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
+		tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
 		l.start++
 		l.fullStart = l.start
 	}
-	if *pos-l.start > 2 {
+	if *pos-l.start > 0 {
 		tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 	}
 	openTokenLen := 1
@@ -589,7 +589,7 @@ func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPo
 			isFirst = false
 		}
 
-		tokenMem = append(tokenMem, *t)
+		tokenMem = append(tokenMem, t)
 		if t.Kind == ScriptSectionEndTag {
 			return true, tokenMem
 		}

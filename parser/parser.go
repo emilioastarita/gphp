@@ -2467,7 +2467,7 @@ func (p *Parser) parseQualifiedNameFn() func(parentNode ast.Node) ast.Node {
 			return nil
 		}
 
-		if nameParts.Len() != 0 {
+		if nameParts != nil && nameParts.Len() != 0 {
 			node.NameParts = nameParts.Children()
 		}
 		return node

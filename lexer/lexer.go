@@ -484,7 +484,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 					l.start++
 					l.fullStart = l.start
 				}
-				if *pos-startPosition > 2 {
+				if *pos-l.start > 0 {
 					tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 				}
 				*pos++

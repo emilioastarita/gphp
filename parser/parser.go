@@ -57,6 +57,7 @@ func (p *Parser) ParseSourceFile(source string, uri string) *ast.SourceFileNode 
 	p.stream.CreateTokens()
 	p.reset()
 	sourceFile := &ast.SourceFileNode{P: nil, FileContents: source, Uri: uri}
+	sourceFile.StatementList = make([]ast.Node, 0)
 	if p.token.Kind != lexer.EndOfFileToken {
 		sourceFile.Add(p.parseInlineHtml(sourceFile))
 	}

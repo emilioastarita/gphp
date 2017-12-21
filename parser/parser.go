@@ -747,8 +747,8 @@ func (p *Parser) parsePrefixUpdateExpression(parent ast.Node) ast.Node {
 	n.IncrementOrDecrementOperator = p.eat(lexer.PlusPlusToken, lexer.MinusMinusToken)
 	op := p.parsePrimaryExpression(n)
 	n.Operand = op
-	switch n.Operand.(type) {
-	case *ast.Missing:
+	_, isMissing := n.Operand.(*ast.Missing)
+	if isMissing == false {
 		n.Operand = p.parsePostfixExpressionRest(n.Operand, false)
 	}
 	return n

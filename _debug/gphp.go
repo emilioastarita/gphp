@@ -6,13 +6,17 @@ import (
 	"github.com/emilioastarita/gphp/ast"
 	"github.com/emilioastarita/gphp/lexer"
 	"github.com/emilioastarita/gphp/parser"
+	diff "github.com/yudai/gojsondiff"
+	"github.com/yudai/gojsondiff/formatter"
 	"io/ioutil"
+	"log"
 	"os"
+	"os/exec"
 	"path/filepath"
 )
 
 func printUsage() {
-	fmt.Println("Usage " + os.Args[0] + " scan|parse filename")
+	fmt.Println("Usage " + os.Args[0] + " scan|parse|compare filename")
 }
 
 func main() {
@@ -22,17 +26,70 @@ func main() {
 	}
 
 	if os.Args[1] == "scan" {
-		printTokensFromFile(os.Args[2])
+		fnWalk(os.Args[2], printTokensFromFile)
 	} else if os.Args[1] == "parse" {
-		printAstFromFile(os.Args[2])
+		fnWalk(os.Args[2], printAstFromFile)
+	} else if os.Args[1] == "compare" {
+		fnWalk(os.Args[2], printDiffWithPhp)
 	} else {
 		printUsage()
 	}
+}
 
+func printDiffWithPhp(filename string) {
+	p := parser.Parser{}
+
+	sourceCase, _ := ioutil.ReadFile(filename)
+	sourceFile := p.ParseSourceFile(string(sourceCase), "")
+	jsonSource, _ := json.Marshal(ast.Serialize(&sourceFile))
+	resultCase := getMsParserOutput(filename)
+
+	differ := diff.New()
+
+	d, err := differ.Compare(jsonSource, resultCase)
+
+	if err != nil {
+		fmt.Println("Log comparing json sources:")
+		fmt.Println(err)
+		// ast.PrettyPrintJSON(jsonSource)
+		fmt.Println("Test fail.")
+		return
+	}
+
+	if d.Modified() {
+		println("Fail: ", filename)
+		var aJson map[string]interface{}
+		json.Unmarshal(jsonSource, &aJson)
+
+		config := formatter.AsciiFormatterConfig{
+			ShowArrayIndex: true,
+			Coloring:       false,
+		}
+		formatter := formatter.NewAsciiFormatter(aJson, config)
+		diffString, _ := formatter.Format(d)
+		fmt.Println("START DIFF")
+		fmt.Println(diffString)
+		fmt.Println("END DIFF")
+
+	} else {
+		println("Ok: ", filename)
+	}
+}
+
+func getMsParserOutput(filename string) []byte {
+	cmd := "/usr/bin/php"
+	args := []string{"/home/emilio/pry/tolerant-php-parser/tools/debug.php", filename}
+	out, err := exec.Command(cmd, args...).CombinedOutput()
+	if err != nil {
+		log.Fatalln("Error exec: ", cmd, err, string(out))
+	}
+	return out
 }
 
 func printAstFromFile(filename string) {
+	fmt.Println("AST of :", filename)
 	data, err := ioutil.ReadFile(filename)
+
 	if err != nil {
 		fmt.Println("Can't read file:", filename)
 		panic(err)
@@ -57,6 +114,7 @@ func printTokensFromFile(filename string) {
 }
 
 func printAst(content string) {
+
 	p := parser.Parser{}
 	sourceFile := p.ParseSourceFile(content, "")
 
@@ -66,7 +124,7 @@ func printAst(content string) {
 		println(err)
 	} else {
 		pretty, _ := ast.PrettyPrintJSON(jsonSource)
-		println(string((pretty)))
+		fmt.Println(string((pretty)))
 	}
 }
 
@@ -74,7 +132,24 @@ func lexerWalk(filename string) {
 	list, _ := filesOfDir(filename)
 	println("Reading: ", len(list))
 	for _, f := range list {
-		getTokens(f)
+		scanTokens(f)
+	}
+}
+
+func fnWalk(fileOrDir string, fn func(file string)) {
+	fi, err := os.Stat(fileOrDir)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	switch mode := fi.Mode(); {
+	case mode.IsDir():
+		list, _ := filesOfDir(fileOrDir)
+		for _, file := range list {
+			fn(file)
+		}
+	case mode.IsRegular():
+		fn(fileOrDir)
 	}
 }
 
@@ -93,7 +168,7 @@ func filesOfDir(searchDir string) ([]string, error) {
 	return fileList, nil
 }
 
-func getTokens(file string) {
+func scanTokens(file string) {
 	dat, err := ioutil.ReadFile(file)
 	if err != nil {
 		fmt.Println("Exit opening file", err)

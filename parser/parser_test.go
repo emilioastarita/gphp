@@ -15,7 +15,8 @@ import (
 func TestParser(t *testing.T) {
 	p := Parser{}
 	sourceFile := p.ParseSourceFile(`<?php
-{$match[3]}-{$match[2]}-{$match[1]} {$match[4]}:{$match[5]}:59`, "")
+$c[1]
+`, "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {

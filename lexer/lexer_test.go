@@ -20,7 +20,10 @@ func BenchmarkComplex(b *testing.B) {
 func TestEx(t *testing.T) {
 	stream := TokensStream{}
 	stream.Source(`<?php
-echo $hi, $there, "`)
+$here = <<<'HERE'
+    if (I'm here,) $foo!
+
+`)
 	stream.CreateTokens()
 	stream.Debug()
 }

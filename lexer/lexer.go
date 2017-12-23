@@ -8,15 +8,23 @@ import (
 )
 
 type LexerState int
+type HereDocStatus int
 
 const (
 	LexStateHtmlSection LexerState = iota
 	LexStateScriptSection
 	LexStateScriptSectionParsed
 )
+const (
+	HereDocStateNone HereDocStatus = iota
+	HereDocNormal
+	HereDocNowDoc
+)
 
 type LexerScanner struct {
 	state     LexerState
+	hereDocStatus  HereDocStatus
+	hereDocIdentifier string
 	pos       int
 	eofPos    int
 	fullStart int
@@ -36,6 +44,8 @@ type TokensStream struct {
 func (s *TokensStream) Source(content string) {
 	s.lexer = LexerScanner{
 		LexStateHtmlSection,
+		HereDocStateNone,
+		"",
 		0,
 		0,
 		0,
@@ -130,6 +140,27 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 
 		charCode := l.content[l.pos]
 
+		if l.hereDocStatus == HereDocNowDoc {
+			hasEncapsed := false
+			for l.pos < l.eofPos {
+				if  isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos + 1, l.eofPos) {
+					l.pos += len(l.hereDocIdentifier) + 1
+					if hasEncapsed {
+						tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, l.pos - l.fullStart, TokenCatNormal})
+					}
+					return &Token{HeredocEnd, l.fullStart, l.fullStart, l.pos - l.fullStart, TokenCatNormal}, tokenMem
+				} else {
+					hasEncapsed = true
+					continue
+				}
+			}
+			if hasEncapsed {
+				tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, l.pos - l.fullStart, TokenCatNormal})
+			}
+			return &Token{EndOfFileToken, l.fullStart, l.fullStart, l.pos - l.fullStart, TokenCatNormal}, tokenMem
+		}
+
+
 		switch charCode {
 
 		case '#':
@@ -164,7 +195,15 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 			')', '{', '}', ';',
 			'~', '\\':
 
-			if charCode == '.' && isDigitChar(l.content[l.pos+1]) {
+
+			if  isNowdocStart(l.content, l.pos, l.eofPos) || isHeredocStart(l.content, l.pos, l.eofPos) {
+				tokenKind, ok := tryScanHeredocStart(l)
+				if ok {
+					return l.createToken(tokenKind), tokenMem
+				}
+			}
+
+			if l.pos + 1 < l.eofPos && charCode == '.' && isDigitChar(l.content[l.pos+1]) {
 				kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
 				return l.createToken(kind), tokenMem
 			}
@@ -211,6 +250,73 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 		}
 	}
 }
+func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
+	l := len(identifier)
+	if l + pos > eof {
+		return false
+	}
+	runeIdentifier := []rune(identifier)
+	for i := 0 ; i < l ; i++ {
+		if runeIdentifier[i] != runeIdentifier[pos+i] {
+			return false
+		}
+	}
+	return true
+}
+
+func isNowdocStart(content []rune, pos int, eof int) bool {
+	// <<<'x'
+	if pos + 6 > eof {
+		return false
+	}
+	return string(content[pos:pos+4]) == "<<<'"
+}
+
+func isHeredocStart(content []rune, pos int, eof int) bool {
+	// <<<x
+	if pos + 5 > eof {
+		return false
+	}
+	return string(content[pos:pos+3]) == "<<<"
+}
+
+func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
+	foundTokenKind := Unknown
+
+	pos := l.pos + 3 // consume <<<
+	isNowDoc := l.content[pos] == '\''
+
+	if isNowDoc {
+		pos++
+	}
+
+	if isNameStart(l.content, pos, l.eofPos) == false {
+		return foundTokenKind, false
+	}
+	pos++
+
+	for ; pos < l.eofPos; pos++ {
+		if isValidNameUnicodeChar(l.content[pos]) {
+			continue
+		} else if l.content[pos] == '\'' && isNowDoc == false {
+			return foundTokenKind, false
+		} else if l.content[pos] == '\'' && isNowDoc == true {
+			if pos + 1 < l.eofPos && isNewLineChar(l.content[pos]) {
+				l.hereDocIdentifier = string(l.content[l.pos+4:pos+1])
+				l.pos = pos + 1
+				l.hereDocStatus = HereDocNowDoc
+				return HeredocStart, true
+			}
+		} else if isNewLineChar(l.content[pos]) {
+			l.hereDocIdentifier = string(l.content[l.pos+3:pos+1])
+			l.pos = pos
+			l.hereDocStatus = HereDocNormal
+			return HeredocStart, true
+		}
+	}
+	return foundTokenKind, false
+}
+
 
 func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 	foundTokenKind := Unknown

@@ -22,14 +22,14 @@ const (
 )
 
 type LexerScanner struct {
-	state     LexerState
-	hereDocStatus  HereDocStatus
+	state             LexerState
+	hereDocStatus     HereDocStatus
 	hereDocIdentifier string
-	pos       int
-	eofPos    int
-	fullStart int
-	start     int
-	content   []rune
+	pos               int
+	eofPos            int
+	fullStart         int
+	start             int
+	content           []rune
 }
 
 type TokensStream struct {
@@ -143,23 +143,27 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 		if l.hereDocStatus == HereDocNowDoc {
 			hasEncapsed := false
 			for l.pos < l.eofPos {
-				if  isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos + 1, l.eofPos) {
+				if l.pos+1 < l.eofPos && isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos+1, l.eofPos) {
 					l.pos += len(l.hereDocIdentifier) + 1
 					if hasEncapsed {
-						tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, l.pos - l.fullStart, TokenCatNormal})
+						tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
+						l.start, l.fullStart = l.pos, l.pos
 					}
-					return &Token{HeredocEnd, l.fullStart, l.fullStart, l.pos - l.fullStart, TokenCatNormal}, tokenMem
+					tokenMem = append(tokenMem, l.createToken(HeredocEnd))
+					return l.createToken(-1), tokenMem
 				} else {
 					hasEncapsed = true
+					l.pos++
 					continue
 				}
 			}
 			if hasEncapsed {
-				tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, l.pos - l.fullStart, TokenCatNormal})
+				tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
+				l.start, l.fullStart = l.pos, l.pos
 			}
-			return &Token{EndOfFileToken, l.fullStart, l.fullStart, l.pos - l.fullStart, TokenCatNormal}, tokenMem
-		}
 
+			return l.createToken(-1), tokenMem
+		}
 
 		switch charCode {
 
@@ -195,15 +199,14 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 			')', '{', '}', ';',
 			'~', '\\':
 
-
-			if  isNowdocStart(l.content, l.pos, l.eofPos) || isHeredocStart(l.content, l.pos, l.eofPos) {
+			if isNowdocStart(l.content, l.pos, l.eofPos) || isHeredocStart(l.content, l.pos, l.eofPos) {
 				tokenKind, ok := tryScanHeredocStart(l)
 				if ok {
 					return l.createToken(tokenKind), tokenMem
 				}
 			}
 
-			if l.pos + 1 < l.eofPos && charCode == '.' && isDigitChar(l.content[l.pos+1]) {
+			if l.pos+1 < l.eofPos && charCode == '.' && isDigitChar(l.content[l.pos+1]) {
 				kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
 				return l.createToken(kind), tokenMem
 			}
@@ -252,12 +255,12 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 }
 func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
 	l := len(identifier)
-	if l + pos > eof {
+	if l+pos > eof {
 		return false
 	}
 	runeIdentifier := []rune(identifier)
-	for i := 0 ; i < l ; i++ {
-		if runeIdentifier[i] != runeIdentifier[pos+i] {
+	for i := 0; i < l; i++ {
+		if runeIdentifier[i] != content[pos+i] {
 			return false
 		}
 	}
@@ -266,7 +269,7 @@ func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
 
 func isNowdocStart(content []rune, pos int, eof int) bool {
 	// <<<'x'
-	if pos + 6 > eof {
+	if pos+6 > eof {
 		return false
 	}
 	return string(content[pos:pos+4]) == "<<<'"
@@ -274,7 +277,7 @@ func isNowdocStart(content []rune, pos int, eof int) bool {
 
 func isHeredocStart(content []rune, pos int, eof int) bool {
 	// <<<x
-	if pos + 5 > eof {
+	if pos+5 > eof {
 		return false
 	}
 	return string(content[pos:pos+3]) == "<<<"
@@ -301,14 +304,14 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 		} else if l.content[pos] == '\'' && isNowDoc == false {
 			return foundTokenKind, false
 		} else if l.content[pos] == '\'' && isNowDoc == true {
-			if pos + 1 < l.eofPos && isNewLineChar(l.content[pos]) {
-				l.hereDocIdentifier = string(l.content[l.pos+4:pos+1])
+			if pos+1 < l.eofPos && isNewLineChar(l.content[pos+1]) {
+				l.hereDocIdentifier = string(l.content[l.pos+4 : pos+1])
 				l.pos = pos + 1
 				l.hereDocStatus = HereDocNowDoc
 				return HeredocStart, true
 			}
 		} else if isNewLineChar(l.content[pos]) {
-			l.hereDocIdentifier = string(l.content[l.pos+3:pos+1])
+			l.hereDocIdentifier = string(l.content[l.pos+3 : pos+1])
 			l.pos = pos
 			l.hereDocStatus = HereDocNormal
 			return HeredocStart, true
@@ -316,7 +319,6 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 	}
 	return foundTokenKind, false
 }
-
 
 func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 	foundTokenKind := Unknown

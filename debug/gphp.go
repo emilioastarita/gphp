@@ -38,7 +38,6 @@ func main() {
 
 func printDiffWithPhp(filename string) {
 	p := parser.Parser{}
-
 	sourceCase, _ := ioutil.ReadFile(filename)
 	sourceFile := p.ParseSourceFile(string(sourceCase), "")
 	jsonSource, _ := json.Marshal(ast.Serialize(&sourceFile))
@@ -49,10 +48,8 @@ func printDiffWithPhp(filename string) {
 	d, err := differ.Compare(jsonSource, resultCase)
 
 	if err != nil {
-		fmt.Println("Log comparing json sources:")
+		fmt.Println("Fail in diff:", filename)
 		fmt.Println(err)
-		// ast.PrettyPrintJSON(jsonSource)
-		fmt.Println("Test fail.")
 		return
 	}
 
@@ -78,7 +75,7 @@ func printDiffWithPhp(filename string) {
 
 func getMsParserOutput(filename string) []byte {
 	cmd := "/usr/bin/php"
-	args := []string{"/home/emilio/pry/tolerant-php-parser/tools/debug.php", filename}
+	args := []string{"debug.php", "parse", filename}
 	out, err := exec.Command(cmd, args...).CombinedOutput()
 	if err != nil {
 		log.Fatalln("Error exec: ", cmd, err, string(out))

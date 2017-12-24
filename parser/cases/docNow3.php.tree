@@ -1,0 +1,82 @@
+{
+    "SourceFileNode": {
+        "statementList": [
+            {
+                "InlineHtml": {
+                    "scriptSectionEndTag": null,
+                    "text": null,
+                    "scriptSectionStartTag": {
+                        "kind": "ScriptSectionStartTag",
+                        "fullStart": 0,
+                        "start": 0,
+                        "length": 6
+                    }
+                }
+            },
+            {
+                "ExpressionStatement": {
+                    "expression": {
+                        "AssignmentExpression": {
+                            "leftOperand": {
+                                "Variable": {
+                                    "dollar": null,
+                                    "name": {
+                                        "kind": "VariableName",
+                                        "fullStart": 6,
+                                        "start": 6,
+                                        "length": 2
+                                    }
+                                }
+                            },
+                            "operator": {
+                                "kind": "EqualsToken",
+                                "fullStart": 8,
+                                "start": 9,
+                                "length": 2
+                            },
+                            "byRef": null,
+                            "rightOperand": {
+                                "StringLiteral": {
+                                    "startQuote": {
+                                        "kind": "HeredocStart",
+                                        "fullStart": 10,
+                                        "start": 11,
+                                        "length": 11
+                                    },
+                                    "children": [
+                                        {
+                                            "kind": "EncapsedAndWhitespace",
+                                            "fullStart": 21,
+                                            "start": 21,
+                                            "length": 21
+                                        }
+                                    ],
+                                    "endQuote": {
+                                        "error": "MissingToken",
+                                        "kind": "HeredocStart",
+                                        "fullStart": 42,
+                                        "start": 42,
+                                        "length": 0
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "semicolon": {
+                        "error": "MissingToken",
+                        "kind": "SemicolonToken",
+                        "fullStart": 42,
+                        "start": 42,
+                        "length": 0
+                    }
+                }
+            }
+        ],
+        "endOfFileToken": {
+            "kind": "EndOfFileToken",
+            "fullStart": 42,
+            "start": 42,
+            "length": 0
+        }
+    }
+}

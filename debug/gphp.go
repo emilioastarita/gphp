@@ -16,32 +16,93 @@ import (
 )
 
 func printUsage() {
-	fmt.Println("Usage " + os.Args[0] + " scan|parse|compare filename")
+	fmt.Println("Usage " + os.Args[0] + " [compare] scan|parse filename")
 }
 
 func main() {
-	if len(os.Args) < 3 {
+	largs := len(os.Args)
+	if largs < 3 {
 		printUsage()
 		return
 	}
+	isCompare := largs == 4
+	action := os.Args[1]
+	subAction := ""
+	filename := os.Args[2]
 
-	if os.Args[1] == "scan" {
-		fnWalk(os.Args[2], printTokensFromFile)
-	} else if os.Args[1] == "parse" {
-		fnWalk(os.Args[2], printAstFromFile)
-	} else if os.Args[1] == "compare" {
-		fnWalk(os.Args[2], printDiffWithPhp)
+	if isCompare {
+		subAction = os.Args[2]
+		filename = os.Args[3]
+	}
+
+	if action == "scan" {
+		fnWalk(filename, printTokensFromFile)
+	} else if action == "parse" {
+		fnWalk(filename, printAstFromFile)
+	} else if action == "compare" {
+		if subAction == "scan" {
+			fnWalk(filename, printDiffWithPhpScan)
+		} else if subAction == "parse" {
+			fnWalk(filename, printDiffWithPhpParser)
+		} else {
+			printUsage()
+		}
 	} else {
 		printUsage()
 	}
+
 }
 
-func printDiffWithPhp(filename string) {
+func printDiffWithPhpScan(filename string) {
+	sourceCase, _ := ioutil.ReadFile(filename)
+
+	stream := lexer.TokensStream{}
+	stream.Source(string(sourceCase))
+	stream.CreateTokens()
+
+	resultCase := make([]lexer.TokenFullForm, 0)
+
+	json.Unmarshal(getMsParserOutput(filename, "scan"), &resultCase)
+
+	differ := diff.New()
+
+	left, _ := json.Marshal(map[string]interface{}{"_": stream.Serialize()})
+	right, _ := json.Marshal(map[string]interface{}{"_": resultCase})
+
+	d, err := differ.Compare(left, right)
+
+	if err != nil {
+		fmt.Println("Fail in diff:", filename)
+		fmt.Println(err)
+		return
+	}
+
+	if d.Modified() {
+		println("Fail: ", filename)
+		var aJson map[string]interface{}
+		json.Unmarshal(left, &aJson)
+
+		config := formatter.AsciiFormatterConfig{
+			ShowArrayIndex: true,
+			Coloring:       false,
+		}
+		formatter := formatter.NewAsciiFormatter(aJson, config)
+		diffString, _ := formatter.Format(d)
+		fmt.Println("START DIFF")
+		fmt.Println(diffString)
+		fmt.Println("END DIFF")
+
+	} else {
+		println("Ok: ", filename)
+	}
+}
+
+func printDiffWithPhpParser(filename string) {
 	p := parser.Parser{}
 	sourceCase, _ := ioutil.ReadFile(filename)
 	sourceFile := p.ParseSourceFile(string(sourceCase), "")
 	jsonSource, _ := json.Marshal(ast.Serialize(&sourceFile))
-	resultCase := getMsParserOutput(filename)
+	resultCase := getMsParserOutput(filename, "parse")
 
 	differ := diff.New()
 
@@ -73,9 +134,9 @@ func printDiffWithPhp(filename string) {
 	}
 }
 
-func getMsParserOutput(filename string) []byte {
+func getMsParserOutput(filename string, action string) []byte {
 	cmd := "/usr/bin/php"
-	args := []string{"debug.php", "parse", filename}
+	args := []string{"debug.php", action, filename}
 	out, err := exec.Command(cmd, args...).CombinedOutput()
 	if err != nil {
 		log.Fatalln("Error exec: ", cmd, err, string(out))
@@ -111,7 +172,6 @@ func printTokensFromFile(filename string) {
 }
 
 func printAst(content string) {
-
 	p := parser.Parser{}
 	sourceFile := p.ParseSourceFile(content, "")
 

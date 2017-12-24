@@ -88,6 +88,15 @@ func (s *TokensStream) Debug() {
 	}
 }
 
+func (s *TokensStream) Serialize() []TokenFullForm {
+	tokens := make([]TokenFullForm, 0)
+	for _, token := range s.Tokens {
+		b := token.getFullForm([]rune(s.lexer.content))
+		tokens = append(tokens, b)
+	}
+	return tokens
+}
+
 func (l *LexerScanner) addToMem(kind TokenKind, pos int, tokenMem []*Token) []*Token {
 	tokenMem = append(tokenMem, &Token{kind, l.fullStart, l.start, pos - l.fullStart, TokenCatNormal})
 	l.fullStart = pos

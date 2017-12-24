@@ -150,31 +150,10 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 		charCode := l.content[l.pos]
 
 		if l.hereDocStatus == HereDocNowDoc {
-			hasEncapsed := false
-			l.hereDocStatus = HereDocStateNone
-			for l.pos < l.eofPos {
-				if l.pos+1 < l.eofPos && isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos+1, l.eofPos) {
-					if hasEncapsed {
-						l.pos++
-						tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
-						l.start, l.fullStart = l.pos, l.pos
-					}
-					l.pos += len(l.hereDocIdentifier)
-					tokenMem = append(tokenMem, l.createToken(HeredocEnd))
-					l.start, l.fullStart = l.pos, l.pos
-					return l.createToken(-1), tokenMem
-				} else {
-					hasEncapsed = true
-					l.pos++
-					continue
-				}
-			}
-			if hasEncapsed {
-				tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
-				l.start, l.fullStart = l.pos, l.pos
-			}
-
-			return l.createToken(-1), tokenMem
+			return parseDocNow(l, tokenMem)
+		} else if l.hereDocStatus == HereDocNormal {
+			// @todo We are handling heredoc as docnow for now
+			return parseDocNow(l, tokenMem)
 		}
 
 		switch charCode {
@@ -265,6 +244,35 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 		}
 	}
 }
+
+func parseDocNow(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
+	hasEncapsed := false
+	l.hereDocStatus = HereDocStateNone
+	for l.pos < l.eofPos {
+		if l.pos+1 < l.eofPos && isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos+1, l.eofPos) {
+			if hasEncapsed {
+				l.pos++
+				tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
+				l.start, l.fullStart = l.pos, l.pos
+			}
+			l.pos += len(l.hereDocIdentifier)
+			tokenMem = append(tokenMem, l.createToken(HeredocEnd))
+			l.start, l.fullStart = l.pos, l.pos
+			return l.createToken(-1), tokenMem
+		} else {
+			hasEncapsed = true
+			l.pos++
+			continue
+		}
+	}
+	if hasEncapsed {
+		tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
+		l.start, l.fullStart = l.pos, l.pos
+	}
+
+	return l.createToken(-1), tokenMem
+}
+
 func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
 	l := len(identifier)
 	if l+pos > eof {
@@ -323,8 +331,8 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 				return HeredocStart, true
 			}
 		} else if isNewLineChar(l.content[pos]) {
-			l.hereDocIdentifier = string(l.content[l.pos+3 : pos+1])
-			l.pos = pos
+			l.hereDocIdentifier = string(l.content[l.pos+3 : pos])
+			l.pos = pos + 1
 			l.hereDocStatus = HereDocNormal
 			return HeredocStart, true
 		}

@@ -1,18 +1,26 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "YieldKeyword",
-        "textLength": 5
+        "fullStart": 6,
+        "start": 6,
+        "length": 5
     },
     {
         "kind": "Name",
-        "textLength": 4
+        "fullStart": 11,
+        "start": 24,
+        "length": 17
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 28,
+        "start": 28,
+        "length": 0
     }
 ]

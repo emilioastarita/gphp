@@ -1,22 +1,32 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "LessThanToken",
-        "textLength": 1
+        "fullStart": 6,
+        "start": 6,
+        "length": 1
     },
     {
         "kind": "QuestionToken",
-        "textLength": 1
+        "fullStart": 7,
+        "start": 7,
+        "length": 1
     },
     {
         "kind": "Name",
-        "textLength": 3
+        "fullStart": 8,
+        "start": 8,
+        "length": 3
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 11,
+        "start": 11,
+        "length": 0
     }
 ]

@@ -1,162 +1,242 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "fullStart": 6,
+        "start": 6,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 15
+        "fullStart": 7,
+        "start": 7,
+        "length": 15
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 22,
+        "start": 22,
+        "length": 2
     },
     {
         "kind": "OpenBracketToken",
-        "textLength": 1
+        "fullStart": 24,
+        "start": 24,
+        "length": 1
     },
     {
         "kind": "Name",
-        "textLength": 1
+        "fullStart": 25,
+        "start": 25,
+        "length": 1
     },
     {
         "kind": "CloseBracketToken",
-        "textLength": 1
+        "fullStart": 26,
+        "start": 26,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 3
+        "fullStart": 27,
+        "start": 27,
+        "length": 3
     },
     {
         "kind": "DollarOpenBraceToken",
-        "textLength": 2
+        "fullStart": 30,
+        "start": 30,
+        "length": 2
     },
     {
         "kind": "StringVarname",
-        "textLength": 1
+        "fullStart": 32,
+        "start": 32,
+        "length": 1
     },
     {
         "kind": "CloseBraceToken",
-        "textLength": 1
+        "fullStart": 33,
+        "start": 33,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 4
+        "fullStart": 34,
+        "start": 34,
+        "length": 4
     },
     {
         "kind": "OpenBraceDollarToken",
-        "textLength": 1
+        "fullStart": 38,
+        "start": 38,
+        "length": 1
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 39,
+        "start": 39,
+        "length": 2
     },
     {
         "kind": "CloseBraceToken",
-        "textLength": 1
+        "fullStart": 41,
+        "start": 41,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 13
+        "fullStart": 42,
+        "start": 42,
+        "length": 13
     },
     {
         "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "fullStart": 55,
+        "start": 55,
+        "length": 1
     },
     {
         "kind": "SemicolonToken",
-        "textLength": 1
+        "fullStart": 56,
+        "start": 56,
+        "length": 1
     },
     {
         "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "fullStart": 57,
+        "start": 58,
+        "length": 2
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 15
+        "fullStart": 59,
+        "start": 59,
+        "length": 15
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 74,
+        "start": 74,
+        "length": 2
     },
     {
         "kind": "OpenBracketToken",
-        "textLength": 1
+        "fullStart": 76,
+        "start": 76,
+        "length": 1
     },
     {
         "kind": "Name",
-        "textLength": 1
+        "fullStart": 77,
+        "start": 77,
+        "length": 1
     },
     {
         "kind": "CloseBracketToken",
-        "textLength": 1
+        "fullStart": 78,
+        "start": 78,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 3
+        "fullStart": 79,
+        "start": 79,
+        "length": 3
     },
     {
         "kind": "DollarOpenBraceToken",
-        "textLength": 2
+        "fullStart": 82,
+        "start": 82,
+        "length": 2
     },
     {
         "kind": "StringVarname",
-        "textLength": 1
+        "fullStart": 84,
+        "start": 84,
+        "length": 1
     },
     {
         "kind": "CloseBraceToken",
-        "textLength": 1
+        "fullStart": 85,
+        "start": 85,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 4
+        "fullStart": 86,
+        "start": 86,
+        "length": 4
     },
     {
         "kind": "OpenBraceDollarToken",
-        "textLength": 1
+        "fullStart": 90,
+        "start": 90,
+        "length": 1
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 91,
+        "start": 91,
+        "length": 2
     },
     {
         "kind": "CloseBraceToken",
-        "textLength": 1
+        "fullStart": 93,
+        "start": 93,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 14
+        "fullStart": 94,
+        "start": 94,
+        "length": 14
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 108,
+        "start": 108,
+        "length": 2
     },
     {
         "kind": "ArrowToken",
-        "textLength": 2
+        "fullStart": 110,
+        "start": 110,
+        "length": 2
     },
     {
         "kind": "Name",
-        "textLength": 8
+        "fullStart": 112,
+        "start": 112,
+        "length": 8
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 2
+        "fullStart": 120,
+        "start": 120,
+        "length": 2
     },
     {
         "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "fullStart": 122,
+        "start": 122,
+        "length": 1
     },
     {
         "kind": "SemicolonToken",
-        "textLength": 1
+        "fullStart": 123,
+        "start": 123,
+        "length": 1
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 124,
+        "start": 124,
+        "length": 0
     }
 ]

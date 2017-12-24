@@ -2,6 +2,8 @@ package lexer
 
 import (
 	"encoding/json"
+	diff "github.com/yudai/gojsondiff"
+	"github.com/yudai/gojsondiff/formatter"
 	"io/ioutil"
 	"path/filepath"
 	"testing"
@@ -53,30 +55,36 @@ func TestCases(t *testing.T) {
 			stream := TokensStream{}
 			stream.Source(string(sourceCase))
 			stream.CreateTokens()
-			tokens := stream.Tokens
 
-			tokensLen := len(tokens)
-			var expectedTokens []TokenShortForm
+			var expectedTokens []TokenCompareForm
 			json.Unmarshal(resultCase, &expectedTokens)
 
-			for idx, expected := range expectedTokens {
+			differ := diff.New()
+			left, _ := json.Marshal(map[string]interface{}{"_": stream.Serialize()})
+			right, _ := json.Marshal(map[string]interface{}{"_": expectedTokens})
 
-				if idx >= tokensLen {
-					t.Fatalf("Failed %s | %s: Expected Kind %s has no match. Actual tokens has Length %d", resultFile, sourceFileName, expected.Kind, tokensLen)
-					return
+			d, err := differ.Compare(left, right)
+
+			if err != nil {
+				t.Log("Fail in diff:", resultCase)
+				t.Error(err)
+				return
+			}
+
+			if d.Modified() {
+				t.Logf("Json modified: %s", resultFile)
+				var aJson map[string]interface{}
+				json.Unmarshal(left, &aJson)
+
+				config := formatter.AsciiFormatterConfig{
+					ShowArrayIndex: true,
+					Coloring:       false,
 				}
-
-				actual := tokens[idx].getShortForm([]rune(string(sourceCase)))
-
-				if expected.Kind != actual.Kind {
-					stream.Debug()
-					t.Fatalf("Failed %s | %s: Expected Kind %s - Given Kind: %s", resultFile, sourceFileName, expected.Kind, actual.Kind)
-					return
-				} else if expected.TextLength != actual.TextLength {
-					stream.Debug()
-					t.Fatalf("Failed %s: Expected Length Kind %s (len %d) - Given Length Kind: %s (len %d)", resultFile, expected.Kind, expected.TextLength, actual.Kind, actual.TextLength)
-					return
-				}
+				formatter := formatter.NewAsciiFormatter(aJson, config)
+				diffString, _ := formatter.Format(d)
+				t.Log("START DIFF")
+				t.Error(diffString)
+				t.Log("END DIFF")
 
 			}
 		})

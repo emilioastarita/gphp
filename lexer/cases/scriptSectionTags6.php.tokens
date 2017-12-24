@@ -1,22 +1,32 @@
 [
     {
         "kind": "InlineHtml",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 6,
+        "start": 6,
+        "length": 6
     },
     {
         "kind": "StringLiteralToken",
-        "textLength": 4
+        "fullStart": 12,
+        "start": 12,
+        "length": 4
     },
     {
         "kind": "SemicolonToken",
-        "textLength": 1
+        "fullStart": 16,
+        "start": 16,
+        "length": 1
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 17,
+        "start": 17,
+        "length": 0
     }
 ]

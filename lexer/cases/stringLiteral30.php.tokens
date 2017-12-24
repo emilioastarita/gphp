@@ -1,74 +1,110 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "fullStart": 6,
+        "start": 6,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 2
+        "fullStart": 7,
+        "start": 7,
+        "length": 2
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 9,
+        "start": 9,
+        "length": 2
     },
     {
         "kind": "OpenBracketToken",
-        "textLength": 1
+        "fullStart": 11,
+        "start": 11,
+        "length": 1
     },
     {
         "kind": "Name",
-        "textLength": 1
+        "fullStart": 12,
+        "start": 12,
+        "length": 1
     },
     {
         "kind": "CloseBracketToken",
-        "textLength": 1
+        "fullStart": 13,
+        "start": 13,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 3
+        "fullStart": 14,
+        "start": 14,
+        "length": 3
     },
     {
         "kind": "DollarOpenBraceToken",
-        "textLength": 2
+        "fullStart": 17,
+        "start": 17,
+        "length": 2
     },
     {
         "kind": "StringVarname",
-        "textLength": 1
+        "fullStart": 19,
+        "start": 19,
+        "length": 1
     },
     {
         "kind": "CloseBraceToken",
-        "textLength": 1
+        "fullStart": 20,
+        "start": 20,
+        "length": 1
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 3
+        "fullStart": 21,
+        "start": 21,
+        "length": 3
     },
     {
         "kind": "OpenBraceDollarToken",
-        "textLength": 1
+        "fullStart": 24,
+        "start": 24,
+        "length": 1
     },
     {
         "kind": "VariableName",
-        "textLength": 2
+        "fullStart": 25,
+        "start": 25,
+        "length": 2
     },
     {
         "kind": "CloseBraceToken",
-        "textLength": 1
+        "fullStart": 27,
+        "start": 27,
+        "length": 1
     },
     {
         "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "fullStart": 28,
+        "start": 28,
+        "length": 1
     },
     {
         "kind": "SemicolonToken",
-        "textLength": 1
+        "fullStart": 29,
+        "start": 29,
+        "length": 1
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 30,
+        "start": 30,
+        "length": 0
     }
 ]

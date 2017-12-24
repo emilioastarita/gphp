@@ -1,18 +1,26 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
-        "kind": "DoubleQuoteToken",
-        "textLength": 1
+        "kind": "Unknown",
+        "fullStart": 6,
+        "start": 14,
+        "length": 10
     },
     {
         "kind": "EncapsedAndWhitespace",
-        "textLength": 8
+        "fullStart": 16,
+        "start": 16,
+        "length": 7
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 23,
+        "start": 23,
+        "length": 0
     }
 ]

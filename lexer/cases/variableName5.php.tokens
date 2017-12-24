@@ -1,18 +1,26 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "DollarToken",
-        "textLength": 1
+        "fullStart": 6,
+        "start": 6,
+        "length": 1
     },
     {
         "kind": "VariableName",
-        "textLength": 8
+        "fullStart": 7,
+        "start": 7,
+        "length": 8
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 15,
+        "start": 15,
+        "length": 0
     }
 ]

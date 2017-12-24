@@ -65,7 +65,6 @@ func printDiffWithPhpScan(filename string) {
 	json.Unmarshal(getMsParserOutput(filename, "scan"), &resultCase)
 
 	differ := diff.New()
-
 	left, _ := json.Marshal(map[string]interface{}{"_": stream.Serialize()})
 	right, _ := json.Marshal(map[string]interface{}{"_": resultCase})
 
@@ -168,7 +167,6 @@ func printTokensFromFile(filename string) {
 	stream.Source(content)
 	stream.CreateTokens()
 	stream.Debug()
-
 }
 
 func printAst(content string) {

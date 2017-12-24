@@ -1,14 +1,20 @@
 [
     {
         "kind": "InlineHtml",
-        "textLength": 1
+        "fullStart": 0,
+        "start": 0,
+        "length": 1
     },
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 1,
+        "start": 1,
+        "length": 6
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 7,
+        "start": 7,
+        "length": 0
     }
 ]

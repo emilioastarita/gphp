@@ -1,14 +1,20 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "VariableName",
-        "textLength": 8
+        "fullStart": 6,
+        "start": 6,
+        "length": 8
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 14,
+        "start": 14,
+        "length": 0
     }
 ]

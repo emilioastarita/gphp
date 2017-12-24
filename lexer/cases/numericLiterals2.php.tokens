@@ -1,14 +1,20 @@
 [
     {
         "kind": "ScriptSectionStartTag",
-        "textLength": 6
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
     },
     {
         "kind": "FloatingLiteralToken",
-        "textLength": 3
+        "fullStart": 6,
+        "start": 6,
+        "length": 3
     },
     {
         "kind": "EndOfFileToken",
-        "textLength": 0
+        "fullStart": 9,
+        "start": 9,
+        "length": 0
     }
 ]

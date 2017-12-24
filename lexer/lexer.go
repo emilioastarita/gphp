@@ -118,6 +118,9 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 
 	for {
 		l.start = l.pos
+		if l.start >= 27620 {
+			println("test")
+		}
 		// handling end of file
 		if l.pos >= l.eofPos {
 			var current *Token
@@ -567,9 +570,10 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 			// UNTERMINATED, report error
 			if len(tokenMem) == 0 {
 				tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
+				l.start++
 				l.fullStart = l.start
-				if l.start != eofPos-1 {
-					tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start + 1, *pos - l.fullStart, TokenCatNormal})
+				if l.start != eofPos {
+					tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start, *pos - l.fullStart, TokenCatNormal})
 				}
 
 				return tokenMem

@@ -118,9 +118,6 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 
 	for {
 		l.start = l.pos
-		if l.start >= 27620 {
-			println("test")
-		}
 		// handling end of file
 		if l.pos >= l.eofPos {
 			var current *Token

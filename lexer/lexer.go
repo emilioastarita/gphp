@@ -151,14 +151,17 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 
 		if l.hereDocStatus == HereDocNowDoc {
 			hasEncapsed := false
+			l.hereDocStatus = HereDocStateNone
 			for l.pos < l.eofPos {
 				if l.pos+1 < l.eofPos && isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos+1, l.eofPos) {
-					l.pos += len(l.hereDocIdentifier) + 1
 					if hasEncapsed {
+						l.pos++
 						tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
 						l.start, l.fullStart = l.pos, l.pos
 					}
+					l.pos += len(l.hereDocIdentifier)
 					tokenMem = append(tokenMem, l.createToken(HeredocEnd))
+					l.start, l.fullStart = l.pos, l.pos
 					return l.createToken(-1), tokenMem
 				} else {
 					hasEncapsed = true
@@ -314,7 +317,7 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 			return foundTokenKind, false
 		} else if l.content[pos] == '\'' && isNowDoc == true {
 			if pos+1 < l.eofPos && isNewLineChar(l.content[pos+1]) {
-				l.hereDocIdentifier = string(l.content[l.pos+4 : pos+1])
+				l.hereDocIdentifier = string(l.content[l.pos+4 : pos])
 				l.pos = pos + 2
 				l.hereDocStatus = HereDocNowDoc
 				return HeredocStart, true

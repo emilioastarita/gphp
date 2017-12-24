@@ -22,7 +22,7 @@ func TestEx(t *testing.T) {
 	stream.Source(`<?php
 $here = <<<'HERE'
     if (I'm here,) $foo!
-
+HERE;
 `)
 	stream.CreateTokens()
 	stream.Debug()

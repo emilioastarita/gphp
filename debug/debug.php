@@ -12,7 +12,7 @@ function usage($argv) {
     echo ' - parse: Parse file and prints AST using tolerant-php-parser'. PHP_EOL;
     echo ' - tokens: Scan file and prints tokens using token_get_all_nl'. PHP_EOL;
     echo ' - gencase-parser: Generates .tree with tolerant-php-parser'. PHP_EOL;
-    echo ' - gencase-lexer: Generates .tokens with tolerant-php-parser'. PHP_EOL;
+    echo ' - gencase-tokens: Generates .tokens with tolerant-php-parser'. PHP_EOL;
     var_dump($argv);
 }
 

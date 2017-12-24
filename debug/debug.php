@@ -104,8 +104,7 @@ function dirOrFile($filename, $fn) {
 
 function parseDirOrFile($dir) {
     dirOrFile($dir, function($filename) {
-        echo $filename .PHP_EOL;
-        echo parseFile($filename);
+        echo parseFile($filename, false);
     });
 }
 
@@ -145,11 +144,7 @@ function parseFile($file, $pretty = true) {
     global $parser;
     $content = file_get_contents($file);
     $sourceFileNode = $parser->parseSourceFile($content);
-    $ast = str_replace("\r\n", "\n", json_encode($sourceFileNode, JSON_PRETTY_PRINT));
-    if ($pretty) {
-        return json_encode($ast, JSON_PRETTY_PRINT);
-    }
-    return json_encode($ast);
+    return str_replace("\r\n", "\n", json_encode($sourceFileNode, JSON_PRETTY_PRINT));
 }
 
 

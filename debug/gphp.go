@@ -61,7 +61,6 @@ func printDiffWithPhpScan(filename string) {
 	stream.CreateTokens()
 
 	resultCase := make([]lexer.TokenCompareForm, 0)
-
 	json.Unmarshal(getMsParserOutput(filename, "scan"), &resultCase)
 
 	differ := diff.New()
@@ -101,11 +100,11 @@ func printDiffWithPhpParser(filename string) {
 	sourceCase, _ := ioutil.ReadFile(filename)
 	sourceFile := p.ParseSourceFile(string(sourceCase), "")
 	jsonSource, _ := json.Marshal(ast.Serialize(&sourceFile))
-	resultCase := getMsParserOutput(filename, "parse")
+	resultCaseFromPhpParser := getMsParserOutput(filename, "parse")
 
 	differ := diff.New()
 
-	d, err := differ.Compare(jsonSource, resultCase)
+	d, err := differ.Compare(jsonSource, resultCaseFromPhpParser)
 
 	if err != nil {
 		fmt.Println("Fail in diff:", filename)
@@ -144,7 +143,6 @@ func getMsParserOutput(filename string, action string) []byte {
 }
 
 func printAstFromFile(filename string) {
-	fmt.Println("AST of :", filename)
 	data, err := ioutil.ReadFile(filename)
 
 	if err != nil {

@@ -306,7 +306,7 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 		} else if l.content[pos] == '\'' && isNowDoc == true {
 			if pos+1 < l.eofPos && isNewLineChar(l.content[pos+1]) {
 				l.hereDocIdentifier = string(l.content[l.pos+4 : pos+1])
-				l.pos = pos + 1
+				l.pos = pos + 2
 				l.hereDocStatus = HereDocNowDoc
 				return HeredocStart, true
 			}

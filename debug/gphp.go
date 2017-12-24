@@ -60,7 +60,7 @@ func printDiffWithPhpScan(filename string) {
 	stream.Source(string(sourceCase))
 	stream.CreateTokens()
 
-	resultCase := make([]lexer.TokenFullForm, 0)
+	resultCase := make([]lexer.TokenCompareForm, 0)
 
 	json.Unmarshal(getMsParserOutput(filename, "scan"), &resultCase)
 

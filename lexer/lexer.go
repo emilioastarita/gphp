@@ -88,10 +88,10 @@ func (s *TokensStream) Debug() {
 	}
 }
 
-func (s *TokensStream) Serialize() []TokenFullForm {
-	tokens := make([]TokenFullForm, 0)
+func (s *TokensStream) Serialize() []TokenCompareForm {
+	tokens := make([]TokenCompareForm, 0)
 	for _, token := range s.Tokens {
-		b := token.getFullForm([]rune(s.lexer.content))
+		b := token.getFullFormCompare([]rune(s.lexer.content))
 		tokens = append(tokens, b)
 	}
 	return tokens

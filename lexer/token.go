@@ -21,6 +21,14 @@ type TokenShortForm struct {
 	TextLength int    `json:"textLength"`
 	Text       string `json:text`
 }
+
+type TokenCompareForm struct {
+	Kind      string `json:"kind"`
+	FullStart int    `json:"fullStart"`
+	Start     int    `json:"start"`
+	Length    int    `json:"length"`
+}
+
 type TokenFullForm struct {
 	Token
 	Kind       string `json:"kind"`
@@ -37,8 +45,13 @@ func (r Token) getText(text []rune) string {
 func (r Token) getShortForm(text []rune) TokenShortForm {
 	return TokenShortForm{r.Kind.String(), r.Length - (r.Start - r.FullStart), r.getText(text)}
 }
+
 func (r Token) getFullForm(text []rune) TokenFullForm {
 	t := TokenFullForm{Kind: r.Kind.String(), TextLength: r.Length - (r.Start - r.FullStart), Text: r.getText(text), Token: r}
+	return t
+}
 
+func (r Token) getFullFormCompare(text []rune) TokenCompareForm {
+	t := TokenCompareForm{Kind: r.Kind.String(), FullStart: r.FullStart, Start: r.Start, Length: r.Length}
 	return t
 }

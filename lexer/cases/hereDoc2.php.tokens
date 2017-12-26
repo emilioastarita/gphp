@@ -1,0 +1,38 @@
+[
+    {
+        "kind": "ScriptSectionStartTag",
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
+    },
+    {
+        "kind": "VariableName",
+        "fullStart": 6,
+        "start": 6,
+        "length": 4
+    },
+    {
+        "kind": "EqualsToken",
+        "fullStart": 10,
+        "start": 11,
+        "length": 2
+    },
+    {
+        "kind": "HeredocStart",
+        "fullStart": 12,
+        "start": 13,
+        "length": 8
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "fullStart": 20,
+        "start": 20,
+        "length": 9
+    },
+    {
+        "kind": "EndOfFileToken",
+        "fullStart": 29,
+        "start": 29,
+        "length": 0
+    }
+]

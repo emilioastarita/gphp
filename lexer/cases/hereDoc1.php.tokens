@@ -1,0 +1,50 @@
+[
+    {
+        "kind": "ScriptSectionStartTag",
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
+    },
+    {
+        "kind": "VariableName",
+        "fullStart": 6,
+        "start": 6,
+        "length": 4
+    },
+    {
+        "kind": "EqualsToken",
+        "fullStart": 10,
+        "start": 11,
+        "length": 2
+    },
+    {
+        "kind": "HeredocStart",
+        "fullStart": 12,
+        "start": 13,
+        "length": 8
+    },
+    {
+        "kind": "EncapsedAndWhitespace",
+        "fullStart": 20,
+        "start": 20,
+        "length": 6
+    },
+    {
+        "kind": "HeredocEnd",
+        "fullStart": 26,
+        "start": 26,
+        "length": 3
+    },
+    {
+        "kind": "SemicolonToken",
+        "fullStart": 29,
+        "start": 29,
+        "length": 1
+    },
+    {
+        "kind": "EndOfFileToken",
+        "fullStart": 30,
+        "start": 31,
+        "length": 1
+    }
+]

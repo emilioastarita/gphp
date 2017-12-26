@@ -150,10 +150,10 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 		charCode := l.content[l.pos]
 
 		if l.hereDocStatus == HereDocNowDoc {
-			return parseDocNow(l, tokenMem)
+			return l.createToken(-1), parseDocNow(l, tokenMem)
 		} else if l.hereDocStatus == HereDocNormal {
 			// @todo We are handling heredoc as docnow for now
-			return parseDocNow(l, tokenMem)
+			return l.createToken(-1), parseHeredoc(l, tokenMem)
 		}
 
 		switch charCode {
@@ -245,7 +245,7 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 	}
 }
 
-func parseDocNow(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
+func parseDocNow(l *LexerScanner, tokenMem []*Token) []*Token {
 	hasEncapsed := false
 	l.hereDocStatus = HereDocStateNone
 	for l.pos < l.eofPos {
@@ -258,7 +258,7 @@ func parseDocNow(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
 			l.pos += len(l.hereDocIdentifier)
 			tokenMem = append(tokenMem, l.createToken(HeredocEnd))
 			l.start, l.fullStart = l.pos, l.pos
-			return l.createToken(-1), tokenMem
+			return  tokenMem
 		} else {
 			hasEncapsed = true
 			l.pos++
@@ -270,7 +270,105 @@ func parseDocNow(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
 		l.start, l.fullStart = l.pos, l.pos
 	}
 
-	return l.createToken(-1), tokenMem
+	return  tokenMem
+}
+
+func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
+	l.hereDocStatus = HereDocStateNone
+	startPosition := l.start
+	eofPos := l.eofPos
+	pos := &l.pos
+	fileContent := l.content
+	*pos++
+	for {
+		if *pos >= eofPos {
+			// UNTERMINATED, report error
+			tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start, *pos - l.fullStart, TokenCatNormal})
+			return tokenMem
+		}
+
+		char := l.content[*pos]
+
+		if *pos+1 < l.eofPos && isNewLineChar(l.content[*pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, *pos+1, l.eofPos) {
+			tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start, *pos - l.fullStart + 1, TokenCatNormal})
+			*pos++
+			l.start, l.fullStart = *pos , *pos
+			*pos += len(l.hereDocIdentifier)
+			tokenMem = l.addToMem(HeredocEnd, *pos, tokenMem)
+			l.start, l.fullStart = *pos, *pos
+			return tokenMem
+		}
+
+		if char == '$' {
+			if isNameStart(fileContent, *pos+1, eofPos) {
+				if *pos-l.start > 0 {
+					tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
+				}
+				*pos++
+				scanName(fileContent, pos, eofPos)
+				tokenMem = l.addToMem(VariableName, *pos, tokenMem)
+
+				if *pos < eofPos && fileContent[*pos] == '[' {
+					*pos++
+					tokenMem = l.addToMem(OpenBracketToken, *pos, tokenMem)
+					if isDigitChar(fileContent[*pos]) {
+						*pos++
+						scanName(fileContent, pos, eofPos)
+						tokenMem = l.addToMem(IntegerLiteralToken, *pos, tokenMem)
+					} else if isNameStart(fileContent, *pos, eofPos) {
+						// var name index
+						*pos++
+						scanName(fileContent, pos, eofPos)
+						tokenMem = l.addToMem(Name, *pos, tokenMem)
+					}
+					if fileContent[*pos] == ']' {
+						*pos++
+						tokenMem = l.addToMem(CloseBracketToken, *pos, tokenMem)
+					}
+				} else if *pos+1 < eofPos && fileContent[*pos] == '-' && fileContent[*pos+1] == '>' {
+					if isNameStart(fileContent, *pos+2, eofPos) {
+						*pos++
+						*pos++
+						tokenMem = l.addToMem(ArrowToken, *pos, tokenMem)
+						// var name index
+						*pos++
+						scanName(fileContent, pos, eofPos)
+						tokenMem = l.addToMem(Name, *pos, tokenMem)
+					}
+				}
+
+				continue
+			} else if *pos+1 < eofPos && fileContent[*pos+1] == '{' {
+				// curly
+				var exit bool
+				if exit, tokenMem = saveCurlyExpressionHereDoc(l, DollarOpenBraceToken, pos, startPosition, tokenMem); exit {
+					return tokenMem
+				}
+				continue
+			}
+		}
+
+		if char == '{' {
+			if *pos+1 < eofPos && fileContent[*pos+1] == '$' {
+				var exit bool
+				if exit, tokenMem = saveCurlyExpressionHereDoc(l, OpenBraceDollarToken, pos, startPosition, tokenMem); exit {
+					return tokenMem
+				}
+				continue
+			}
+		}
+
+		// Escape character
+		if char == '\\' {
+			*pos++
+			scanDqEscapeSequence(fileContent, pos, eofPos)
+			continue
+		}
+
+		*pos++
+	}
+	return tokenMem
+
 }
 
 func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
@@ -688,6 +786,49 @@ func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPo
 		l.start++
 		l.fullStart = l.start
 	}
+	if *pos-l.start > 0 {
+		tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
+	}
+	openTokenLen := 1
+	if openToken == DollarOpenBraceToken {
+		openTokenLen = 2
+	}
+	tokenMem = l.addToMemInPlace(openToken, *pos, openTokenLen, tokenMem)
+	*pos += openTokenLen
+	l.fullStart = *pos
+	l.start = *pos
+	isFirst := true
+	for *pos < l.eofPos {
+		t, tokenMemTmp := l.scan(nil)
+		l.fullStart = *pos
+		l.start = *pos
+
+		if t.Kind == -1 {
+			tokenMem = append(tokenMem, tokenMemTmp...)
+			continue
+		}
+
+		if isFirst && (t.Kind == Name || IsKeywordOrReserverdWordToken(t.Kind)) {
+			t.Kind = StringVarname
+			isFirst = false
+		}
+		if t.Kind == VariableName {
+			isFirst = false
+		}
+
+		tokenMem = append(tokenMem, t)
+		if t.Kind == ScriptSectionEndTag {
+			return true, tokenMem
+		}
+		if t.Kind == CloseBraceToken {
+			break
+		}
+
+	}
+	return false, tokenMem
+}
+
+func saveCurlyExpressionHereDoc(l *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []*Token) (bool, []*Token) {
 	if *pos-l.start > 0 {
 		tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 	}

@@ -1,0 +1,4 @@
+<?php
+$sql = <<<END
+    ;
+EN

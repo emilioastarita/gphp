@@ -472,6 +472,11 @@ func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 				break
 			}
 		}
+		if (foundTokenKind != Unknown) {
+			continue
+		}
+		return foundTokenKind, false
+
 	}
 	return foundTokenKind, false
 }

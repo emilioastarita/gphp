@@ -112,13 +112,13 @@ var CAST_KEYWORDS = []string{
 }
 
 var CAST_KEYWORDS_MAP = map[string]TokenKind{
-	"array":   ArrayCastToken,
 	"boolean": BoolCastToken,
 	"string":  StringCastToken,
 	"binary":  StringCastToken,
 	"double":  DoubleCastToken,
-	"float":   DoubleCastToken,
 	"object":  ObjectCastToken,
+	"array":   ArrayCastToken,
+	"float":   DoubleCastToken,
 	"unset":   UnsetCastToken,
 	"bool":    BoolCastToken,
 	"int":     IntCastToken,

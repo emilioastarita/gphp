@@ -2,6 +2,7 @@ package lexer
 
 import (
 	"encoding/json"
+	"fmt"
 	diff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
 	"io/ioutil"
@@ -20,23 +21,24 @@ func BenchmarkComplex(b *testing.B) {
 }
 
 func TestEx(t *testing.T) {
+
+	test := isNameNonDigitChar('√')
+
+	fmt.Println(test)
+
 	stream := TokensStream{}
 	stream.Source(`<?php
 (array)
 `)
 	stream.CreateTokens()
-	stream.Debug()
 }
 
 func TestCases(t *testing.T) {
 	suffix := ".tokens"
 	tokensLen := len(suffix)
 
-	skipFiles := map[string]bool{
-		"cases/keyword4.php.tokens": true,
-		"cases/keyword6.php.tokens": true,
-		"cases/keyword7.php.tokens": true,
-	}
+	skipFiles := map[string]bool{}
+
 	resultFiles, _ := filepath.Glob("cases/*.php" + suffix)
 
 	for _, resultFile := range resultFiles {

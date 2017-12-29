@@ -1,8 +1,6 @@
 package lexer
 
 import (
-	"encoding/json"
-	"os"
 	"strings"
 	"unicode"
 )
@@ -30,6 +28,7 @@ type LexerScanner struct {
 	fullStart         int
 	start             int
 	content           []rune
+	stringDelimiter   TokenKind
 }
 
 type TokensStream struct {
@@ -51,6 +50,7 @@ func (s *TokensStream) Source(content string) {
 		0,
 		0,
 		[]rune(content),
+		DoubleQuoteToken,
 	}
 	s.lexer.eofPos = len(s.lexer.content)
 }
@@ -78,14 +78,6 @@ func (s *TokensStream) ScanNext() *Token {
 	pos := s.Pos
 	s.Pos++
 	return s.Tokens[pos]
-}
-
-func (s *TokensStream) Debug() {
-	for _, token := range s.Tokens {
-		b, _ := json.MarshalIndent(token.getFullForm([]rune(s.lexer.content)), "", "    ")
-		os.Stdout.Write(b)
-		println("")
-	}
 }
 
 func (s *TokensStream) Serialize() []TokenCompareForm {
@@ -231,7 +223,7 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 				return l.createToken(VariableName), tokenMem
 			}
 			return l.createToken(DollarToken), tokenMem
-		case '"', '\'':
+		case '"', '\'', '`':
 			return getStringQuoteTokens(l, tokenMem)
 		case 'b', 'B':
 			if l.pos+1 < l.eofPos && (l.content[l.pos+1] == '\'' || l.content[l.pos+1] == '"') {
@@ -258,7 +250,7 @@ func parseDocNow(l *LexerScanner, tokenMem []*Token) []*Token {
 			l.pos += len(l.hereDocIdentifier)
 			tokenMem = append(tokenMem, l.createToken(HeredocEnd))
 			l.start, l.fullStart = l.pos, l.pos
-			return  tokenMem
+			return tokenMem
 		} else {
 			hasEncapsed = true
 			l.pos++
@@ -270,7 +262,7 @@ func parseDocNow(l *LexerScanner, tokenMem []*Token) []*Token {
 		l.start, l.fullStart = l.pos, l.pos
 	}
 
-	return  tokenMem
+	return tokenMem
 }
 
 func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
@@ -279,7 +271,6 @@ func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
 	eofPos := l.eofPos
 	pos := &l.pos
 	fileContent := l.content
-	*pos++
 	for {
 		if *pos >= eofPos {
 			// UNTERMINATED, report error
@@ -292,7 +283,7 @@ func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
 		if *pos+1 < l.eofPos && isNewLineChar(l.content[*pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, *pos+1, l.eofPos) {
 			tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start, *pos - l.fullStart + 1, TokenCatNormal})
 			*pos++
-			l.start, l.fullStart = *pos , *pos
+			l.start, l.fullStart = *pos, *pos
 			*pos += len(l.hereDocIdentifier)
 			tokenMem = l.addToMem(HeredocEnd, *pos, tokenMem)
 			l.start, l.fullStart = *pos, *pos
@@ -405,6 +396,11 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 	foundTokenKind := Unknown
 
 	pos := l.pos + 3 // consume <<<
+
+	for unicode.IsSpace(l.content[pos]) && !isNewLineChar(l.content[pos]) {
+		pos++
+	}
+
 	isNowDoc := l.content[pos] == '\''
 
 	if isNowDoc {
@@ -414,6 +410,7 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 	if isNameStart(l.content, pos, l.eofPos) == false {
 		return foundTokenKind, false
 	}
+	startIdentifier := pos
 	pos++
 
 	for ; pos < l.eofPos; pos++ {
@@ -423,13 +420,13 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 			return foundTokenKind, false
 		} else if l.content[pos] == '\'' && isNowDoc == true {
 			if pos+1 < l.eofPos && isNewLineChar(l.content[pos+1]) {
-				l.hereDocIdentifier = string(l.content[l.pos+4 : pos])
+				l.hereDocIdentifier = string(l.content[startIdentifier:pos])
 				l.pos = pos + 2
 				l.hereDocStatus = HereDocNowDoc
 				return HeredocStart, true
 			}
 		} else if isNewLineChar(l.content[pos]) {
-			l.hereDocIdentifier = string(l.content[l.pos+3 : pos])
+			l.hereDocIdentifier = string(l.content[startIdentifier:pos])
 			l.pos = pos + 1
 			l.hereDocStatus = HereDocNormal
 			return HeredocStart, true
@@ -472,7 +469,7 @@ func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 				break
 			}
 		}
-		if (foundTokenKind != Unknown) {
+		if foundTokenKind != Unknown {
 			continue
 		}
 		return foundTokenKind, false
@@ -483,8 +480,10 @@ func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 
 func tryScanYieldFrom(l *LexerScanner) (int, bool) {
 	foundTokenKind := false
+	foundPos := -1
 	from := "from"
 	fromLen := len(from)
+
 	for i := l.pos + 1; i < l.eofPos; i++ {
 
 		if unicode.IsSpace(l.content[i]) || l.content[i] == ';' {
@@ -494,7 +493,7 @@ func tryScanYieldFrom(l *LexerScanner) (int, bool) {
 			continue
 		}
 
-		if i+fromLen >= l.eofPos {
+		if i+fromLen > l.eofPos {
 			return -1, false
 		}
 
@@ -507,9 +506,10 @@ func tryScanYieldFrom(l *LexerScanner) (int, bool) {
 		if word == from {
 			foundTokenKind = true
 			i = i + fromLen - 1
+			foundPos = i + 1
 		}
 	}
-	return -1, false
+	return foundPos, foundTokenKind
 }
 
 func getNameOrDigitTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
@@ -538,7 +538,11 @@ func getNameOrDigitTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token)
 }
 
 func getStringQuoteTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token) {
-	if l.content[l.pos] == '"' {
+	if l.content[l.pos] == '"' || l.content[l.pos] == '`' {
+		l.stringDelimiter = DoubleQuoteToken
+		if l.content[l.pos] == '`' {
+			l.stringDelimiter = BacktickToken
+		}
 		tokenMem = scanTemplateAndSetTokenValue(l, tokenMem)
 		return l.createToken(-1), tokenMem
 	}
@@ -677,7 +681,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 		if *pos >= eofPos {
 			// UNTERMINATED, report error
 			if len(tokenMem) == 0 {
-				tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
+				tokenMem = append(tokenMem, &Token{l.stringDelimiter, l.fullStart, l.start, l.start - l.fullStart + 1, TokenCatNormal})
 				l.start++
 				l.fullStart = l.start
 				if l.start != eofPos {
@@ -692,8 +696,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 
 		char := l.content[*pos]
 
-		if char == '"' {
-
+		if char == '"' && l.stringDelimiter == DoubleQuoteToken || char == '`' && l.stringDelimiter == BacktickToken {
 			if len(tokenMem) == 0 {
 				*pos++
 				tokenMem = l.addToMem(StringLiteralToken, *pos, tokenMem)
@@ -704,7 +707,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 					tokenMem = l.addToMem(EncapsedAndWhitespace, *pos, tokenMem)
 				}
 				*pos++
-				tokenMem = l.addToMem(DoubleQuoteToken, *pos, tokenMem)
+				tokenMem = l.addToMem(l.stringDelimiter, *pos, tokenMem)
 				return tokenMem
 			}
 		}
@@ -712,7 +715,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 		if char == '$' {
 			if isNameStart(fileContent, *pos+1, eofPos) {
 				if len(tokenMem) == 0 {
-					tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
+					tokenMem = append(tokenMem, &Token{l.stringDelimiter, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
 					l.start++
 					l.fullStart = l.start
 				}
@@ -787,7 +790,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 
 func saveCurlyExpression(l *LexerScanner, openToken TokenKind, pos *int, startPosition int, tokenMem []*Token) (bool, []*Token) {
 	if len(tokenMem) == 0 {
-		tokenMem = append(tokenMem, &Token{DoubleQuoteToken, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
+		tokenMem = append(tokenMem, &Token{l.stringDelimiter, l.fullStart, startPosition, startPosition - l.fullStart + 1, TokenCatNormal})
 		l.start++
 		l.fullStart = l.start
 	}
@@ -1011,9 +1014,23 @@ func isNameNonDigitChar(charCode rune) bool {
 }
 
 func isNonDigitChar(charCode rune) bool {
-	return (charCode >= 'a' && charCode <= 'z') ||
-		(charCode >= 'A' && charCode <= 'Z') ||
-		charCode == '_'
+	switch charCode {
+	case '/', '<', '.', '=',
+		'>', '*', '!', '-', '$',
+		'"', '%', '^', '|', '&', '?',
+		':', ',', '@', '{', '}', ';',
+		'~', '\\', '[', ']', '\'',
+		'+', ')', '(':
+		return false
+	}
+
+	return (charCode >= '\u0080' || charCode <= '\u00ff') &&
+		!unicode.IsSpace(charCode) &&
+		!unicode.IsDigit(charCode)
+
+	//return (charCode >= 'a' && charCode <= 'z') ||
+	//	(charCode >= 'A' && charCode <= 'Z') ||
+	//	charCode == '_'
 }
 
 func isValidNameUnicodeChar(charCode rune) bool {
@@ -1042,7 +1059,7 @@ func scanHexadecimalLiteral(text []rune, pos *int, eofPos int) bool {
 
 func scanFloatingPointLiteral(text []rune, pos *int, eofPos int) bool {
 	hasDot := false
-	var expStart int = -1
+	expStart := -1
 	hasSign := false
 	for *pos < eofPos {
 		char := text[*pos]
@@ -1095,21 +1112,18 @@ func scanFloatingPointLiteral(text []rune, pos *int, eofPos int) bool {
 }
 
 func scanBinaryLiteral(text []rune, pos *int, eofPos int) bool {
-	isValid := true
+
 	for *pos < eofPos {
 		charCode := text[*pos]
 		if isBinaryDigitChar(charCode) {
 			*pos++
 			continue
 		} else if isDigitChar(charCode) {
-			*pos++
-			// REPORT ERROR;
-			isValid = false
-			continue
+			return false
 		}
 		break
 	}
-	return isValid
+	return true
 }
 
 func isNameStart(text []rune, pos int, eofPos int) bool {
@@ -1140,7 +1154,7 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 		isValidBinaryLiteral := scanBinaryLiteral(text, pos, eofPos)
 		if prevPos == *pos || !isValidBinaryLiteral {
 			// invalid binary literal
-			return InvalidBinaryLiteral
+			return IntegerLiteralToken
 		}
 		return IntegerLiteralToken
 		//return BinaryLiteralToken

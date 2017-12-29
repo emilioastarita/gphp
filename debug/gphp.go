@@ -76,7 +76,7 @@ func printDiffWithPhpScan(filename string) {
 	}
 
 	if d.Modified() {
-		println("Fail: ", filename)
+		fmt.Println("Fail: ", filename)
 		var aJson map[string]interface{}
 		json.Unmarshal(left, &aJson)
 
@@ -91,11 +91,12 @@ func printDiffWithPhpScan(filename string) {
 		fmt.Println("END DIFF")
 
 	} else {
-		println("Ok: ", filename)
+		fmt.Println("Ok: ", filename)
 	}
 }
 
 func printDiffWithPhpParser(filename string) {
+
 	p := parser.Parser{}
 	sourceCase, _ := ioutil.ReadFile(filename)
 	sourceFile := p.ParseSourceFile(string(sourceCase), "")
@@ -113,7 +114,7 @@ func printDiffWithPhpParser(filename string) {
 	}
 
 	if d.Modified() {
-		println("Fail: ", filename)
+		fmt.Println("Fail: ", filename)
 		var aJson map[string]interface{}
 		json.Unmarshal(jsonSource, &aJson)
 
@@ -128,7 +129,7 @@ func printDiffWithPhpParser(filename string) {
 		fmt.Println("END DIFF")
 
 	} else {
-		println("Ok: ", filename)
+		fmt.Println("Ok: ", filename)
 	}
 }
 
@@ -144,7 +145,6 @@ func getMsParserOutput(filename string, action string) []byte {
 
 func printAstFromFile(filename string) {
 	data, err := ioutil.ReadFile(filename)
-
 	if err != nil {
 		fmt.Println("Can't read file:", filename)
 		panic(err)
@@ -164,7 +164,9 @@ func printTokensFromFile(filename string) {
 	stream := lexer.TokensStream{}
 	stream.Source(content)
 	stream.CreateTokens()
-	stream.Debug()
+	jsonSource, _ := json.Marshal(stream.Serialize())
+	pretty, _ := ast.PrettyPrintJSON(jsonSource)
+	fmt.Println(string(pretty))
 }
 
 func printAst(content string) {
@@ -174,16 +176,16 @@ func printAst(content string) {
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 
 	if err != nil {
-		println(err)
+		fmt.Println(err)
 	} else {
 		pretty, _ := ast.PrettyPrintJSON(jsonSource)
-		fmt.Println(string((pretty)))
+		fmt.Println(string(pretty))
 	}
 }
 
 func lexerWalk(filename string) {
 	list, _ := filesOfDir(filename)
-	println("Reading: ", len(list))
+	fmt.Println("Reading: ", len(list))
 	for _, f := range list {
 		scanTokens(f)
 	}
@@ -204,6 +206,7 @@ func fnWalk(fileOrDir string, fn func(file string)) {
 	case mode.IsRegular():
 		fn(fileOrDir)
 	}
+
 }
 
 func filesOfDir(searchDir string) ([]string, error) {
@@ -216,7 +219,7 @@ func filesOfDir(searchDir string) ([]string, error) {
 	})
 
 	if e != nil {
-		panic(e)
+		return nil, e
 	}
 	return fileList, nil
 }

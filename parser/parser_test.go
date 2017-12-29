@@ -4,6 +4,7 @@ import (
 	"testing"
 	//"encoding/json"
 	"encoding/json"
+	"fmt"
 	"github.com/emilioastarita/gphp/ast"
 	diff "github.com/yudai/gojsondiff"
 	"github.com/yudai/gojsondiff/formatter"
@@ -20,10 +21,10 @@ $c[1]
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {
-		println(err)
+		fmt.Println(err)
 	} else {
 		pretty, _ := ast.PrettyPrintJSON(jsonSource)
-		println(string((pretty)))
+		fmt.Println(string((pretty)))
 	}
 
 }

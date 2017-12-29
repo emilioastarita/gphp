@@ -99,6 +99,7 @@ var RESERVED_WORDS = map[string]TokenKind{
 // we need this in this order
 // to avoid find `bool` before `boolean`.
 var CAST_KEYWORDS = []string{
+	"integer",
 	"boolean",
 	"string",
 	"binary",
@@ -112,6 +113,7 @@ var CAST_KEYWORDS = []string{
 }
 
 var CAST_KEYWORDS_MAP = map[string]TokenKind{
+	"integer": IntCastToken,
 	"boolean": BoolCastToken,
 	"string":  StringCastToken,
 	"binary":  StringCastToken,

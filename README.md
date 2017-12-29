@@ -51,7 +51,6 @@ php debug.php gencase-tokens ../parser/cases/
 
 
 ### Important missing parts:
-- Lexer heredoc sintax is handled as docnow.
-- Double quote strings are implemented but could work a little hacky in some cases. mstpp is using internal php functions `token_get_all_nl` for tokenization so is obviusly more robust. Anyway mosts tests are passing. If you find some weird case please provide a minimal test case.
+- Double quote/backtick/heredoc strings are implemented but could work a little hacky in some cases. mstpp is using internal php functions `token_get_all_nl` for tokenization so is obviusly more robust. Anyway most tests are passing. If you find some weird case please provide a minimal test case.
 - Diagnosis tools
 - More idiomatic go

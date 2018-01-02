@@ -6,15 +6,21 @@
         "length": 6
     },
     {
-        "kind": "StringLiteralToken",
+        "kind": "ArrayCastToken",
         "fullStart": 6,
         "start": 6,
-        "length": 8
+        "length": 7
+    },
+    {
+        "kind": "SemicolonToken",
+        "fullStart": 13,
+        "start": 13,
+        "length": 1
     },
     {
         "kind": "EndOfFileToken",
         "fullStart": 14,
-        "start": 14,
-        "length": 0
+        "start": 15,
+        "length": 1
     }
 ]

@@ -9,12 +9,12 @@
         "kind": "StringLiteralToken",
         "fullStart": 6,
         "start": 11,
-        "length": 25
+        "length": 26
     },
     {
         "kind": "EndOfFileToken",
-        "fullStart": 31,
-        "start": 31,
+        "fullStart": 32,
+        "start": 32,
         "length": 0
     }
 ]

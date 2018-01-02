@@ -15,7 +15,7 @@ func BenchmarkComplex(b *testing.B) {
 	stream := TokensStream{}
 
 	for n := 0; n < b.N; n++ {
-		stream.Source(string(data))
+		stream.Source(data)
 		stream.CreateTokens()
 	}
 }
@@ -27,9 +27,9 @@ func TestEx(t *testing.T) {
 	fmt.Println(test)
 
 	stream := TokensStream{}
-	stream.Source(`<?php
+	stream.Source([]byte(`<?php
 (array)
-`)
+`))
 	stream.CreateTokens()
 }
 
@@ -53,7 +53,7 @@ func TestCases(t *testing.T) {
 			sourceFileName := resultFile[:len(resultFile)-tokensLen]
 			sourceCase, _ := ioutil.ReadFile(sourceFileName)
 			stream := TokensStream{}
-			stream.Source(string(sourceCase))
+			stream.Source(sourceCase)
 			stream.CreateTokens()
 
 			var expectedTokens []TokenCompareForm

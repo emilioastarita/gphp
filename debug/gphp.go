@@ -57,7 +57,7 @@ func printDiffWithPhpScan(filename string) {
 	sourceCase, _ := ioutil.ReadFile(filename)
 
 	stream := lexer.TokensStream{}
-	stream.Source(string(sourceCase))
+	stream.Source(sourceCase)
 	stream.CreateTokens()
 
 	resultCase := make([]lexer.TokenCompareForm, 0)
@@ -99,7 +99,7 @@ func printDiffWithPhpParser(filename string) {
 
 	p := parser.Parser{}
 	sourceCase, _ := ioutil.ReadFile(filename)
-	sourceFile := p.ParseSourceFile(string(sourceCase), "")
+	sourceFile := p.ParseSourceFile(sourceCase, "")
 	jsonSource, _ := json.Marshal(ast.Serialize(&sourceFile))
 	resultCaseFromPhpParser := getMsParserOutput(filename, "parse")
 
@@ -149,8 +149,8 @@ func printAstFromFile(filename string) {
 		fmt.Println("Can't read file:", filename)
 		panic(err)
 	}
-	content := string(data)
-	printAst(content)
+	
+	printAst(data)
 }
 
 func printTokensFromFile(filename string) {
@@ -159,17 +159,17 @@ func printTokensFromFile(filename string) {
 		fmt.Println("Can't read file:", filename)
 		panic(err)
 	}
-	content := string(data)
+
 
 	stream := lexer.TokensStream{}
-	stream.Source(content)
+	stream.Source(data)
 	stream.CreateTokens()
 	jsonSource, _ := json.Marshal(stream.Serialize())
 	pretty, _ := ast.PrettyPrintJSON(jsonSource)
 	fmt.Println(string(pretty))
 }
 
-func printAst(content string) {
+func printAst(content []byte) {
 	p := parser.Parser{}
 	sourceFile := p.ParseSourceFile(content, "")
 
@@ -232,7 +232,7 @@ func scanTokens(file string) {
 	}
 	//fmt.Println("Data", string(dat));
 	stream := lexer.TokensStream{}
-	stream.Source(string(dat))
+	stream.Source(dat)
 	stream.CreateTokens()
 
 	fmt.Println("File: ", file, "Tokens: ", len(stream.Tokens))

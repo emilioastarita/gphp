@@ -9,12 +9,12 @@
         "kind": "VariableName",
         "fullStart": 6,
         "start": 6,
-        "length": 4
+        "length": 7
     },
     {
         "kind": "EndOfFileToken",
-        "fullStart": 10,
-        "start": 10,
+        "fullStart": 13,
+        "start": 13,
         "length": 0
     }
 ]

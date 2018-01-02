@@ -1,0 +1,44 @@
+[
+    {
+        "kind": "ScriptSectionStartTag",
+        "fullStart": 0,
+        "start": 0,
+        "length": 6
+    },
+    {
+        "kind": "BacktickToken",
+        "fullStart": 6,
+        "start": 6,
+        "length": 1
+    },
+    {
+        "kind": "DollarOpenBraceToken",
+        "fullStart": 7,
+        "start": 7,
+        "length": 2
+    },
+    {
+        "kind": "VariableName",
+        "fullStart": 9,
+        "start": 9,
+        "length": 2
+    },
+    {
+        "kind": "CloseBraceToken",
+        "fullStart": 11,
+        "start": 11,
+        "length": 1
+    },
+    {
+        "kind": "BacktickToken",
+        "fullStart": 12,
+        "start": 12,
+        "length": 1
+    },
+    {
+        "kind": "EndOfFileToken",
+        "fullStart": 13,
+        "start": 14,
+        "length": 1
+    }
+]

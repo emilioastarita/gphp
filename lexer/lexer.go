@@ -3,6 +3,7 @@ package lexer
 import (
 	"strings"
 	"unicode"
+	"unicode/utf8"
 )
 
 type LexerState int
@@ -27,7 +28,7 @@ type LexerScanner struct {
 	eofPos            int
 	fullStart         int
 	start             int
-	content           []rune
+	content           []byte
 	stringDelimiter   TokenKind
 }
 
@@ -35,12 +36,11 @@ type TokensStream struct {
 	Tokens []*Token
 	Pos    int
 	EofPos int
-
 	tokenMem []*Token
 	lexer    LexerScanner
 }
 
-func (s *TokensStream) Source(content string) {
+func (s *TokensStream) Source(content []byte) {
 	s.lexer = LexerScanner{
 		LexStateHtmlSection,
 		HereDocStateNone,
@@ -49,7 +49,7 @@ func (s *TokensStream) Source(content string) {
 		0,
 		0,
 		0,
-		[]rune(content),
+		content,
 		DoubleQuoteToken,
 	}
 	s.lexer.eofPos = len(s.lexer.content)
@@ -57,7 +57,7 @@ func (s *TokensStream) Source(content string) {
 
 func (s *TokensStream) CreateTokens() {
 	lexer := s.lexer
-	var token *Token = &Token{}
+	token := &Token{}
 	for token.Kind != EndOfFileToken {
 		token, s.tokenMem = lexer.scan(nil)
 		if token.Kind == -1 {
@@ -83,7 +83,7 @@ func (s *TokensStream) ScanNext() *Token {
 func (s *TokensStream) Serialize() []TokenCompareForm {
 	tokens := make([]TokenCompareForm, 0)
 	for _, token := range s.Tokens {
-		b := token.getFullFormCompare([]rune(s.lexer.content))
+		b := token.getFullFormCompare()
 		tokens = append(tokens, b)
 	}
 	return tokens
@@ -189,7 +189,7 @@ func (l *LexerScanner) scan(tokenMem []*Token) (*Token, []*Token) {
 				}
 			}
 
-			if l.pos+1 < l.eofPos && charCode == '.' && isDigitChar(l.content[l.pos+1]) {
+			if l.pos+1 < l.eofPos && charCode == '.' && isDigitChar(rune(l.content[l.pos+1])) {
 				kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
 				return l.createToken(kind), tokenMem
 			}
@@ -241,7 +241,7 @@ func parseDocNow(l *LexerScanner, tokenMem []*Token) []*Token {
 	hasEncapsed := false
 	l.hereDocStatus = HereDocStateNone
 	for l.pos < l.eofPos {
-		if l.pos+1 < l.eofPos && isNewLineChar(l.content[l.pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos+1, l.eofPos) {
+		if l.pos+1 < l.eofPos && isNewLineChar(rune(l.content[l.pos])) && isNowdocEnd(l.hereDocIdentifier, l.content, l.pos+1, l.eofPos) {
 			if hasEncapsed {
 				l.pos++
 				tokenMem = append(tokenMem, l.createToken(EncapsedAndWhitespace))
@@ -280,7 +280,7 @@ func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
 
 		char := l.content[*pos]
 
-		if *pos+1 < l.eofPos && isNewLineChar(l.content[*pos]) && isNowdocEnd(l.hereDocIdentifier, l.content, *pos+1, l.eofPos) {
+		if *pos+1 < l.eofPos && isNewLineChar(rune(l.content[*pos])) && isNowdocEnd(l.hereDocIdentifier, l.content, *pos+1, l.eofPos) {
 			tokenMem = append(tokenMem, &Token{EncapsedAndWhitespace, l.fullStart, l.start, *pos - l.fullStart + 1, TokenCatNormal})
 			*pos++
 			l.start, l.fullStart = *pos, *pos
@@ -302,7 +302,7 @@ func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
 				if *pos < eofPos && fileContent[*pos] == '[' {
 					*pos++
 					tokenMem = l.addToMem(OpenBracketToken, *pos, tokenMem)
-					if isDigitChar(fileContent[*pos]) {
+					if isDigitChar(rune(fileContent[*pos])) {
 						*pos++
 						scanName(fileContent, pos, eofPos)
 						tokenMem = l.addToMem(IntegerLiteralToken, *pos, tokenMem)
@@ -362,12 +362,12 @@ func parseHeredoc(l *LexerScanner, tokenMem []*Token) []*Token {
 
 }
 
-func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
+func isNowdocEnd(identifier string, content []byte, pos int, eof int) bool {
 	l := len(identifier)
 	if l+pos > eof {
 		return false
 	}
-	runeIdentifier := []rune(identifier)
+	runeIdentifier := []byte(identifier)
 	for i := 0; i < l; i++ {
 		if runeIdentifier[i] != content[pos+i] {
 			return false
@@ -376,7 +376,7 @@ func isNowdocEnd(identifier string, content []rune, pos int, eof int) bool {
 	return true
 }
 
-func isNowdocStart(content []rune, pos int, eof int) bool {
+func isNowdocStart(content []byte, pos int, eof int) bool {
 	// <<<'x'
 	if pos+6 > eof {
 		return false
@@ -384,7 +384,7 @@ func isNowdocStart(content []rune, pos int, eof int) bool {
 	return string(content[pos:pos+4]) == "<<<'"
 }
 
-func isHeredocStart(content []rune, pos int, eof int) bool {
+func isHeredocStart(content []byte, pos int, eof int) bool {
 	// <<<x
 	if pos+5 > eof {
 		return false
@@ -397,7 +397,7 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 
 	pos := l.pos + 3 // consume <<<
 
-	for unicode.IsSpace(l.content[pos]) && !isNewLineChar(l.content[pos]) {
+	for unicode.IsSpace(rune(l.content[pos])) && !isNewLineChar(rune(l.content[pos])) {
 		pos++
 	}
 
@@ -413,19 +413,23 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 	startIdentifier := pos
 	pos++
 
-	for ; pos < l.eofPos; pos++ {
-		if isValidNameUnicodeChar(l.content[pos]) {
+	for ; pos < l.eofPos; {
+
+		charCode, size := utf8.DecodeRune(l.content[pos:])
+
+		if isValidNameUnicodeChar(charCode) {
+			pos += size
 			continue
 		} else if l.content[pos] == '\'' && isNowDoc == false {
 			return foundTokenKind, false
 		} else if l.content[pos] == '\'' && isNowDoc == true {
-			if pos+1 < l.eofPos && isNewLineChar(l.content[pos+1]) {
+			if pos+1 < l.eofPos && isNewLineChar(rune(l.content[pos+1])) {
 				l.hereDocIdentifier = string(l.content[startIdentifier:pos])
 				l.pos = pos + 2
 				l.hereDocStatus = HereDocNowDoc
 				return HeredocStart, true
 			}
-		} else if isNewLineChar(l.content[pos]) {
+		} else if isNewLineChar(rune(l.content[pos])) {
 			l.hereDocIdentifier = string(l.content[startIdentifier:pos])
 			l.pos = pos + 1
 			l.hereDocStatus = HereDocNormal
@@ -438,7 +442,7 @@ func tryScanHeredocStart(l *LexerScanner) (TokenKind, bool) {
 func tryScanCastToken(l *LexerScanner) (TokenKind, bool) {
 	foundTokenKind := Unknown
 	for i := l.pos + 1; i < l.eofPos; i++ {
-		if unicode.IsSpace(l.content[i]) {
+		if unicode.IsSpace(rune(l.content[i])) {
 			continue
 		}
 
@@ -486,7 +490,7 @@ func tryScanYieldFrom(l *LexerScanner) (int, bool) {
 
 	for i := l.pos + 1; i < l.eofPos; i++ {
 
-		if unicode.IsSpace(l.content[i]) || l.content[i] == ';' {
+		if unicode.IsSpace(rune(l.content[i])) || l.content[i] == ';' {
 			if foundTokenKind {
 				return i, true
 			}
@@ -529,7 +533,7 @@ func getNameOrDigitTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token)
 			}
 		}
 		return token, tokenMem
-	} else if isDigitChar(l.content[l.pos]) {
+	} else if isDigitChar(rune(l.content[l.pos])) {
 		kind := scanNumericLiteral(l.content, &l.pos, l.eofPos)
 		return l.createToken(kind), tokenMem
 	}
@@ -553,7 +557,7 @@ func getStringQuoteTokens(l *LexerScanner, tokenMem []*Token) (*Token, []*Token)
 	return l.createToken(EncapsedAndWhitespace), tokenMem
 }
 
-func isScriptStartTag(text []rune, pos int, eofPos int) bool {
+func isScriptStartTag(text []byte, pos int, eofPos int) bool {
 
 	if text[pos] != '<' {
 		return false
@@ -609,7 +613,7 @@ func scanOperatorOrPunctuactorToken(lexer *LexerScanner) *Token {
 	panic("Unknown token Kind in OPERATORS_AND_PUNCTUATORS")
 }
 
-func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart string, text []rune, pos *int, eofPos int) *Token {
+func getKeywordOrReservedWordTokenFromNameToken(token *Token, lowerKeywordStart string, text []byte, pos *int, eofPos int) *Token {
 
 	kind, ok := KEYWORDS[lowerKeywordStart]
 	if !ok {
@@ -630,7 +634,7 @@ func isKeywordOrReservedWordStart(text string) bool {
 	return ok || ok2
 }
 
-func scanStringLiteral(text []rune, pos *int, eofPos int) bool {
+func scanStringLiteral(text []byte, pos *int, eofPos int) bool {
 	isTerminated := false
 	for *pos < eofPos {
 		if isSingleQuoteEscapeSequence(text, *pos) {
@@ -649,7 +653,7 @@ func scanStringLiteral(text []rune, pos *int, eofPos int) bool {
 	return isTerminated
 }
 
-func scanDelimitedComment(text []rune, pos *int, eofPos int) {
+func scanDelimitedComment(text []byte, pos *int, eofPos int) {
 	for *pos < eofPos {
 		if *pos+1 < eofPos && text[*pos] == '*' && text[*pos+1] == '/' {
 			*pos += 2
@@ -660,11 +664,11 @@ func scanDelimitedComment(text []rune, pos *int, eofPos int) {
 
 }
 
-func scanName(text []rune, pos *int, eofPos int) {
+func scanName(text []byte, pos *int, eofPos int) {
 	for *pos < eofPos {
-		charCode := text[*pos]
+		charCode, size := utf8.DecodeRune(text[*pos:])
 		if isNameNonDigitChar(charCode) || isDigitChar(charCode) {
-			*pos++
+			*pos += size
 			continue
 		}
 		return
@@ -729,7 +733,7 @@ func scanTemplateAndSetTokenValue(l *LexerScanner, tokenMem []*Token) []*Token {
 				if *pos < eofPos && fileContent[*pos] == '[' {
 					*pos++
 					tokenMem = l.addToMem(OpenBracketToken, *pos, tokenMem)
-					if isDigitChar(fileContent[*pos]) {
+					if isDigitChar(rune(fileContent[*pos])) {
 						*pos++
 						scanName(fileContent, pos, eofPos)
 						tokenMem = l.addToMem(IntegerLiteralToken, *pos, tokenMem)
@@ -879,7 +883,7 @@ func saveCurlyExpressionHereDoc(l *LexerScanner, openToken TokenKind, pos *int, 
 	return false, tokenMem
 }
 
-func scanDqEscapeSequence(text []rune, pos *int, eofPos int) {
+func scanDqEscapeSequence(text []byte, pos *int, eofPos int) {
 	if *pos >= eofPos {
 		return
 	}
@@ -902,7 +906,7 @@ func scanDqEscapeSequence(text []rune, pos *int, eofPos int) {
 		'X':
 		*pos++
 		for i := 0; i < 2; i++ {
-			if isHexadecimalDigit(text[*pos]) {
+			if isHexadecimalDigit(rune(text[*pos])) {
 				*pos++
 			}
 		}
@@ -922,9 +926,9 @@ func scanDqEscapeSequence(text []rune, pos *int, eofPos int) {
 		return
 	default:
 		// dq-octal-digit-escape-sequence
-		if isOctalDigitChar(text[*pos]) {
+		if isOctalDigitChar(rune(text[*pos])) {
 			for i := *pos; i < *pos+3; i++ {
-				if isOctalDigitChar(text[*pos]) {
+				if isOctalDigitChar(rune(text[*pos])) {
 					return
 				}
 				*pos++
@@ -937,14 +941,14 @@ func scanDqEscapeSequence(text []rune, pos *int, eofPos int) {
 	}
 }
 
-func scanOctalLiteral(text []rune, pos *int, eofPos int) bool {
+func scanOctalLiteral(text []byte, pos *int, eofPos int) bool {
 	isValid := true
 	for *pos < eofPos {
 		charCode := text[*pos]
-		if isOctalDigitChar(charCode) {
+		if isOctalDigitChar(rune(charCode)) {
 			*pos++
 			continue
-		} else if isDigitChar(charCode) {
+		} else if isDigitChar(rune(charCode)) {
 			*pos++
 			isValid = false
 			continue
@@ -954,34 +958,34 @@ func scanOctalLiteral(text []rune, pos *int, eofPos int) bool {
 	return isValid
 }
 
-func scanDecimalLiteral(text []rune, pos *int, eofPos int) {
+func scanDecimalLiteral(text []byte, pos *int, eofPos int) {
 	for *pos < eofPos {
 		charCode := text[*pos]
-		if isDigitChar(charCode) {
+		if isDigitChar(rune(charCode)) {
 			*pos++
 			continue
 		}
 		return
 	}
 }
-func scanSingleLineComment(text []rune, pos *int, eofPos int, state LexerState) {
+func scanSingleLineComment(text []byte, pos *int, eofPos int, state LexerState) {
 	for *pos < eofPos {
-		if isNewLineChar(text[*pos]) || isScriptEndTag(text, *pos, state) {
+		if isNewLineChar(rune(text[*pos])) || isScriptEndTag(text, *pos, state) {
 			return
 		}
 		*pos++
 	}
 }
-func isSingleLineCommentStart(text []rune, pos int, eofPos int) bool {
+func isSingleLineCommentStart(text []byte, pos int, eofPos int) bool {
 	return pos+1 < eofPos && text[pos] == '/' && text[pos+1] == '/'
 }
 
-func isSingleQuoteEscapeSequence(text []rune, pos int) bool {
+func isSingleQuoteEscapeSequence(text []byte, pos int) bool {
 	return text[pos] == '\\' &&
 		('\'' == text[pos+1] || '\\' == text[pos+1])
 }
 
-func isScriptEndTag(text []rune, pos int, state LexerState) bool {
+func isScriptEndTag(text []byte, pos int, state LexerState) bool {
 	if state != LexStateScriptSection && text[pos] == '?' && text[pos+1] == '>' {
 		return true
 	}
@@ -1037,11 +1041,11 @@ func isValidNameUnicodeChar(charCode rune) bool {
 	return unicode.IsLetter(charCode)
 }
 
-func scanHexadecimalLiteral(text []rune, pos *int, eofPos int) bool {
+func scanHexadecimalLiteral(text []byte, pos *int, eofPos int) bool {
 	isValid := true
 	p := *pos
 	for p < eofPos {
-		charCode := text[*pos]
+		charCode := rune(text[*pos])
 		if isHexadecimalDigit(charCode) {
 			p++
 			*pos++
@@ -1057,12 +1061,12 @@ func scanHexadecimalLiteral(text []rune, pos *int, eofPos int) bool {
 	return isValid
 }
 
-func scanFloatingPointLiteral(text []rune, pos *int, eofPos int) bool {
+func scanFloatingPointLiteral(text []byte, pos *int, eofPos int) bool {
 	hasDot := false
 	expStart := -1
 	hasSign := false
 	for *pos < eofPos {
-		char := text[*pos]
+		char := rune(text[*pos])
 		if isDigitChar(char) {
 			*pos++
 			continue
@@ -1111,10 +1115,10 @@ func scanFloatingPointLiteral(text []rune, pos *int, eofPos int) bool {
 	return hasDot
 }
 
-func scanBinaryLiteral(text []rune, pos *int, eofPos int) bool {
+func scanBinaryLiteral(text []byte, pos *int, eofPos int) bool {
 
 	for *pos < eofPos {
-		charCode := text[*pos]
+		charCode := rune(text[*pos])
 		if isBinaryDigitChar(charCode) {
 			*pos++
 			continue
@@ -1126,26 +1130,27 @@ func scanBinaryLiteral(text []rune, pos *int, eofPos int) bool {
 	return true
 }
 
-func isNameStart(text []rune, pos int, eofPos int) bool {
-	return pos < eofPos && isNameNonDigitChar(text[pos])
+func isNameStart(text []byte, pos int, eofPos int) bool {
+	charCode, _ := utf8.DecodeRune(text[pos:])
+	return pos < eofPos && isNameNonDigitChar(charCode)
 }
 
-func isDelimitedCommentStart(text []rune, pos int, eofPos int) bool {
+func isDelimitedCommentStart(text []byte, pos int, eofPos int) bool {
 	return pos+1 < eofPos && text[pos] == '/' && text[pos+1] == '*'
 }
 
-func isHexadecimalLiteralStart(text []rune, pos int, eofPos int) bool {
+func isHexadecimalLiteralStart(text []byte, pos int, eofPos int) bool {
 	// 0x  0X
 	return pos+1 < eofPos &&
 		text[pos] == '0' &&
 		(text[pos+1] == 'x' || text[pos+1] == 'X')
 }
 
-func isBinaryLiteralStart(text []rune, pos int, eofPos int) bool {
+func isBinaryLiteralStart(text []byte, pos int, eofPos int) bool {
 	return pos+1 < eofPos && text[pos] == '0' && (text[pos+1] == 'b' || text[pos+1] == 'B')
 }
 
-func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
+func scanNumericLiteral(text []byte, pos *int, eofPos int) TokenKind {
 	var prevPos int
 
 	if isBinaryLiteralStart(text, *pos, eofPos) {
@@ -1168,7 +1173,7 @@ func scanNumericLiteral(text []rune, pos *int, eofPos int) TokenKind {
 		}
 		return IntegerLiteralToken
 		//return HexadecimalLiteralToken
-	} else if isDigitChar(text[*pos]) || text[*pos] == '.' {
+	} else if isDigitChar(rune(text[*pos])) || text[*pos] == '.' {
 		// TODO throw error if there is no number past the dot.
 		prevPos = *pos
 		isValidFloatingLiteral := scanFloatingPointLiteral(text, pos, eofPos)

@@ -15,9 +15,9 @@ import (
 
 func TestParser(t *testing.T) {
 	p := Parser{}
-	sourceFile := p.ParseSourceFile(`<?php
+	sourceFile := p.ParseSourceFile([]byte(`<?php
 $c[1]
-`, "")
+`), "")
 
 	jsonSource, err := json.Marshal(ast.Serialize(&sourceFile))
 	if err != nil {
@@ -52,7 +52,7 @@ func TestCases(t *testing.T) {
 			sourceCase, _ := ioutil.ReadFile(sourceFileName)
 
 			p := Parser{}
-			sourceFile := p.ParseSourceFile(string(sourceCase), "")
+			sourceFile := p.ParseSourceFile(sourceCase, "")
 			jsonSource, _ := json.Marshal(ast.Serialize(&sourceFile))
 
 			differ := diff.New()

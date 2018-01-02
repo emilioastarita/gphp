@@ -36,7 +36,7 @@ const (
 	Count
 )
 
-func (p *Parser) ParseSourceFile(source string, uri string) *ast.SourceFileNode {
+func (p *Parser) ParseSourceFile(source []byte, uri string) *ast.SourceFileNode {
 
 	typeDeclaration := []lexer.TokenKind{lexer.ArrayKeyword, lexer.CallableKeyword, lexer.BoolReservedWord,
 		lexer.FloatReservedWord, lexer.IntReservedWord, lexer.StringReservedWord,

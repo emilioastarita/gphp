@@ -36,22 +36,22 @@ type TokenFullForm struct {
 	Text       string `json:text`
 }
 
-func (r Token) getText(text []rune) string {
+func (r Token) getText(text []byte) string {
 	s := r.Start
 	end := s + r.Length - (r.Start - r.FullStart)
 	return string(text[s:end])
 }
 
-func (r Token) getShortForm(text []rune) TokenShortForm {
+func (r Token) getShortForm(text []byte) TokenShortForm {
 	return TokenShortForm{r.Kind.String(), r.Length - (r.Start - r.FullStart), r.getText(text)}
 }
 
-func (r Token) getFullForm(text []rune) TokenFullForm {
+func (r Token) getFullForm(text []byte) TokenFullForm {
 	t := TokenFullForm{Kind: r.Kind.String(), TextLength: r.Length - (r.Start - r.FullStart), Text: r.getText(text), Token: r}
 	return t
 }
 
-func (r Token) getFullFormCompare(text []rune) TokenCompareForm {
+func (r Token) getFullFormCompare() TokenCompareForm {
 	t := TokenCompareForm{Kind: r.Kind.String(), FullStart: r.FullStart, Start: r.Start, Length: r.Length}
 	return t
 }

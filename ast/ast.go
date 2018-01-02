@@ -42,7 +42,7 @@ type UseVariableName struct {
 type SourceFileNode struct {
 	CNode          `serialize:"-"`
 	P              Node   `serialize:"-"`
-	FileContents   string `serialize:"-"`
+	FileContents   []byte `serialize:"-"`
 	Uri            string `serialize:"-"`
 	StatementList  []Node
 	EndOfFileToken *lexer.Token
